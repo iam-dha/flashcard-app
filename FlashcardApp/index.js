@@ -29,6 +29,7 @@ app.use(bodyParser.urlencoded());
 //Parse application/json
 app.use(express.json());
 
+
 //Config Cookie-parse
 app.use(cookieParser(process.env.COOKIE_SECRET));
 

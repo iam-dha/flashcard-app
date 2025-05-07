@@ -1,5 +1,5 @@
 const rareLimit = require("express-rate-limit");
-const TIME_LIMIT = 15; //Minute
+const TIME_LIMIT = 1; //Minute
 const REQUEST_LIMIT = 5;
 
 const loginLimiter = rareLimit({

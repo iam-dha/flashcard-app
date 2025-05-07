@@ -23,11 +23,8 @@ module.exports.loginPost = async (req, res) => {
     try {
         const user = await User.findOne(find).populate("role");
         if (!user)
-            return res
-                .status(401)
-                .json({ message: "Invalid email or password" });
-        // const validPassword = await bcrypt.compare(password, user.password);
-        const validPassword = password == user.password;
+            return res.status(401).json({ message: "Invalid email or password" });
+        const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword)
             return res
                 .status(401)
