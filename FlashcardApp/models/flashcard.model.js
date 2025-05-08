@@ -8,28 +8,28 @@ const flashcard_schema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        definition: {
-            type: String,
-            required: true,
-            trim: true,
-        },
+        meanings: [
+            {
+                partOfSpeech: {type: String},
+                definitions: [
+                    {
+                        definition: {type: String, trim: true},
+                        example: {type: String, trim: true}
+                    }
+                ]
+            }
+        ],
         vi_definition: {
             type: String,
             required: true,
             trim: true,
         },
-        pronunciation: {
-            type: String,
-            trim: true,
-        },
-        audio_href: {
-            type: String,
-            trim: true,
-        },
-        example: {
-            type: String,
-            trim: true,
-        },
+        phonetics:[
+            {
+                pronunciation: {type: String, required: true},
+                sound: {type: String}
+            }
+        ],
         slug: {
             type: String,
             slug: "word",
