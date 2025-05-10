@@ -1,4 +1,4 @@
 //[GET] /login
 module.exports.index = async (req, res) => {
-    res.send("login index");
+    res.render("./client/pages/authentication/login.pug");
 }

@@ -60,7 +60,7 @@ module.exports.loginPost = async (req, res) => {
         await session.save();
 
         cookieHelper.setRefreshTokenCookie(res, refreshToken);
-        console.log(`${new Date(Date.now())} --- {$email} logged in `);
+        console.log(`${new Date(Date.now())} --- ${email} logged in `);
         res.json({ accessToken: accessToken, role: user.role.title });
     } catch (error) {
         console.error("Login error:", error);

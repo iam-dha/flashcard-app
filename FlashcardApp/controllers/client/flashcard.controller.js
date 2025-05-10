@@ -6,25 +6,9 @@ const User = require("../../models/user.model");
 const Role = require("../../models/role.model");
 const Flashcard = require("../../models/flashcard.model");
 const UserInformation = require("../../models/userInformation.model");
-const { response } = require("express");
-
-// const getData = async (document) => {
-//     const IPA = document.querySelectorAll(".IPA");
-//     const pronunciationUl = document.querySelector("#Pronunciation").parentNode.nextElementSibling;
-//     const items = [...pronunciationUl.querySelectorAll("li")];
-//     items.forEach(node => {
-//         let country = node.querySelector(".extiw")?.textContent;
-//         // if(country == "UK" || country == "US"){
-//         //     let pronunciation = node.querySelector("#IPA")?.textContent;
-//         //     console.log`${country} - ${pronunciation}`;
-//         // }
-//         console.log(country);
-
-//     })
-// }
 
 module.exports.search = async (req, res) => {
-    const { word } = req.query;
+    const word = req.query.word?.toLowerCase();
     try {
         const flashcardResult = await Flashcard.find({ word: word });
         console.log(flashcardResult.length);
