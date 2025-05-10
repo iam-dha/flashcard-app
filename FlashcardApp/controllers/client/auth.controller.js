@@ -28,7 +28,7 @@ module.exports.loginPost = async (req, res) => {
         if (!validPassword)
             return res
                 .status(401)
-                .json({ message: "Invalid email or password" });
+                .json({ message: "Invalid password" });
 
         const accessToken = tokenGenerate.generateAccessToken(user);
         const refreshToken = tokenGenerate.generateRefreshToken(user);

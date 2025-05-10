@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -23,6 +24,18 @@ app.use(express.static(`${__dirname}/public`));
 
 //App local variable
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
+
+//Turn cors for all origin
+app.use(cors());
+
+  //Optional 
+  // // ✅ Hoặc chỉ cho phép frontend cụ thể (khuyên dùng)
+  // app.use(cors({
+  //   origin: 'http://localhost:5173', // hoặc domain thật khi deploy frontend
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  //   credentials: true
+  // }));
+
 
 //Body parser config parse x-www-form-urlencoded
 app.use(bodyParser.urlencoded());
