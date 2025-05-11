@@ -9,7 +9,7 @@ module.exports.setting = async (req, res) => {
             userId: userId,
             deleted: false,
             status: "active"
-        }).select("-deleted -__v -_id -_userId -updatedAt");
+        }).select("-deleted -__v -_id -userId -updatedAt");
         if(!userInformationDoc){
             return res.status(404).json({message: "User information not found or inactive"});
         }
