@@ -68,7 +68,7 @@ module.exports.loginPost = async (req, res) => {
     }
 };
 
-//[POST] api/v1/auth/register/request-otp
+//[POST] /api/v1/auth/register/request-otp
 module.exports.registerOTP = async (req, res) => {
     const otpSender = mailer.sendOtpEmailRegister;
     const { email } = req.body;
@@ -106,7 +106,7 @@ module.exports.registerOTP = async (req, res) => {
     res.json({ message: "OTP has been sent to your email" });
 };
 
-//[POST] api/v1/auth/register/verify
+//[POST] /api/v1/auth/register/verify
 module.exports.registerVerify = async (req, res) => {
     const { email, password, otp, fullName, address, phone } = req.body;
     if (!email || !otp || !password || !fullName) {
@@ -163,7 +163,7 @@ module.exports.registerVerify = async (req, res) => {
     );
 };
 
-//[POST] api/v1/auth/refresh
+//[POST] /api/v1/auth/refresh
 module.exports.refreshPost = async (req, res) => {
     const refreshToken = req.signedCookies.refreshToken;
     
@@ -191,4 +191,13 @@ module.exports.refreshPost = async (req, res) => {
     await session.save();
     cookieHelper.setRefreshTokenCookie(res, refreshToken);
     res.status(200).json({accessToken: newAccessToken});
+}
+
+//[POST] /api/v1/auth/change-password
+module.exports.changePassword = async (req, res) => {
+
+}
+//[POST] /api/v1/auth/forgot-password
+module.exports.forgotPassword = async (req, res) => {
+    
 }

@@ -30,7 +30,7 @@ module.exports.setting = async (req, res) => {
         );
         res.status(200).json(userInformation);
     } catch (error) {
-        console.error(`[GET /user/settings] Error:`, error);
+        console.error(`[GET /api/v1/user/settings] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -67,7 +67,7 @@ module.exports.settingPatch = async (req, res) => {
             .status(200)
             .json({ message: "Update user information successfully" });
     } catch (error) {
-        console.error(`[PATCH /user/settings] Error:`, error);
+        console.error(`[PATCH /api/v1/user/settings] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -83,30 +83,38 @@ module.exports.changeEmailRequest = async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
+    try {
+        const resendKey = `otp:limit:${user.email}`;
+        const otpKey = `otp:code:${user.email}`;
 
-    const resendKey = `otp:limit:${user.email}`;
-    const otpKey = `otp:code:${user.email}`;
+        // Block spam get OTP
+        const isLimited = await redisClient.get(resendKey);
+        if (isLimited)
+            return res
+                .status(429)
+                .json({ message: "Please wait before requesting another OTP" });
 
-    // Block spam get OTP
-    const isLimited = await redisClient.get(resendKey);
-    if (isLimited)
-        return res
-            .status(429)
-            .json({ message: "Please wait before requesting another OTP" });
-
-    // OTP in range 100000 - 999999
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    //Save OTP and limit into redis
-    await redisClient.setEx(otpKey, systemConfig.otpExpiration * 60, otp);
-    await redisClient.setEx(resendKey, systemConfig.otpResendLimit * 60, "1");
-    otpSender(user.email, otp)
-        .then(() => {
-            console.log(`Otp: ${otp} sent to ${user.email}`);
-        })
-        .catch((err) => {
-            console.error("❌ Email send error:", err);
-        });
-    res.json({ message: "OTP has been sent to your email" });
+        // OTP in range 100000 - 999999
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        //Save OTP and limit into redis
+        await redisClient.setEx(otpKey, systemConfig.otpExpiration * 60, otp);
+        await redisClient.setEx(
+            resendKey,
+            systemConfig.otpResendLimit * 60,
+            "1"
+        );
+        otpSender(user.email, otp)
+            .then(() => {
+                console.log(`Otp change email: ${otp} sent to ${user.email}`);
+            })
+            .catch((err) => {
+                console.error("❌ Email send error:", err);
+            });
+        return res.json({ message: "OTP has been sent to your email" });
+    } catch (error) {
+        console.error(`[POST /api/v1/user/email-change/request] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };
 
 // [POST] /api/v1/user/email-change/verify
@@ -130,7 +138,7 @@ module.exports.changeEmailVerify = async (req, res) => {
         );
         res.status(200).json({ message: "Verify email successfully" });
     } catch (error) {
-        console.error(`[POST /user/email-change/verify] Error:`, error);
+        console.error(`[POST /api/v1/user/email-change/verify] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -171,7 +179,7 @@ module.exports.changeEmail = async (req, res) => {
         await redisClient.del(verifyKey);
         return res.status(200).json({ message: "Change email successfully" });
     } catch (error) {
-        console.error(`[PATCH /user/email-change] Error:`, error);
+        console.error(`[PATCH /api/v1/user/email-change] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
