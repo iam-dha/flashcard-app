@@ -15,7 +15,7 @@ module.exports.getAllFolders = async (req, res) => {
         const totalCount = await Folder.countDocuments({ userId });
 
         const folders = await Folder.find({ userId })
-            .select("-__v -createdAt -updatedAt -userId -_id")
+            .select("-__v -updatedAt -userId -_id")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);

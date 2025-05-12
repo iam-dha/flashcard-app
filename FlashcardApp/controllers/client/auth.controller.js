@@ -189,7 +189,7 @@ module.exports.refreshPost = async (req, res) => {
     // Refresh Token Rotation
     session.refreshToken = newRefreshToken;
     await session.save();
-    cookieHelper.setRefreshTokenCookie(res, refreshToken);
+    cookieHelper.setRefreshTokenCookie(res, newRefreshToken);
     res.status(200).json({accessToken: newAccessToken});
 }
 
