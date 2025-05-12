@@ -41,7 +41,7 @@ module.exports.search = async (req, res) => {
             let record = new Flashcard(flashcard);
             await record.save();
             console.log(`${new Date(Date.now())} --- word: '${word}' was added to database`);
-            res.json(flashcard);
+            res.json(record);
         } else {
             res.json({
                 result: flashcardResult.length,
