@@ -70,7 +70,7 @@ module.exports.loginPost = async (req, res) => {
 
 //[POST] api/v1/auth/register/request-otp
 module.exports.registerOTP = async (req, res) => {
-    const otpSender = mailer.sendOtpEmail;
+    const otpSender = mailer.sendOtpEmailRegister;
     const { email } = req.body;
 
     if (!email) return res.status(400).json({ message: "Email is required" });

@@ -4,7 +4,7 @@ const crypto = require("crypto");
 
 module.exports.generateAccessToken = (user) => {
     return jwt.sign(
-        {userId: user._id, role: user.role.title, jti: crypto.randomUUID()}, // hoặc crypto.randomBytes(16).toString("hex")}, 
+        {userId: user._id, role: user.role.title, email: user.email, jti: crypto.randomUUID()}, // hoặc crypto.randomBytes(16).toString("hex")}, 
         process.env.ACCESS_SECRET,
         {expiresIn: systemConfig.accessTokenExpiration.inString}
     );

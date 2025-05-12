@@ -14,6 +14,7 @@ module.exports.checkAccessToken = async (req, res, next) => {
         const decodedToken = await jwt.verify(token, process.env.ACCESS_SECRET);
         if (decodedToken && decodedToken.userId) {
             req.userId = decodedToken.userId;
+            req.email = decodedToken.email;
             return next();
         } else {
             return res.status(403).json({ message: "Invalid token: userId missing" });
