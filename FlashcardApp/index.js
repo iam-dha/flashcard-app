@@ -9,6 +9,7 @@ require("dotenv").config();
 
 //Add route
 const clientRoute = require("./routes/client/index.routes");
+const adminRoute = require("./routes/admin/index.routes");
 
 //Database Connect
 const database = require("./config/database.js")
@@ -26,8 +27,11 @@ app.use(express.static(`${__dirname}/public`));
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 
 //Turn cors for all origin
-app.use(cors());
-
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',  // Đảm bảo là URL frontend của bạn
+  credentials: true  // Cho phép gửi cookie hoặc thông tin bảo mật khác
+}));
   //Optional 
   // // ✅ Hoặc chỉ cho phép frontend cụ thể (khuyên dùng)
   // app.use(cors({
@@ -52,6 +56,7 @@ app.use(methodOverride("_method"));
 
 
 clientRoute(app);
+adminRoute(app);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

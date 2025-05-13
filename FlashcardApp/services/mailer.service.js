@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 const sendOtpEmailRegister = async (to, otp) => {
     const mailOptions = {
-        from: `"MyApp Support" <${process.env.MAIL_USER}>`,
+        from: `"FlashcardApp Support" <${process.env.MAIL_USER}>`,
         to,
         subject: "Your OTP Code",
         html: `
@@ -27,7 +27,7 @@ const sendOtpEmailRegister = async (to, otp) => {
 
 const sendOtpEmailChange = async (to, otp) => {
     const mailOptions = {
-        from: `"MyApp Support" <${process.env.MAIL_USER}>`,
+        from: `"FlashcardApp Support" <${process.env.MAIL_USER}>`,
         to,
         subject: "Email Change Verification Code",
         html: `
@@ -37,7 +37,26 @@ const sendOtpEmailChange = async (to, otp) => {
           <h3 style="color: #2e86de;">${otp}</h3>
           <p>This code will expire in ${systemConfig.otpExpiration} minutes. If you did not request this, please ignore this email.</p>
           <br>
-          <p>Thank you,<br>The MyApp Team</p>
+          <p>Thank you,<br>The FlashcardApp Team</p>
+        `,
+    };
+    await transporter.sendMail(mailOptions);
+};
+
+const sendEmailForgotPassword = async (to, resetUrl) => {
+    const mailOptions = {
+        from: `"FlashcardApp Support" <${process.env.MAIL_USER}>`,
+        to,
+        subject: "Password Reset Request",
+        html: `
+          <h2>🔒 Password Reset Request</h2>
+          <p>We received a request to reset your password.</p>
+          <p>Please click the link below to reset your password:</p>
+          <a href="${resetUrl}">Reset Password</a>
+          <p>This link will expire in ${systemConfig.passwordResetExpiration.inNumber} minutes.</p>
+          <p>If you did not request this, please ignore this email.</p>
+          <br>
+          <p>Thank you,<br>The FlashcardApp Team</p>
         `,
     };
     await transporter.sendMail(mailOptions);
@@ -45,3 +64,4 @@ const sendOtpEmailChange = async (to, otp) => {
 
 module.exports.sendOtpEmailRegister = sendOtpEmailRegister;
 module.exports.sendOtpEmailChange = sendOtpEmailChange;
+module.exports.sendEmailForgotPassword = sendEmailForgotPassword;

@@ -9,6 +9,7 @@ const User = require("../../models/user.model");
 const Session = require("../../models/session.model");
 const Role = require("../../models/role.model");
 const UserInformation = require("../../models/userInformation.model");
+const PasswordResetToken = require("../../models/passwordResetToken.model");
 // Helpers
 const tokenGenerate = require("../../helpers/tokenGenerate.helper");
 const cookieHelper = require("../../helpers/refreshTokenCookie.helper");
@@ -195,9 +196,100 @@ module.exports.refreshPost = async (req, res) => {
 
 //[POST] /api/v1/auth/change-password
 module.exports.changePassword = async (req, res) => {
-
+    const {password, newPassword} = req.body;
+    const userId = req.userId;
+    if(!password || !newPassword){
+        return res.status(400).json({message: "Missing required fields"});
+    }
+    try {
+        const user = await User.findOne({
+            _id: userId,
+            deleted: false
+        });
+        if(!user){
+            return res.status(404).json({message: "User not found"});
+        }
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if(!isValidPassword){
+            return res.status(401).json({message: "Wrong password"});
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).json({message: "Change password successfully"});
+    } catch (error) {
+        console.error(`[POST /api/v1/auth/change-password] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }
+
 //[POST] /api/v1/auth/forgot-password
 module.exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    const sendEmailForgotPassword = mailer.sendEmailForgotPassword;
+    try {
+        const user = await User.findOne({
+            email: email,
+            deleted: false,
+        });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        // Generate token 32 bytes to hexa
+        const token = crypto.randomBytes(32).toString("hex");
+        // Hash token with sha256
+        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
     
+        const expiresAt = new Date(Date.now() + systemConfig.passwordResetExpiration.inNumber * 60 * 1000);
+        const passwordResetToken = new PasswordResetToken({
+            userId: user._id,
+            token: hashedToken,
+            expiresAt: expiresAt,
+        });
+        await passwordResetToken.save();
+        const resetUrl = `${systemConfig.clientUrl}/reset-password/${token}`;
+        sendEmailForgotPassword(email, resetUrl);
+        console.log(`${new Date(Date.now())} --- Forgot password email was sent to ${email} `);
+        res.status(200).json({ message: "Password reset email sent" });
+    } catch (error) {
+        console.error(`[POST /api/v1/auth/forgot-password] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+//[POST] /api/v1/auth/reset-password/:token
+module.exports.resetPassword = async (req, res) => {
+    const { newPassword } = req.body;
+    const token = req.params.token;
+    // Move this to  validate middleware
+    if (!newPassword) {
+        return res.status(400).json({ message: "New password is required" });
+    }
+
+    try {
+        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+        const passwordResetToken = await PasswordResetToken.findOne({
+            token: hashedToken,
+            expiresAt: { $gt: Date.now() },
+        });
+        if (!passwordResetToken) {
+            return res.status(400).json({ message: "Invalid or expired token" });
+        }
+        const user = await User.findOne({
+            _id: passwordResetToken.userId,
+            deleted: false,
+        });
+        if (!user) {
+            return res.status(404).json({ message: "User deleted or not found" });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+        await PasswordResetToken.deleteOne({ _id: passwordResetToken._id });
+        console.log(`${new Date(Date.now())} --- Password reset for ${user.email}`);
+        res.status(200).json({ message: "Password reset successfully" });
+    } catch (error) {
+        console.error(`[POST /api/v1/auth/reset-password/:token] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }

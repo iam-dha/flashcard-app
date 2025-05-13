@@ -11,7 +11,6 @@ module.exports.search = async (req, res) => {
     const word = req.query.word?.toLowerCase();
     try {
         const flashcardResult = await Flashcard.find({ word: word });
-        console.log(flashcardResult.length);
         if (flashcardResult.length == 0) {
             const wordSeachEndpoint = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
             const wordSearchResponse = (await axios.get(wordSeachEndpoint)).data[0];

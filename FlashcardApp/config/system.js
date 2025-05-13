@@ -1,10 +1,12 @@
-const ADMIN_PATH = "/admin";
+const ADMIN_PATH = "admin";
 const API_PATH = "/api";
 const REFRESH_TOKEN_EXPIRATION = 7; // days
 const ACCESS_TOKEN_EXPIRATION = 15; // minutes
 const MAX_SESSIONS = 3;
 const OTP_EXPIRATION = 5; // minutes
 const OTP_RESEND_LIMIT = 1; // minutes
+const PASSWORD_RESET_EXPIRATION = 15; // minutes
+const CLIENT_URL = "http://localhost:5173";
 module.exports = {
     prefixAdmin: ADMIN_PATH,
     refreshTokenExpiration: {
@@ -15,6 +17,11 @@ module.exports = {
         inNumber: ACCESS_TOKEN_EXPIRATION,
         inString: `${ACCESS_TOKEN_EXPIRATION}m`
     },
+    passwordResetExpiration: {
+        inNumber: PASSWORD_RESET_EXPIRATION,
+        inString: `${PASSWORD_RESET_EXPIRATION}m`
+    },
+    clientUrl: CLIENT_URL,
     maxSessions: MAX_SESSIONS,
     apiPath: API_PATH,
     otpExpiration: OTP_EXPIRATION,
