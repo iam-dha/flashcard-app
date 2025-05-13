@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const Role = require("../models/role.model");
 module.exports.checkAccessToken = (role = "User") => {
     return async (req, res, next) => {
-        console.log("checking access token");
         const authHeader = req.headers.authorization;
         if (!authHeader) {
             return res

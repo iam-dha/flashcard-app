@@ -29,17 +29,12 @@ app.locals.prefixAdmin = systemConfig.prefixAdmin;
 //Turn cors for all origin
 // app.use(cors());
 app.use(cors({
-  origin: 'http://0.0.0.0/0',
-  credentials: true
+  origin: 'http://localhost:5173',  // URL Frontend
+  credentials: true  // Send cookies for refresh token
 }));
-// app.use(cors({
-//   origin: 'http://localhost:5173',  // Đảm bảo là URL frontend của bạn
-//   credentials: true  // Cho phép gửi cookie hoặc thông tin bảo mật khác
-// }));
   //Optional 
-  // // ✅ Hoặc chỉ cho phép frontend cụ thể (khuyên dùng)
   // app.use(cors({
-  //   origin: 'http://localhost:5173', // hoặc domain thật khi deploy frontend
+  //   origin: 'http://localhost:5173', // domain deployt
   //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   //   credentials: true
   // }));
