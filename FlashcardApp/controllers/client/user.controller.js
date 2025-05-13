@@ -9,7 +9,7 @@ const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 // [GET] /api/v1/user/settings
 module.exports.setting = async (req, res) => {
     const userId = req.userId;
-
+    console.log("da den controller");
     try {
         const userInformationDoc = await UserInformation.findOne({
             userId: userId,

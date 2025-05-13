@@ -13,7 +13,7 @@ router.post("/register/verify", controller.registerVerify);
 
 router.post("/refresh", controller.refreshPost);
 
-router.post("/change-password", authMiddleWare.checkAccessToken, validateMiddleWare.validatePassword(['password', 'newPassword']), controller.changePassword);
+router.post("/change-password", authMiddleWare.checkAccessToken(), validateMiddleWare.validatePassword(['password', 'newPassword']), controller.changePassword);
 
 router.post("/forgot-password", controller.forgotPassword);
 
