@@ -32,13 +32,6 @@ app.use(cors({
   origin: 'http://localhost:5173',  // URL Frontend
   credentials: true  // Send cookies for refresh token
 }));
-  //Optional 
-  // app.use(cors({
-  //   origin: 'http://localhost:5173', // domain deployt
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  //   credentials: true
-  // }));
-
 
 //Body parser config parse x-www-form-urlencoded
 app.use(bodyParser.urlencoded());
