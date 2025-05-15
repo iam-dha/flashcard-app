@@ -7,6 +7,8 @@ router.get("/settings", authMiddleWare.checkAccessToken(), controller.setting);
 
 router.patch("/settings", authMiddleWare.checkAccessToken(), controller.settingPatch);
 
+router.delete("/settings", authMiddleWare.checkAccessToken(), controller.settingDelete);
+
 router.post("/email-change/request", authMiddleWare.checkAccessToken(), controller.changeEmailRequest);
 
 router.post("/email-change/verify", authMiddleWare.checkAccessToken(), controller.changeEmailVerify);

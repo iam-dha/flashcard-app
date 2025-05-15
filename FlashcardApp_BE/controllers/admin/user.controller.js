@@ -2,8 +2,8 @@
 const { userInfo } = require("os");
 const User = require("../../models/user.model");
 const UserInformation = require("../../models/userInformation.model");
-
-const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
+const Session = require("../../models/session.model");
+const PasswordResetToken = require("../../models/passwordResetToken.model");
 
 //[GET] /api/v1/admin/users?limit=x&page=y&filter=createAt&order=asc
 module.exports.getAllUserInfo = async (req, res) => {
@@ -50,7 +50,7 @@ module.exports.getUserInfo = async (req, res) => {
     const { userId } = req.params;
     try {
         const userInformationDoc = await UserInformation.findOne({
-            userId: userId,
+            userId: userId
         }).select("-_id -__v");
         if (!userInformationDoc) {
             return res.status(404).json({ message: "User not found" });
@@ -112,3 +112,37 @@ module.exports.changeUserInfo = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// [DELETE] /api/v1/admin/users/:userId
+module.exports.deleteUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findOne({ _id: userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const userInformation = await UserInformation.findOne({
+            userId: userId,
+        });
+        user.deleted = true;
+        userInformation.deleted = true;
+        await user.save();
+        await userInformation.save();
+        await Session.deleteMany({userId: userId});
+        await PasswordResetToken.deleteMany({userId: userId});
+        return res.status(200).json({
+            message: "Delete user successfully",
+            data: {
+                userId: userId,
+                email: user.email,
+                fullName: userInformation.fullName,
+                address: userInformation.address,
+                status: userInformation.status,
+            },
+        });
+    } catch (error) {
+        console.error(`[DELETE /api/v1/admin/users/:id] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+

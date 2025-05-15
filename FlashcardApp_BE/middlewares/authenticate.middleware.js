@@ -40,6 +40,40 @@ module.exports.checkAccessToken = (role = "User") => {
     };
 }
 
+module.exports.checkLoginRole = (roles = ["User"]) => {
+    return async (req, res, next) => {
+        const {email} = req.body;
+        if (!email) {
+            return res
+                .status(401)
+                .json({ message: "Unauthorized: No email" });
+        }
+        try {
+            const user = await User.findOne({
+                email: email,
+                deleted: false,
+            }).populate("role");
+            if (!user) {
+                return res
+                    .status(401)
+                    .json({ message: "Unauthorized: Invalid credentials" });
+            }
+            if (roles.includes(user.role.title)) {
+                req.userId = user._id;
+                req.email = user.email;
+                req.role = user.role.title;
+                return next();
+            } else {
+                return res
+                    .status(403)
+                    .json({ message: "Forbidden: Insufficient permissions" });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    };
+}
+
 module.exports.checkPermission = (requiredPermissions = []) => {
     return async (req, res, next) => {
         const roleTitle = req.role;

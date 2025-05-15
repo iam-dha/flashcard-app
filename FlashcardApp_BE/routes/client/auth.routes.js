@@ -5,7 +5,7 @@ const authMiddleWare = require("../../middlewares/authenticate.middleware");
 const validateMiddleWare = require("../../middlewares/validate.middleware");
 const controller = require("../../controllers/client/auth.controller");
 
-router.post("/login", loginLimiter, controller.loginPost);
+router.post("/login", loginLimiter, authMiddleWare.checkLoginRole(['User']), controller.loginPost);
 
 router.post("/register/request-otp", controller.registerOTP);
 

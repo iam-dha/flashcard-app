@@ -1,9 +1,11 @@
 const User = require("../../models/user.model");
 const UserInformation = require("../../models/userInformation.model");
+const Session = require("../../models/session.model");
+const PasswordResetToken = require("../../models/passwordResetToken.model");
+// Helpers
 const redisClient = require("../../config/redis");
 const systemConfig = require("../../config/system");
 const mailer = require("../../services/mailer.service");
-// Helpers
 
 const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 // [GET] /api/v1/user/settings
@@ -70,6 +72,49 @@ module.exports.settingPatch = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// [DELETE] /api/v1/user/settings
+module.exports.settingDelete = async (req, res) => {
+    const userId = req.userId;
+    try {
+        const userInformation = await UserInformation.findOne({
+            userId: userId,
+            deleted: false,
+            status: "active",
+        });
+        if (!userInformation) {
+            return res
+                .status(404)
+                .json({ message: "User information not found or inactive" });
+        }
+        const user = await User.findOne({
+            _id: userId,
+            deleted: false,
+        });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        user.deleted = true;
+        userInformation.deleted = true;
+        await user.save();
+        await userInformation.save();
+        await Session.deleteMany({userId: userId});
+        await PasswordResetToken.deleteMany({userId: userId});
+        return res.status(200).json({
+            message: "Delete user successfully",
+            data: {
+                userId: userId,
+                email: user.email,
+                fullName: userInformation.fullName,
+                address: userInformation.address,
+                status: userInformation.status,
+            },
+        });
+    } catch (error) {
+        console.error(`[DELETE /api/v1/user/settings] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 // [POST] /api/v1/user/email-change/request
 module.exports.changeEmailRequest = async (req, res) => {
@@ -182,3 +227,5 @@ module.exports.changeEmail = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
