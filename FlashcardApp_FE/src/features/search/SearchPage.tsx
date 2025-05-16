@@ -8,6 +8,7 @@ import SearchResultCard from "./components/SearchResultCard";
 export default function SearchPage() {
   const [searchWord, setSearchWord] = useState("");
   const { search, searchLoading, results } = useSearchFlashcard({ searchWord });
+  const numberOfResults = 5;
 
   return (
     <div className="container mx-auto space-y-8 py-8">
@@ -18,7 +19,7 @@ export default function SearchPage() {
         <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
 
         {/* Search results */}
-        {searchLoading ? <CustomLoader /> : <SearchResultCard results={results} />}
+        {searchLoading ? <CustomLoader /> : <SearchResultCard results={results.slice(0, numberOfResults)} />}
 
         {/* search suggestions */}
         {!searchLoading && (results.length === 0 ? <SearchTips /> : <SearchNextSteps />)}

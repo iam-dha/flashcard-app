@@ -2,7 +2,8 @@ import { Card } from "@/components/ui/card";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
-import { Volume2 } from "lucide-react";
+import { FolderPlus, Star, Volume2 } from "lucide-react";
+import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 
 export function SearchResultCardSide(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audioUrl);
@@ -10,7 +11,7 @@ export function SearchResultCardSide(result: FlashcardTypes) {
     <Card className="flex-1 rounded-lg p-4">
       <div className="flex flex-col items-start justify-between gap-2 overflow-scroll md:flex-row md:items-center">
         <p className="text-2xl font-bold">{result.word}</p>
-        <Button variant="outline" onClick={playAudio} className="rounded-2xl">
+        <Button variant="outline" onClick={playAudio} className="rounded-xl">
           <Volume2 className="h-5 w-5" />
           {result.phonetic && <p className="text-sm text-neutral-600 dark:text-neutral-400">{result.phonetic}</p>}
         </Button>
@@ -23,6 +24,7 @@ export function SearchResultCardSide(result: FlashcardTypes) {
         </ul>
       )}
       <p>{result.flashcardId}</p>
+      <p>{result.flashcard_meaningId}</p>
     </Card>
   );
 }
@@ -32,22 +34,32 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
     <div className="space-y-4">
       {results.length > 0 &&
         results.map((result, index) => (
-          <div key={index} className="bg-card text-card-foreground gap-4 overflow-hidden rounded-xl border p-4 shadow-sm md:flex">
+          <div key={index} className="bg-card text-card-foreground space-y-4 overflow-hidden rounded-xl border p-4 shadow-sm">
+            <div className="flex w-full justify-end gap-2">
+              <ExpandableButton
+                Icon={Star}
+                label="Add to favorites"
+                variant="outline"
+                className="hover:bg-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/40"
+                onClick={() => {
+                  console.log("Add to favorites clicked");
+                }}
+              />
+              <ExpandableButton
+                Icon={FolderPlus}
+                label="Add to folder"
+                variant="outline"
+                className="hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/40"
+                onClick={() => {
+                  console.log("Add to folder clicked");
+                }}
+              />
+            </div>
             {/* English side */}
-            <SearchResultCardSide {...result} />
-            <SearchResultCardSide {...result} />
-
-            {/* Vietnamese side */}
-            {/* <Card className="m-4 bg-blue-500 p-8 flex-1">
-              <h3 className="mb-2 text-2xl font-bold">{result.word_vi}</h3>
-              {result.wordType_vi && <p className="mb-3 text-sm text-neutral-600 dark:text-neutral-400">({result.wordType_vi})</p>}
-              {result.definition_vi && <p className="text-md mb-3">{result.definition_vi}</p>}
-              {result.example_vi && (
-                <ul className="mt-4 list-inside list-disc space-y-2 text-neutral-600 dark:text-neutral-400">
-                  <li className="text-neutral-600 italic dark:text-neutral-400">{result.example_vi}</li>
-                </ul>
-              )}
-            </Card> */}
+            <div className="flex gap-4">
+              <SearchResultCardSide {...result} />
+              <SearchResultCardSide {...result} />
+            </div>
           </div>
         ))}
     </div>
