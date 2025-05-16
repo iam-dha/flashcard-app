@@ -3,8 +3,6 @@ import { getRouteByPath } from "@/routes/router";
 import { useIsMobile } from "@/hooks/useMobile";
 import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
-import { mockFolders } from "@/test/mockData";
-import { FolderTypes } from "@/types/folder.types";
 import { folderService } from "@/services/folderService";
 
 export function usePageTitle() {
