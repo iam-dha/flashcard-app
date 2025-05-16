@@ -20,15 +20,15 @@ export default function FolderCardDropdownMenu({ slug, name }: FolderCardDropdow
             <EllipsisVertical className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mt-2 flex flex-col rounded-xl">
-            <Button className="hover:bg-accent/20 text-card-foreground justify-start rounded-lg bg-transparent">
+            <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
               <PencilLine />
               Rename
             </Button>
-            <Button className="hover:bg-accent/20 text-card-foreground justify-start rounded-lg bg-transparent">
+            <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
               <Share />
               Share
             </Button>
-            <Button className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent" onClick={() => setShowDeleteCard(true)}>
+            <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent" onClick={() => setShowDeleteCard(true)}>
               <Trash className="text-red-500" />
               <p className="text-red-500">Delete</p>
             </Button>

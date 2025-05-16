@@ -1,5 +1,6 @@
 export interface FlashcardTypes {
   flashcardId: string;
+  flashcard_meaningId?: string;
   word: string;
   wordType?: string;
   definition: string[];
