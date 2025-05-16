@@ -5,6 +5,7 @@ import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
 import { mockFolders } from "@/test/mockData";
 import { FolderTypes } from "@/types/folder.types";
+import { folderService } from "@/services/folderService";
 
 export function usePageTitle() {
   const location = useLocation();
@@ -14,13 +15,15 @@ export function usePageTitle() {
   useEffect(() => {
     if (!currentRoute) return;
 
-    if ("type" in currentRoute && currentRoute.type === "folder" && "folderId" in currentRoute) {
-      // for folder detail pages, get the folder name
-      const folder = mockFolders.find((f: FolderTypes) => f.folderId === currentRoute.folderId);
-      setPageTitle(folder ? folder.folderName : "Folder");
-    } else {
-      setPageTitle(currentRoute.title || "");
-    }
+    const getFolderName = async () => {
+      if ("type" in currentRoute && currentRoute.type === "folder" && "slug" in currentRoute) {
+        const folder = await folderService.getFolderBySlug(currentRoute.slug);
+        setPageTitle(folder ? folder.name : "Folder");
+      } else {
+        setPageTitle(currentRoute.title || "");
+      }
+    };
+    getFolderName();
   }, [currentRoute]);
 
   if (!currentRoute) {
