@@ -10,8 +10,7 @@ const { parse } = require("path");
 module.exports.getAllFolders = async (req, res) => {
     const userId = req.userId;
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-    const limit =
-        parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
+    const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
 
     try {
@@ -40,16 +39,6 @@ module.exports.createFolder = async (req, res) => {
     const userId = req.userId;
     const { name, description, tags, isPublic } = req.body;
     try {
-        if (typeof name !== "string" || name.trim() === "") {
-            return res
-                .status(400)
-                .json({ message: "Name is required and must be a string" });
-        }
-        if (isPublic !== undefined && typeof isPublic !== "boolean") {
-            return res
-                .status(400)
-                .json({ message: "'isPublc' must be a boolean" });
-        }
         const folder = new Folder({
             name,
             description,

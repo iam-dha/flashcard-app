@@ -6,7 +6,7 @@ const {
     fullNameField,
     addressField,
     phoneField
-} = require("./sharedFields.schema");
+} = require("../sharedFields.schema");
 // Joi Schema
 const loginSchema = joi.object({
     body: joi.object({
