@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { FolderPlus, Star, Volume2 } from "lucide-react";
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
+import { useState } from "react";
+import FolderPickerModal from "./FolderPickerModal";
 
 export function SearchResultCardSide(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audioUrl);
@@ -30,6 +32,7 @@ export function SearchResultCardSide(result: FlashcardTypes) {
 }
 
 export default function SearchResultCard({ results }: { results: FlashcardTypes[] }) {
+  const [showFolderPicker, setShowFolderPicker] = useState(false);
   return (
     <div className="space-y-4">
       {results.length > 0 &&
@@ -42,7 +45,7 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
                 variant="outline"
                 className="hover:bg-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/40"
                 onClick={() => {
-                  console.log("Add to favorites clicked");
+                  console.log("Add to favorites clicked.");
                 }}
               />
               <ExpandableButton
@@ -51,11 +54,24 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
                 variant="outline"
                 className="hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/40"
                 onClick={() => {
-                  console.log("Add to folder clicked");
+                  setShowFolderPicker(true);
                 }}
               />
             </div>
-            {/* English side */}
+            {showFolderPicker && (
+              <div
+                className="fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center bg-black/30"
+                onClick={() => setShowFolderPicker(false)}
+              >
+                <FolderPickerModal
+                  onCancel={() => {
+                    setShowFolderPicker(false);
+                  }}
+                  word={result.word}
+                />
+              </div>
+            )}
+
             <div className="flex gap-4">
               <SearchResultCardSide {...result} />
               <SearchResultCardSide {...result} />

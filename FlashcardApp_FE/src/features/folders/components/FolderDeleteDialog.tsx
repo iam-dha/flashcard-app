@@ -6,11 +6,10 @@ import { AlertCircle, CircleCheck } from "lucide-react";
 interface DeleteFolderCardProps {
   slug: string;
   name: string;
-  onDeleted?: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
-export default function DeleteFolderCard({ slug, name, onDeleted, onCancel }: DeleteFolderCardProps) {
+export default function DeleteFolderCard({ slug, name, onCancel }: DeleteFolderCardProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -20,7 +19,6 @@ export default function DeleteFolderCard({ slug, name, onDeleted, onCancel }: De
     setError(null);
     try {
       await folderService.deleteFolder(slug);
-      if (onDeleted) onDeleted();
       setSuccess("Folder has been deleted.");
       setTimeout(() => {
         window.location.reload();

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical, PencilLine, Share, Trash } from "lucide-react";
 import { useState } from "react";
-import DeleteFolderCard from "./FolderDeleteCard";
+import DeleteFolderCard from "./FolderDeleteDialog";
 
 interface FolderCardDropdownMenuProps {
   slug: string;

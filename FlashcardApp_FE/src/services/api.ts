@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authService } from "./authService";
 
 const api = axios.create({
   // baseURL: "http://54.208.12.109:9090/api/v1",
@@ -35,6 +36,8 @@ api.interceptors.response.use(
         // update headers with new accessToken
         api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
         error.config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+        authService.setAccessToken(newAccessToken); // update access token in local storage
         
         return api(error.config); // retry the original request
       } catch (refreshError) {
