@@ -33,8 +33,8 @@ export default function DeleteFolderCard({ slug, name, onDeleted, onCancel }: De
   };
 
   return (
-    <div className="bg-card w-[350px] rounded-lg p-8 shadow-md">
-      <h2 className="mb-4 text-xl font-bold">Delete Folder</h2>
+    <div className="bg-card w-lg rounded-lg p-6 shadow-md">
+      <p className="mb-2 text-xl font-bold">Delete Folder</p>
       <p className="">
         Are you sure you want to delete <span className="font-semibold">{name || "this folder"}</span>?<br />
         This action cannot be undone.
@@ -51,11 +51,11 @@ export default function DeleteFolderCard({ slug, name, onDeleted, onCancel }: De
           {success}
         </div>
       )}
-      <div className="mt-6 flex justify-end gap-2">
+      <div className="mt-6 flex items-center justify-end gap-4">
         <Button variant="outline" onClick={onCancel} disabled={loading}>
           Cancel
         </Button>
-        <Button className="bg-destructive/40 text-destructive hover:bg-destructive/30" onClick={handleDelete} disabled={loading}>
+        <Button className="bg-destructive/20 text-red-500 hover:bg-red-500/40" onClick={handleDelete} disabled={loading}>
           {loading ? "Deleting..." : "Delete"}
         </Button>
       </div>

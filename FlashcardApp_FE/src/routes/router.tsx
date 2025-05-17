@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 import HomePage from "@/features/home/HomePage";
 import SearchPage from "@/features/search/SearchPage";
 import FlashcardDeck from "@/features/flashcards/FlashcardDeck";
-import FoldersPage from "@/features/folders/FoldersPage";
+import FoldersPage from "@/features/folders/FolderListPage";
 import SettingsPage from "@/features/settings/SettingsPage";
 import GamesPage from "@/features/games/GamesPage";
 import FolderDetailPage from "@/features/folders/FolderDetailPage";
@@ -45,7 +45,7 @@ export const routes: BaseRouteConfig[] = [
     showInSidebar: true,
   },
   {
-    path: "/folders/:folderId",
+    path: "/folders/:slug",
     title: "Folder",
     icon: <Folder />,
     element: <FolderDetailPage />,
@@ -80,15 +80,15 @@ export const getRouteByPath = (path: string): RouteConfig | undefined => {
 
   // handle folder detail pages
   if (pathParts.length === 3 && pathParts[1] === "folders") {
-    const folderId = pathParts[2];
-    const folderRoute = routes.find((route) => route.path === "/folders/:folderId");
+    const slug = pathParts[2];
+    const folderRoute = routes.find((route) => route.path === "/folders/:slug");
 
     if (folderRoute) {
       // return a FolderRouteConfig
       return {
         ...folderRoute,
         type: "folder",
-        folderId,
+        slug,
       };
     }
   }
@@ -107,7 +107,7 @@ export interface BaseRouteConfig {
 // folder-specific route configuration
 export interface FolderRouteConfig extends BaseRouteConfig {
   type: "folder";
-  folderId: string;
+  slug: string;
 }
 
 // user-specific route configuration

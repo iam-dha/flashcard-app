@@ -21,26 +21,31 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
       const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchWord)}`);
 
       // map API response to flashcards
-      const flashcards: FlashcardTypes[] = response.data.flashcards.flatMap((e: any) => {
-        const flashcardId = e._id ?? "";
-        const word = e.word;
-        const phonetic = e.phonetics?.[0]?.pronunciation ?? "";
-        const audioUrl = e.phonetics?.find((p: any) => p.sound)?.sound ?? "";
+      const flashcards: FlashcardTypes[] = response.data.flashcards.flatMap((flashcard: any) => {
+        const flashcardId = flashcard._id ?? "";
+        const word = flashcard.word;
+        const phonetic = flashcard.phonetics?.[0]?.pronunciation ?? "";
+        const audioUrl = flashcard.phonetics?.find((p: any) => p.sound)?.sound ?? "";
 
-        return e.meanings.map((meaning: any, idx: number) => ({
-          word,
-          wordType: meaning.partOfSpeech,
-          definition: meaning.definitions.map((def: any) => def.definition + " "),
-          example: meaning.definitions.find((def: any) => def.example)?.example ?? "",
-          phonetic,
-          imageUrl: "", // not provided by API
-          audioUrl,
-          word_vi: "", // not provided by API
-          wordType_vi: "",
-          definition_vi: [],
-          example_vi: "",
-          slug: e.slug || "",
-        }));
+        // for each meaning, for each definition, create a flashcard
+        return flashcard.meanings.flatMap((meaning: any) =>
+          meaning.definitions.map((def: any) => ({
+            flashcardId,
+            flashcard_meaningId: def._id ?? "",
+            word,
+            wordType: meaning.partOfSpeech,
+            definition: def.definition,
+            example: def.example ?? "",
+            phonetic,
+            imageUrl: "", // not provided by API
+            audioUrl,
+            word_vi: "", // not provided by API
+            wordType_vi: "",
+            definition_vi: [],
+            example_vi: "",
+            slug: flashcard.slug || "",
+          }))
+        );
       });
 
       setResults(flashcards);
