@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-const { searchField } = require("./sharedFields.schema");
+const { searchField } = require("../sharedFields.schema");
 
 const searchSchema = joi.object({
     query: joi.object({
