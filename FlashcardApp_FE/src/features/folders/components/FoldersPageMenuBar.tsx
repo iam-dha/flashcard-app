@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { EllipsisVertical, FolderPlus, Share, Trash, ArrowUp, ArrowDown } from "lucide-react";
-import CreateFolderCard from "./FolderCreateCard"; // Import the form
+import CreateFolderCard from "./FolderCreateModal"; // Import the form
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 
 function SortButton() {

@@ -12,14 +12,14 @@ export default function SearchPage() {
 
   return (
     <div className="container mx-auto space-y-8 py-8">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-3xl font-bold">Search a word or phrase...</h1>
 
         {/* Search input */}
         <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
 
         {/* Search results */}
-        {searchLoading ? <CustomLoader /> : <SearchResultCard results={results.slice(0, numberOfResults)} />}
+        {searchLoading ? <CustomLoader /> : <SearchResultCard results={results} />}
 
         {/* search suggestions */}
         {!searchLoading && (results.length === 0 ? <SearchTips /> : <SearchNextSteps />)}

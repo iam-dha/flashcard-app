@@ -10,8 +10,6 @@ type SearchInputProps = {
 };
 
 export default function SearchInput({ searchWord, setSearchWord, handleSearch, searchLoading }: SearchInputProps) {
-  // why do we need to call handleSearch twice?
-  // because the first call is to add the word to the database, and the second call is to search for the word definitions
   return (
     <div className="my-8 flex gap-2">
       <Input
@@ -19,17 +17,11 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         placeholder="Search a word or phrase in English or Vietnamese..."
         value={searchWord}
         onChange={(e) => setSearchWord(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSearch();
-            handleSearch();
-          }
-        }}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         className="rounded-2xl py-6"
       />
       <Button
         onClick={() => {
-          handleSearch();
           handleSearch();
         }}
         disabled={searchLoading}
