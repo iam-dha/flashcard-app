@@ -5,7 +5,7 @@ const {
     tagField,
     booleanField,
     flashcardId
-} = require("./sharedFields.schema");
+} = require("../sharedFields.schema");
 
 const folderSchema = joi.object({
     body: joi.object({

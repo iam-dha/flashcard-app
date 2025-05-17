@@ -1,5 +1,5 @@
 const joi = require("joi");
-const { otpField, emailField } = require("./sharedFields.schema");
+const { otpField, emailField } = require("../sharedFields.schema");
 
 const verifyEmailSchema = joi.object({
     body: joi.object({

@@ -40,7 +40,33 @@ module.exports.search = async (req, res) => {
             let record = new Flashcard(flashcard);
             await record.save();
             console.log(`${new Date(Date.now())} --- word: '${word}' was added to database`);
-            res.json(record);
+            res.json({
+                result: 1,
+                flashcards: [{
+                _id: record._id,
+                word: word,
+                meanings: (wordSearchResponse.meanings || []).map((meaning) => {
+                    return {
+                        partOfSpeech: meaning.partOfSpeech || "",
+                        definitions: (meaning.definitions || []).map((def) => {
+                            return {
+                                definition: def.definition?.trim() || "",
+                                example: def.example?.trim() || "",
+                            };
+                        }),
+                    };
+                }),
+                phonetics: (wordSearchResponse.phonetics || []).filter(phonetic => phonetic.text).map(
+                    (phonetic) => {
+                        return {
+                            pronunciation: phonetic.text,
+                            sound: phonetic.audio || "",
+                        };
+                    }
+                ),
+                vi_definition: "Tam thoi chua co",
+            }]
+            });
         } else {
             res.json({
                 result: flashcardResult.length,
