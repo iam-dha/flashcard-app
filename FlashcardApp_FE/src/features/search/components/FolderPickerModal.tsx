@@ -11,7 +11,7 @@ interface FolderPickerModalProps {
   word: string;
 }
 
-export function FolderList() {
+export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFolder: string | null, setSelectedFolder: (slug: string) => void }) {
   const [folders, setFolders] = useState<FolderTypes[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,10 +39,15 @@ export function FolderList() {
   return (
     <div className="grid w-full min-w-xs grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 transition-all">
       {folders.map((folder: FolderTypes) => (
-        <div key={folder.slug} className="bg-accent text-card-foreground hover:bg-accent/50 flex w-full flex-col space-y-4 rounded-xl p-4 shadow-sm">
+        <div
+          key={folder.slug}
+          className={`flex w-full flex-col space-y-4 rounded-xl p-4 shadow-sm bg-accent text-card-foreground hover:bg-accent/50 cursor-pointer
+            ${selectedFolder === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
+          onClick={() => setSelectedFolder(folder.slug)}
+        >
           <div className="flex w-full items-center justify-between gap-2">
             <div className="flex w-full items-center justify-start">
-              <Button variant="link" className="-ml-2 max-w-full overflow-hidden text-lg">
+              <Button variant="link" className="-ml-2 max-w-full overflow-hidden text-lg" tabIndex={-1}>
                 {folder.isPublic ? <FolderUp className="h-4 w-4" /> : <FolderIcon className="h-4 w-4" />}
                 <div className="truncate overflow-hidden">{folder.name}</div>
               </Button>
@@ -56,6 +61,8 @@ export function FolderList() {
 }
 
 export default function FolderPickerModal({ onCancel, word }: FolderPickerModalProps) {
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <Card className="h-3xl w-3xl space-y-4 py-6">
@@ -65,7 +72,7 @@ export default function FolderPickerModal({ onCancel, word }: FolderPickerModalP
         </CardHeader>
 
         <CardContent>
-          <FolderList />
+          <FolderList selectedFolder={selectedFolder} setSelectedFolder={setSelectedFolder} />
           <div className="mt-6 flex items-center justify-end gap-4">
             <Button variant="outline" className="rounded-xl" onClick={onCancel}>
               Cancel

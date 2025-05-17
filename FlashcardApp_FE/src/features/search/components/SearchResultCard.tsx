@@ -26,7 +26,7 @@ export function SearchResultCardSide(result: FlashcardTypes) {
         </ul>
       )}
       <p>{result.flashcardId}</p>
-      <p>{result.flashcard_meaningId}</p>
+      <p>{result.flashcard_meaningId ? result.flashcard_meaningId : "No id"}</p>
     </Card>
   );
 }
