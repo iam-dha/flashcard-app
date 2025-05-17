@@ -35,14 +35,15 @@ const registerVerifySchema = joi.object({
 const changePassSchema = joi.object({
     body: joi.object({
         password: passwordField,
-        rePassword: joi.ref('password'),
-        newPassword: passwordField
+        newPassword: passwordField,
+        reNewPassword: joi.ref('newPassword')
     })
 });
 
 const newPassSchema = joi.object({
     body: joi.object({
-        newPassword: passwordField
+        newPassword: passwordField,
+        reNewPassword: joi.ref('newPassword')
     }),
     params: joi.object({
         token: joi.string().length(64).required(),
