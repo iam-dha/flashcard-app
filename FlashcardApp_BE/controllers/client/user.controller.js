@@ -165,9 +165,6 @@ module.exports.changeEmailRequest = async (req, res) => {
 module.exports.changeEmailVerify = async (req, res) => {
     const otp = req.body.otp;
     const email = req.email;
-    if (!email || !otp) {
-        return res.status(400).json({ message: "Missing required fields" });
-    }
     try {
         const storedOtp = await redisClient.get(`otp:code:${email}`);
         if (!storedOtp || storedOtp != otp) {
@@ -177,7 +174,7 @@ module.exports.changeEmailVerify = async (req, res) => {
         const verifyKey = `email:verify:${email}`;
         await redisClient.setEx(
             verifyKey,
-            systemConfig.otpExpiration * 60,
+            systemConfig.otpVerifiedExpiration.inNumber * 60,
             "1"
         );
         res.status(200).json({ message: "Verify email successfully" });
@@ -191,7 +188,7 @@ module.exports.changeEmailVerify = async (req, res) => {
 module.exports.changeEmail = async (req, res) => {
     const userId = req.userId;
     const email = req.email;
-    const newEmail = req.body.email;
+    const newEmail = req.body.newEmail;
     try {
         const existing = await User.findOne({ email: newEmail });
         if (existing) {
