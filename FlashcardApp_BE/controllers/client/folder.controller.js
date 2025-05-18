@@ -97,6 +97,9 @@ module.exports.deleteFolder = async (req, res) => {
         if (!folder) {
             return res.status(404).json({ message: "Folder is not found" });
         }
+        if(folder.isDefault) {
+            return res.status(400).json({ message: "Cannot delete default folder" });
+        }
         // Delete all mapping to flashcards
         await FolderFlashcard.deleteMany({ folderId: folder._id });
         await Folder.deleteOne({ _id: folder._id });

@@ -13,6 +13,7 @@ const PasswordResetToken = require("../../models/passwordResetToken.model");
 // Helpers
 const tokenGenerate = require("../../helpers/tokenGenerate.helper");
 const cookieHelper = require("../../helpers/refreshTokenCookie.helper");
+const { descriptionField } = require("../../schemas/sharedFields.schema");
 
 //[POST] /api/v1/auth/login
 module.exports.loginPost = async (req, res) => {
@@ -155,6 +156,13 @@ module.exports.registerVerify = async (req, res) => {
         userId: newUser._id,
     });
     await newUserInfo.save();
+    const defaultFolder = new Folder({
+        name: "Favourites",
+        description: "This is your favourite folder",
+        userId: newUser._id,
+        isDefault: true,
+    });
+    await defaultFolder.save();
     await redisClient.del(`otp:verified:${email}`);
     const accessToken = tokenGenerate.generateAccessToken(newUser);
     const refreshToken = tokenGenerate.generateRefreshToken(newUser);

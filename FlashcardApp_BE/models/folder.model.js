@@ -28,6 +28,10 @@ const folder_schema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        isDefault: {
+            type: Boolean,
+            default: false
+        },
         flashcardCount: {
             type: Number,
             default: 0
