@@ -7,7 +7,7 @@ const validateMiddleWare = require("../../middlewares/validate.middleware");
 //Schemas
 
 const router = express.Router();
-
+router.get("/posts", authMiddleWare.checkAccessToken("Admin"), authMiddleWare.checkPermission("posts_view"))
 
 
 
