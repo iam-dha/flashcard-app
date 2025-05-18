@@ -5,7 +5,8 @@ const {
     otpField,
     fullNameField,
     addressField,
-    phoneField
+    phoneField,
+    tokenField
 } = require("../sharedFields.schema");
 // Joi Schema
 const loginSchema = joi.object({
@@ -21,11 +22,18 @@ const emailSchema = joi.object({
     }),
 });
 
+const registerOtpVerifySchema = joi.object({
+    body: joi.object({
+        email: emailField,
+        otp: otpField,
+    }),
+});
+
 const registerVerifySchema = joi.object({
     body: joi.object({
         email: emailField,
         password: passwordField,
-        otp: otpField,
+        token: tokenField,
         fullName: fullNameField,
         address: addressField,
         phone: phoneField
@@ -55,5 +63,6 @@ module.exports = {
     emailSchema,
     registerVerifySchema,
     changePassSchema,
-    newPassSchema
+    newPassSchema,
+    registerOtpVerifySchema
 };

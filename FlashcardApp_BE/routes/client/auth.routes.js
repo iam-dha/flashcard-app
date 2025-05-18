@@ -12,7 +12,8 @@ const {
     emailSchema,
     registerVerifySchema,
     changePassSchema,
-    newPassSchema
+    newPassSchema,
+    registerOtpVerifySchema,
 } = require("../../schemas/client/auth.schema");
 
 router.post(
@@ -28,6 +29,12 @@ router.post(
     validateMiddleWare.validateInput(emailSchema),
     controller.registerOTP
 );
+
+router.post(
+    "/register/verOtp",
+    validateMiddleWare.validateInput(registerOtpVerifySchema),
+    controller.verifyOtp
+)
 
 router.post(
     "/register/verify",
@@ -54,6 +61,12 @@ router.post(
     "/reset-password/:token",
     validateMiddleWare.validateInput(newPassSchema),
     controller.resetPassword
+);
+
+router.post(
+    "/logout",
+    authMiddleWare.checkAccessToken(),
+    controller.logoutPost
 );
 
 module.exports = router;

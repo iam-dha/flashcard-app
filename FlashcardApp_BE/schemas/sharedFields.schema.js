@@ -14,6 +14,7 @@ const descriptionField = joi.string().max(200);
 const tagField = joi.string().max(30);
 const booleanField = joi.boolean();
 const flashcardId = joi.string();
+const tokenField = joi.string().length(16).required();
 
 module.exports = {
     passwordField,
@@ -26,5 +27,6 @@ module.exports = {
     descriptionField,
     tagField,
     booleanField,
-    flashcardId
+    flashcardId,
+    tokenField
 };
