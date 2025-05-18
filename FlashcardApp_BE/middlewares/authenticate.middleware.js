@@ -19,17 +19,14 @@ module.exports.checkAccessToken = (role = "User") => {
         }
         const token = authHeader.split(" ")[1];
         try {
-            const decodedToken = await verfifyToken(token, process.env.ACCESS_SECRET, (err, decoded) => {
-                if (err && err.name === "TokenExpiredError") {
-                    return res.status(401).json({ message: "Access token expired" });
-                  }
-                if (err) return res.status(403).json({ message: "Invalid token" });
-                return decoded;
-            });
+            const decodedToken = await verfifyToken(
+                token,
+                process.env.ACCESS_SECRET,
+            );
             if (decodedToken && decodedToken.userId) {
                 req.userId = decodedToken.userId;
                 req.email = decodedToken.email;
-                if(role !== "User") {
+                if (role !== "User") {
                     req.role = decodedToken.role;
                     if (decodedToken.role !== role) {
                         return res.status(403).json({
@@ -44,18 +41,21 @@ module.exports.checkAccessToken = (role = "User") => {
                     .json({ message: "Invalid token: userId missing" });
             }
         } catch (error) {
-            return res.status(403).json({ message: "Invalid or expired token" });
+            if (error && error.name === "TokenExpiredError") {
+                return res
+                    .status(401)
+                    .json({ message: "Access token expired" });
+            }
+            return res.status(403).json({ message: "Invalid token" });
         }
     };
-}
+};
 
 module.exports.checkLoginRole = (roles = ["User"]) => {
     return async (req, res, next) => {
-        const {email} = req.body;
+        const { email } = req.body;
         if (!email) {
-            return res
-                .status(401)
-                .json({ message: "Unauthorized: No email" });
+            return res.status(401).json({ message: "Unauthorized: No email" });
         }
         try {
             const user = await User.findOne({
@@ -81,26 +81,32 @@ module.exports.checkLoginRole = (roles = ["User"]) => {
             return res.status(500).json({ message: "Internal server error" });
         }
     };
-}
+};
 
 module.exports.checkPermission = (requiredPermissions = []) => {
     return async (req, res, next) => {
         const roleTitle = req.role;
-        if(!roleTitle) {
-            return res.status(403).json({ message: "Access denied: no role found" });
+        if (!roleTitle) {
+            return res
+                .status(403)
+                .json({ message: "Access denied: no role found" });
         }
-        const role = await Role.findOne({title: roleTitle});
+        const role = await Role.findOne({ title: roleTitle });
         if (!role) {
-            return res.status(403).json({ message: "Access denied: role not found" });
+            return res
+                .status(403)
+                .json({ message: "Access denied: role not found" });
         }
         const permissions = role.permissions || [];
 
-        const hasPermission = requiredPermissions.some(permission => permissions.includes(permission))
+        const hasPermission = requiredPermissions.some((permission) =>
+            permissions.includes(permission)
+        );
         if (!hasPermission) {
-            return res.status(403).json({ message: "Access denied: insufficient permission" });
+            return res
+                .status(403)
+                .json({ message: "Access denied: insufficient permission" });
         }
         return next();
     };
-}
-    
-
+};
