@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const User = require("../models/user.model");
 const Role = require("../models/role.model");
+const verfifyToken = promisify(jwt.verify);
 module.exports.checkAccessToken = (role = "User") => {
     return async (req, res, next) => {
         const authHeader = req.headers.authorization;
@@ -17,7 +19,13 @@ module.exports.checkAccessToken = (role = "User") => {
         }
         const token = authHeader.split(" ")[1];
         try {
-            const decodedToken = await jwt.verify(token, process.env.ACCESS_SECRET);
+            const decodedToken = await verfifyToken(token, process.env.ACCESS_SECRET, (err, decoded) => {
+                if (err && err.name === "TokenExpiredError") {
+                    return res.status(401).json({ message: "Access token expired" });
+                  }
+                if (err) return res.status(403).json({ message: "Invalid token" });
+                return decoded;
+            });
             if (decodedToken && decodedToken.userId) {
                 req.userId = decodedToken.userId;
                 req.email = decodedToken.email;
