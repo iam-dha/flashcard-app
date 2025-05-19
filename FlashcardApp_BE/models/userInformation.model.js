@@ -7,7 +7,11 @@ const userInformation_schema = new mongoose.Schema(
             unique: true,
             required: true
         },
-        fullName: String,
+        fullName: {
+            type: String,
+            required: true,
+            trim: true
+        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
