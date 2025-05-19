@@ -278,7 +278,7 @@ module.exports.forgotPassword = async (req, res) => {
             expiresAt: expiresAt,
         });
         await passwordResetToken.save();
-        const resetUrl = `${systemConfig.clientUrl}/reset-password/${token}`;
+        const resetUrl = `${systemConfig.clientUrl}/reset-password/${token}?email=${email}`;
         sendEmailForgotPassword(email, resetUrl);
         console.log(
             `${new Date(
