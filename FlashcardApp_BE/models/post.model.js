@@ -27,6 +27,10 @@ const post_schema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        status: {
+            type: String,
+            default: "active",
+        },
         slug: {
             type: String,
             slug: "title",

@@ -2,10 +2,6 @@ const joi = require("joi");
 const {
     emailField,
     passwordField,
-    otpField,
-    fullNameField,
-    addressField,
-    phoneField
 } = require("../sharedFields.schema");
 //Joi Schema
 const loginSchema = joi.object({
@@ -17,7 +13,6 @@ const loginSchema = joi.object({
 
 module.exports = {
     loginSchema,
-    
 }
 
 
