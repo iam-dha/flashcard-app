@@ -5,6 +5,7 @@ const UserInformation = require("../../models/userInformation.model");
 const Session = require("../../models/session.model");
 const PasswordResetToken = require("../../models/passwordResetToken.model");
 
+const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 //[GET] /api/v1/admin/users?limit=x&page=y&filter=createAt&order=asc
 module.exports.getAllUserInfo = async (req, res) => {
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
@@ -66,7 +67,7 @@ module.exports.getUserInfo = async (req, res) => {
             data: userInformation,
         });
     } catch (error) {
-        console.error(`[GET /api/v1/admin/users/${id}] Error:`, error);
+        console.error(`[GET /api/v1/admin/users/${userId}] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -77,7 +78,7 @@ module.exports.changeUserInfo = async (req, res) => {
     const { email, fullName, address, status, phone } = req.body;
     try {
         const user = await User.findOne({ email: email });
-        if (user) {
+        if (user && user._id.toString() !== userId) {
             return res.status(400).json({ message: "Email already exists" });
         }
         const userInformationDoc = await UserInformation.findOne({

@@ -6,19 +6,27 @@ const FolderFlashcard = require("../../models/folderFlashcard.model");
 const User = require("../../models/user.model");
 const { parse } = require("path");
 
-// [GET] /api/v1/folders?page=x&limit=y
+// [GET] /api/v1/folders?page=x&limit=y&sort=createdAt&order=asc
 module.exports.getAllFolders = async (req, res) => {
     const userId = req.userId;
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
+    const { sort = "createdAt", order = "asc" } = req.query;
+    const sortFields = [
+        "createdAt",
+        "name",
+        "updatedAt",
+        "isPublic"
+    ];
+    const sortFilter = sortFields.includes(sort) ? sort : "createdAt";
+    const sortOrder = order === "asc" ? 1 : -1;
 
     try {
         const totalCount = await Folder.countDocuments({ userId });
-
         const folders = await Folder.find({ userId })
             .select("-__v -updatedAt -userId -_id")
-            .sort({ createdAt: -1 })
+            .sort({ [sortFilter]: sortOrder })
             .skip(skip)
             .limit(limit);
 
@@ -117,13 +125,21 @@ module.exports.deleteFolder = async (req, res) => {
     }
 };
 
-// [GET] /api/v1/folders/:slug/flashcards?page=x&limit=y
+// [GET] /api/v1/folders/:slug/flashcards?page=x&limit=y&sort=createdAt&order=asc
 module.exports.getFolderFlashcards = async (req, res) => {
     const userId = req.userId;
     const slug = req.params.slug;
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
+    const { sort = "addedAt", order = "asc" } = req.query;
+    const sortFields = [
+        "addedAt",
+        "updatedAt",
+        "word",
+    ];
+    const sortFilter = sortFields.includes(sort) ? sort : "addedAt";
+    const sortOrder = order === "asc" ? 1 : -1;
     try {
         const folder = await Folder.findOne({
             slug: slug,
@@ -135,18 +151,25 @@ module.exports.getFolderFlashcards = async (req, res) => {
         const totalCount = await FolderFlashcard.countDocuments({
             folderId: folder._id
         });
-        const flashcards = await FolderFlashcard.find({
+        console.log(sortFilter);
+        let flashcards = await FolderFlashcard.find({
             folderId: folder._id,
         })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
             .populate(
                 {
                     path: "flashcardId",
                     select: "word _id slug",
                 }
-            );
+            ).sort({ [sortFilter]: sortOrder })
+        if(sortFilter === "word") {
+            flashcards = flashcards.sort((a, b) => {
+                const word_1 = a.flashcardId?.word.toLowerCase() || "";
+                const word_2 = b.flashcardId?.word.toLowerCase() || "";
+                return sortOrder === 1 ? word_1.localeCompare(word_2) : word_2.localeCompare(word_1);
+            })
+        }
         const flashcardsList = flashcards.map((flashcard) => {
             return flashcard.flashcardId;
         }).filter((flashcard) => {
