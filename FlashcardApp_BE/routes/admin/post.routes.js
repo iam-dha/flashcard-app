@@ -20,7 +20,7 @@ router.get(
 );
 
 router.get(
-    "/:post_id",
+    "/:slug",
     authMiddleWare.checkAccessToken("Admin"),
     authMiddleWare.checkPermission(["READ_POST"]),
     controller.getPost

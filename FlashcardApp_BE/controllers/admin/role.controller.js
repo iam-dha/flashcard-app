@@ -4,10 +4,7 @@ const Permission = require("../../models/permission.model");
 //[GET] /api/v1/admin/roles
 module.exports.getAllRoles = async (req, res) => {
     try {
-        const roles = await Role.find({ deleted: false });
-        if (!roles || roles.length === 0) {
-            return res.status(404).json({ message: "No roles found" });
-        }
+        const roles = await Role.find({ deleted: false }).select("-__v");
         return res.status(200).json({
             result: roles.length,
             data: roles,
@@ -94,6 +91,7 @@ module.exports.getRole = async (req, res) => {
             return res.status(404).json({ message: "Role not found" });
         }
         return res.status(200).json({
+            message: "Get role successfully",
             data: role,
         });
     } catch (error) {
