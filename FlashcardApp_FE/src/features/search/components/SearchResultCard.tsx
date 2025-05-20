@@ -1,11 +1,12 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardDescription } from "@/components/ui/card";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { FolderPlus, Star, Volume2 } from "lucide-react";
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import { useState } from "react";
-import FolderPickerModal from "./FolderPickerModal";
+import FolderPickerDialog from "./FolderPickerDialog";
+import { folderService } from "@/services/folderService";
 
 export function SearchResultCardSide(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audioUrl);
@@ -25,14 +26,22 @@ export function SearchResultCardSide(result: FlashcardTypes) {
           <li className="text-neutral-600 italic dark:text-neutral-400">{result.example}</li>
         </ul>
       )}
-      <p>{result.flashcardId}</p>
-      <p>{result.flashcard_meaningId ? result.flashcard_meaningId : "No id"}</p>
     </Card>
   );
 }
 
 export default function SearchResultCard({ results }: { results: FlashcardTypes[] }) {
   const [showFolderPicker, setShowFolderPicker] = useState(false);
+  const [isFavouritesSelected, setIsFavouritesSelected] = useState(false);
+
+  const handleAddToFavorites = async (result: FlashcardTypes) => {
+    const response = await folderService.getAllFolder({ page: 1, limit: 10 });
+    const favouritesFolderSlug = response.find((folder) => folder.name === "Favourites")?.slug;
+    console.log("Favourites folder slug:", favouritesFolderSlug);
+    console.log("Adding to favourites folder:", result.flashcardId);
+    await folderService.addFlashcardToFolder(favouritesFolderSlug, result.flashcardId);
+    console.log("Add to favorites clicked for:", result.word);
+  };
   return (
     <div className="space-y-4">
       {results.length > 0 &&
@@ -43,9 +52,12 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
                 Icon={Star}
                 label="Add to favorites"
                 variant="outline"
-                className="hover:bg-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/40"
+                className={
+                  isFavouritesSelected ? "bg-yellow-700 text-yellow-500" : "hover:bg-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/40"
+                }
                 onClick={() => {
-                  console.log("Add to favorites clicked.");
+                  handleAddToFavorites(result);
+                  setIsFavouritesSelected((prev) => !prev);
                 }}
               />
               <ExpandableButton
@@ -63,7 +75,7 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
                 className="fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center bg-black/30"
                 onClick={() => setShowFolderPicker(false)}
               >
-                <FolderPickerModal
+                <FolderPickerDialog
                   onCancel={() => {
                     setShowFolderPicker(false);
                   }}
@@ -74,7 +86,9 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
 
             <div className="flex gap-4">
               <SearchResultCardSide {...result} />
-              <SearchResultCardSide {...result} />
+              <Card className="flex-1 rounded-lg p-4">
+                <CardDescription>The app currently does not support Vietnamese translation.</CardDescription>
+              </Card>
             </div>
           </div>
         ))}
