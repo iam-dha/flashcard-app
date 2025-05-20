@@ -68,7 +68,8 @@ module.exports.deleteRole = async (req, res) => {
 // [GET] /api/v1/admin/roles/permissions
 module.exports.getAllPermissions = async (req, res) => {
     try {
-        const permissions = await Permission.find({ deleted: false }).select("title description -_id");
+        const permissions = await Permission.find({ deleted: false });
+        console.log(permissions);
         if (!permissions || permissions.length === 0) {
             return res.status(404).json({ message: "No permissions found" });
         }

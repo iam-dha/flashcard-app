@@ -23,20 +23,6 @@ router.post(
 );
 
 router.get(
-    "/:roleId",
-    authMiddleware.checkAccessToken("Admin"),
-    authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
-    controller.getRole
-);
-
-router.delete(
-    "/:roleId",
-    authMiddleware.checkAccessToken("Admin"),
-    authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
-    controller.deleteRole
-);
-
-router.get(
     "/permissions",
     authMiddleware.checkAccessToken("Admin"),
     authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
@@ -48,5 +34,19 @@ router.patch(
     authMiddleware.checkAccessToken("Admin"),
     authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
     controller.updateRolePermissions
+);
+
+router.get(
+    "/:roleId",
+    authMiddleware.checkAccessToken("Admin"),
+    authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
+    controller.getRole
+);
+
+router.delete(
+    "/:roleId",
+    authMiddleware.checkAccessToken("Admin"),
+    authMiddleware.checkPermission(["ACCESS_CONTROL_ADMIN"]),
+    controller.deleteRole
 );
 module.exports = router;
