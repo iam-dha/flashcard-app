@@ -2,7 +2,7 @@ import api from "@/services/api";
 import { FolderCreateTypes, FolderTypes, GetFolderFlashcardListResponse } from "@/types/folder.types";
 
 class FolderService {
-  async getAllFolder({page, limit}: {page: number, limit: number}): Promise<FolderTypes[]> {
+  async getAllFolder({ page, limit }: { page: number, limit: number }): Promise<FolderTypes[]> {
     try {
       const response = await api.get(`/folders?page=${page}&limit=${limit}`);
       return response.data.folders;
@@ -51,7 +51,7 @@ class FolderService {
     }
   }
 
-  async addFlashcardToFolder(slug: string, flashcardId: string): Promise<void> {
+  async addFlashcardToFolder(slug: string | undefined, flashcardId: string): Promise<void> {
     try {
       await api.post(`/folders/${slug}/flashcards`, { flashcardId });
     } catch (error) {

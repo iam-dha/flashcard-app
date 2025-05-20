@@ -2,15 +2,16 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "../layout/AppLayout";
 import AuthLayout from "@/layout/AuthLayout";
 import LoginPage from "@/features/auth/LoginPage";
-import { Home, Search, PanelTop, Folder, Gamepad2, Cog } from "lucide-react";
+import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
 import HomePage from "@/features/home/HomePage";
 import SearchPage from "@/features/search/SearchPage";
 import FlashcardDeck from "@/features/flashcards/FlashcardDeck";
 import FoldersPage from "@/features/folders/FolderListPage";
-import SettingsPage from "@/features/settings/SettingsPage";
 import GamesPage from "@/features/games/GamesPage";
 import FolderDetailPage from "@/features/folders/FolderDetailPage";
+import RegisterPage from "@/features/auth/RegisterPage";
+import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
 
 // discriminated union type for all possible route configurations
 type RouteConfig = BaseRouteConfig | FolderRouteConfig | UserRouteConfig;
@@ -59,13 +60,6 @@ export const routes: BaseRouteConfig[] = [
     title: "Games",
     icon: <Gamepad2 />,
     element: <GamesPage />,
-    showInSidebar: true,
-  },
-  {
-    path: "/settings",
-    title: "Settings",
-    icon: <Cog />,
-    element: <SettingsPage />,
     showInSidebar: true,
   },
 ];
@@ -131,6 +125,14 @@ export const router = createBrowserRouter([
         path: "/auth/login",
         element: <LoginPage />,
       },
+      {
+        path: "/auth/register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/reset-password/:token",
+        element: <ResetPasswordPage />,
+      }
     ],
   },
   {

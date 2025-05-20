@@ -31,11 +31,9 @@ api.interceptors.response.use(
       error.config._retry = true; // prevent infinite loop
       try {
         const refreshResponse = await api.post("/auth/refresh");
-        console.log("Refresh token response:", refreshResponse);
         const newAccessToken = refreshResponse.data.accessToken;
         
-        authService.setAccessToken(newAccessToken); // update access token in local storage
-        console.log(api);
+        authService.setAccessToken(newAccessToken); // update accessToken in local storage
 
         // update headers with new accessToken
         api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;

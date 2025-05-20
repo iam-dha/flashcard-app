@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
 import { folderService } from "@/services/folderService";
+import UserDropdownMenu from "./sidebar/UserDropdownMenu";
 
 export function usePageTitle() {
   const location = useLocation();
@@ -36,13 +37,16 @@ export default function AppHeader() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="frosted-glass sticky top-0 z-10 flex shrink-0 items-center border-b py-4">
-      {isMobile && (
-        <div className="-mr-2 ml-2">
-          <CustomSidebarTrigger variant="open" />
-        </div>
-      )}
-      <h1 className="ml-4 text-3xl font-semibold select-none md:ml-6">{pageTitle}</h1>
+    <div className="frosted-glass sticky top-0 z-10 flex shrink-0 items-center justify-between border-b px-4 py-4 md:px-6">
+      <div className="flex items-center space-x-2">
+        {isMobile && (
+          <div className="-ml-2">
+            <CustomSidebarTrigger variant="open" />
+          </div>
+        )}
+        <h1 className="text-3xl font-semibold select-none">{pageTitle}</h1>
+      </div>
+      <UserDropdownMenu />
     </div>
   );
 }

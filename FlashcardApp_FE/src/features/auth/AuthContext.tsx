@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { UserTypes } from "@/types/user.types";
+import { RegisterRequestTypes, UserTypes } from "@/types/user.types";
 import { authService } from "@/services/authService";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 
@@ -7,7 +7,7 @@ interface AuthContextType {
   user: UserTypes | null;
   authLoading: boolean;
   error: string | null;
-  register: (email: string, password: string, username: string, otp: string, address: string, phone: string) => Promise<void>;
+  register: (registerData: RegisterRequestTypes) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  // check if the user is authenticated on initial load
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -42,13 +43,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const register = async (email: string, password: string, username: string, otp: string, address: string, phone: string) => {
+  const register = async (registerData: RegisterRequestTypes) => {
     setAuthLoading(true);
     setError(null);
 
     try {
-      const response = await authService.register({ email, password, username, otp, address, phone });
-      setUser(response.user);
+      await authService.register(registerData);
       setIsAuthenticated(true);
     } catch (error: any) {
       setError("Registration failed. Please try again.");
@@ -63,8 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
-      const response = await authService.login({ email, password });
-      setUser(response.user);
+      await authService.login({ email, password });
       setIsAuthenticated(true);
     } catch (error: any) {
       setError("Login failed. Please check your credentials.");

@@ -11,7 +11,7 @@ interface FolderPickerModalProps {
   word: string;
 }
 
-export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFolder: string | null, setSelectedFolder: (slug: string) => void }) {
+export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFolder: string | null; setSelectedFolder: (slug: string) => void }) {
   const [folders, setFolders] = useState<FolderTypes[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,12 +37,11 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
   }
 
   return (
-    <div className="grid w-full min-w-xs grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 transition-all">
+    <div className="grid w-full min-w-xs grid-cols-2 gap-4 transition-all md:grid-cols-3 lg:grid-cols-4">
       {folders.map((folder: FolderTypes) => (
         <div
           key={folder.slug}
-          className={`flex w-full flex-col space-y-4 rounded-xl p-4 shadow-sm bg-accent text-card-foreground hover:bg-accent/50 cursor-pointer
-            ${selectedFolder === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
+          className={`bg-accent text-card-foreground hover:bg-accent/50 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${selectedFolder === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
           onClick={() => setSelectedFolder(folder.slug)}
         >
           <div className="flex w-full items-center justify-between gap-2">
@@ -60,7 +59,7 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
   );
 }
 
-export default function FolderPickerModal({ onCancel, word }: FolderPickerModalProps) {
+export default function FolderPickerDialog({ onCancel, word }: FolderPickerModalProps) {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
 
   return (
