@@ -1,16 +1,19 @@
 export interface UserTypes {
-  username: string;
   email: string;
-  hashedPassword: string;
+  password: string;
+  token: string;
+  username: string;
+  address: string;
+  phone: string;
 }
 
 export interface RegisterRequestTypes {
   email: string;
   password: string;
+  token: string;
   username: string;
-  otp: string;
-  address?: string;
-  phone?: string;
+  address: string;
+  phone: string;
 }
 
 export interface LoginRequestTypes {
@@ -21,6 +24,4 @@ export interface LoginRequestTypes {
 export interface AuthResponseTypes {
   status: string;
   accessToken: string;
-  role: string;
-  user: UserTypes;
 }

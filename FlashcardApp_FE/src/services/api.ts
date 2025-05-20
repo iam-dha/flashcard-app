@@ -27,7 +27,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     // handle token expiration
-    if (error.response && error.response.status === 403 && !error.config._retry) {
+    if (error.response && error.response.status === 401 && !error.config._retry) {
       error.config._retry = true; // prevent infinite loop
       try {
         const refreshResponse = await api.post("/auth/refresh");
