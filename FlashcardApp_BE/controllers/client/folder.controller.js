@@ -339,3 +339,36 @@ module.exports.deleteFlashcardInFolder = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+// [POST] /api/v1/folders/flashcards/:fc_slug/favourite
+module.exports.checkFlashcardInFavourite = async (req, res) => {
+    const userId = req.userId;
+    const flashcard_slug = req.params.fc_slug;
+    try {
+        const favouriteFolder = await Folder.findOne({
+            userId: userId,
+            name: "Favourites",
+            isDefault: true,
+        });
+        const flashcard = await Flashcard.findOne({
+            slug: flashcard_slug
+        }).select("-__v -updatedAt -createdAt");
+        const isExistingFlashcard = await FolderFlashcard.findOne({
+            folderId: favouriteFolder._id,
+            flashcardId: flashcard._id,
+        });
+        if (!isExistingFlashcard) {
+            return res.status(404).json({ 
+                message: "Flashcard is not in the favourites" ,
+                found: false
+            });
+        }
+        return res.status(200).json({
+            message: "Flashcard is in the favourites",
+            found: true,
+        });
+    } catch (error) {
+        console.error(`[GET /api/v1/folders/flashcards/:fc_slug/favourite] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

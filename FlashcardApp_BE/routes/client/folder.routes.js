@@ -12,6 +12,8 @@ router.get("/", authMiddleWare.checkAccessToken(), controller.getAllFolders);
 
 router.post("/",validateMiddleWare.validateInput(folderSchema), authMiddleWare.checkAccessToken(), controller.createFolder);
 
+router.get("/flashcards/:fc_slug/favourite", authMiddleWare.checkAccessToken(), controller.checkFlashcardInFavourite);
+
 router.get("/:slug", authMiddleWare.checkAccessToken(), controller.getFolderBySlug);
 
 router.delete("/:slug", authMiddleWare.checkAccessToken(), controller.deleteFolder);
