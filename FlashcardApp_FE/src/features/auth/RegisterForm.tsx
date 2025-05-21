@@ -24,7 +24,7 @@ const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
   token: z.string().min(1, "Token is required"),
-  username: z.string().min(1, "Username is required"),
+  fullName: z.string().min(1, "Username is required"),
   address: z.string().min(1, "Address is required"),
   phone: z.string().min(1, "Phone number is required"),
 });
@@ -61,7 +61,7 @@ export default function RegisterEmailForm() {
       email: "",
       token: "",
       password: "",
-      username: "",
+      fullName: "",
       address: "",
       phone: "",
     },
@@ -99,7 +99,7 @@ export default function RegisterEmailForm() {
         email,
         password: data.password,
         token,
-        username: data.username,
+        fullName: data.fullName,
         address: data.address,
         phone: data.phone,
       });
@@ -208,10 +208,10 @@ export default function RegisterEmailForm() {
               />
               <FormField
                 control={registerForm.control}
-                name="username"
+                name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Full Name</FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>

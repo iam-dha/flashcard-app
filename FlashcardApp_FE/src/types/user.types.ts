@@ -11,7 +11,7 @@ export interface RegisterRequestTypes {
   email: string;
   password: string;
   token: string;
-  username: string;
+  fullName: string;
   address: string;
   phone: string;
 }

@@ -59,6 +59,35 @@ class FolderService {
       throw new Error("Failed to add flashcard to folder");
     }
   }
+
+  async getFlashcardInFolder(slug: string | undefined, word: string): Promise<FolderTypes> {
+    try {
+      const response = await api.get(`/folders/${slug}/flashcards/${word}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting flashcard in folder:", error);
+      throw new Error("Failed to get flashcard in folder");
+    }
+  }
+
+  async deleteFlashcardInFolder(slug: string | undefined, word: string): Promise<void> {
+    try {
+      await api.delete(`/folders/${slug}/flashcards/${word}`);
+    } catch (error) {
+      console.error("Error deleting flashcard in folder:", error);
+      throw new Error("Failed to delete flashcard in folder");
+    }
+  }
+
+  async getFavouritesFolder(): Promise<FolderTypes> {
+    try {
+      const response = await api.get("/folders/favourites");
+      return response.data;
+    } catch (error) {
+      console.error("Error getting favourites folder:", error);
+      throw new Error("Failed to get favourites folder");
+    }
+  }
 }
 
 export const folderService = new FolderService();
