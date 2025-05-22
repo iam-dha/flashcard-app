@@ -6,39 +6,51 @@ const FolderFlashcard = require("../../models/folderFlashcard.model");
 const User = require("../../models/user.model");
 const { parse } = require("path");
 
-// [GET] /api/v1/folders?page=x&limit=y&sort=createdAt&order=asc
+// [GET] /api/v1/folders?page=x&limit=y&sort=createdAt&order=asc&getAll=true
 module.exports.getAllFolders = async (req, res) => {
     const userId = req.userId;
-    const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-    const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
-    const skip = (page - 1) * limit;
-    const { sort = "createdAt", order = "asc" } = req.query;
-    const sortFields = [
-        "createdAt",
-        "name",
-        "updatedAt",
-        "isPublic"
-    ];
-    const sortFilter = sortFields.includes(sort) ? sort : "createdAt";
-    const sortOrder = order === "asc" ? 1 : -1;
+    const getAll = req.query.getAll == "true" ? true : false;
+    if (!getAll) {
+        const page =
+            parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+        const limit =
+            parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
+        const skip = (page - 1) * limit;
+        const { sort = "createdAt", order = "asc" } = req.query;
+        const sortFields = ["createdAt", "name", "updatedAt", "isPublic"];
+        const sortFilter = sortFields.includes(sort) ? sort : "createdAt";
+        const sortOrder = order === "asc" ? 1 : -1;
+        try {
+            const totalCount = await Folder.countDocuments({ userId });
+            const folders = await Folder.find({ userId })
+                .select("-__v -updatedAt -userId -_id")
+                .sort({ [sortFilter]: sortOrder })
+                .skip(skip)
+                .limit(limit);
 
-    try {
-        const totalCount = await Folder.countDocuments({ userId });
-        const folders = await Folder.find({ userId })
-            .select("-__v -updatedAt -userId -_id")
-            .sort({ [sortFilter]: sortOrder })
-            .skip(skip)
-            .limit(limit);
-
-        return res.status(200).json({
-            total_count: folders.length,
-            page: page,
-            total_pages: Math.ceil(totalCount / limit),
-            folders: folders,
-        });
-    } catch (error) {
-        console.error(`[GET /api/v1/folders] Error:`, error);
-        return res.status(500).json({ message: "Internal server error" });
+            return res.status(200).json({
+                total_count: folders.length,
+                page: page,
+                total_pages: Math.ceil(totalCount / limit),
+                folders: folders,
+            });
+        } catch (error) {
+            console.error(`[GET /api/v1/folders] Error:`, error);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    } else {
+        try {
+            const folders = await Folder.find({ userId })
+                .select("-__v -updatedAt -userId -_id")
+                .sort({ flashcardCount: -1 });
+            return res.status(200).json({
+                total_count: folders.length,
+                folders: folders,
+            });
+        } catch (error) {
+            console.error(`[GET /api/v1/folders] Error:`, error);
+            return res.status(500).json({ message: "Internal server error" });
+        }
     }
 };
 
@@ -105,8 +117,10 @@ module.exports.deleteFolder = async (req, res) => {
         if (!folder) {
             return res.status(404).json({ message: "Folder is not found" });
         }
-        if(folder.isDefault) {
-            return res.status(400).json({ message: "Cannot delete default folder" });
+        if (folder.isDefault) {
+            return res
+                .status(400)
+                .json({ message: "Cannot delete default folder" });
         }
         // Delete all mapping to flashcards
         await FolderFlashcard.deleteMany({ folderId: folder._id });
@@ -130,14 +144,11 @@ module.exports.getFolderFlashcards = async (req, res) => {
     const userId = req.userId;
     const slug = req.params.slug;
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-    const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
+    const limit =
+        parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
     const { sort = "addedAt", order = "asc" } = req.query;
-    const sortFields = [
-        "addedAt",
-        "updatedAt",
-        "word",
-    ];
+    const sortFields = ["addedAt", "updatedAt", "word"];
     const sortFilter = sortFields.includes(sort) ? sort : "addedAt";
     const sortOrder = order === "asc" ? 1 : -1;
     try {
@@ -149,7 +160,7 @@ module.exports.getFolderFlashcards = async (req, res) => {
             return res.status(404).json({ message: "Folder is not found" });
         }
         const totalCount = await FolderFlashcard.countDocuments({
-            folderId: folder._id
+            folderId: folder._id,
         });
         console.log(sortFilter);
         let flashcards = await FolderFlashcard.find({
@@ -157,30 +168,33 @@ module.exports.getFolderFlashcards = async (req, res) => {
         })
             .skip(skip)
             .limit(limit)
-            .populate(
-                {
-                    path: "flashcardId",
-                    select: "word _id slug",
-                }
-            ).sort({ [sortFilter]: sortOrder })
-        if(sortFilter === "word") {
+            .populate({
+                path: "flashcardId",
+                select: "word _id slug",
+            })
+            .sort({ [sortFilter]: sortOrder });
+        if (sortFilter === "word") {
             flashcards = flashcards.sort((a, b) => {
                 const word_1 = a.flashcardId?.word.toLowerCase() || "";
                 const word_2 = b.flashcardId?.word.toLowerCase() || "";
-                return sortOrder === 1 ? word_1.localeCompare(word_2) : word_2.localeCompare(word_1);
-            })
+                return sortOrder === 1
+                    ? word_1.localeCompare(word_2)
+                    : word_2.localeCompare(word_1);
+            });
         }
-        const flashcardsList = flashcards.map((flashcard) => {
-            return flashcard.flashcardId;
-        }).filter((flashcard) => {
-            return flashcard !== null;
-        });
+        const flashcardsList = flashcards
+            .map((flashcard) => {
+                return flashcard.flashcardId;
+            })
+            .filter((flashcard) => {
+                return flashcard !== null;
+            });
 
         return res.status(200).json({
             total_count: totalCount,
             page: page,
             total_pages: Math.ceil(totalCount / limit),
-            flashcards: flashcardsList
+            flashcards: flashcardsList,
         });
     } catch (error) {
         console.error(`[GET /api/v1/folders/:slug/flashcards] Error:`, error);
@@ -193,7 +207,7 @@ module.exports.addFlashcard = async (req, res) => {
     const userId = req.userId;
     const slug = req.params.slug;
     const flashcardId = req.body.flashcardId;
-    if(!flashcardId) {
+    if (!flashcardId) {
         return res.status(400).json({ message: "Flashcard ID is required" });
     }
     if (!mongoose.Types.ObjectId.isValid(flashcardId)) {
@@ -264,7 +278,7 @@ module.exports.getFlashcardInFolder = async (req, res) => {
             return res.status(404).json({ message: "Folder is not found" });
         }
         const flashcard = await Flashcard.findOne({
-            slug: flashcard_slug
+            slug: flashcard_slug,
         }).select("-__v -updatedAt -createdAt");
         if (!flashcard) {
             return res.status(404).json({ message: "Flashcard is not found" });
@@ -274,8 +288,10 @@ module.exports.getFlashcardInFolder = async (req, res) => {
             flashcardId: flashcard._id,
         });
 
-        if(!existingInFolder){
-            return res.status(404).json({ message: "Flashcard is not in the folder" });
+        if (!existingInFolder) {
+            return res
+                .status(404)
+                .json({ message: "Flashcard is not in the folder" });
         }
         return res.status(200).json({
             flashcard: {
@@ -284,11 +300,14 @@ module.exports.getFlashcardInFolder = async (req, res) => {
                 vi_definition: flashcard.vi_definition,
                 phonetics: flashcard.phonetics,
                 slug: flashcard.slug,
-                addedAt: existingInFolder.createdAt
+                addedAt: existingInFolder.createdAt,
             },
-        });    
+        });
     } catch (error) {
-        console.error(`[GET /api/v1/folders/:slug/flashcards/:fc_slug] Error:`, error);
+        console.error(
+            `[GET /api/v1/folders/:slug/flashcards/:fc_slug] Error:`,
+            error
+        );
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -308,7 +327,7 @@ module.exports.deleteFlashcardInFolder = async (req, res) => {
             return res.status(404).json({ message: "Folder is not found" });
         }
         const flashcard = await Flashcard.findOne({
-            slug: flashcard_slug
+            slug: flashcard_slug,
         }).select("-__v -updatedAt -createdAt");
         if (!flashcard) {
             return res.status(404).json({ message: "Flashcard is not found" });
@@ -318,11 +337,13 @@ module.exports.deleteFlashcardInFolder = async (req, res) => {
             flashcardId: flashcard._id,
         });
 
-        if(!existingInFolder){
-            return res.status(404).json({ message: "Flashcard is not in the folder" });
+        if (!existingInFolder) {
+            return res
+                .status(404)
+                .json({ message: "Flashcard is not in the folder" });
         }
         await FolderFlashcard.deleteOne({
-            _id: existingInFolder._id
+            _id: existingInFolder._id,
         });
         if (folder.flashcardCount > 0) {
             folder.flashcardCount -= 1;
@@ -331,14 +352,17 @@ module.exports.deleteFlashcardInFolder = async (req, res) => {
         return res.status(200).json({
             message: "Flashcard deleted from folder successfully",
             flashcard: {
-                word: flashcard.word
-            }
+                word: flashcard.word,
+            },
         });
     } catch (error) {
-        console.error(`[DELETE /api/v1/folders/:slug/flashcards/:fc_slug] Error:`, error);
+        console.error(
+            `[DELETE /api/v1/folders/:slug/flashcards/:fc_slug] Error:`,
+            error
+        );
         return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 // [POST] /api/v1/folders/flashcards/:fc_slug/favourite
 module.exports.checkFlashcardInFavourite = async (req, res) => {
@@ -351,16 +375,16 @@ module.exports.checkFlashcardInFavourite = async (req, res) => {
             isDefault: true,
         });
         const flashcard = await Flashcard.findOne({
-            slug: flashcard_slug
+            slug: flashcard_slug,
         }).select("-__v -updatedAt -createdAt");
         const isExistingFlashcard = await FolderFlashcard.findOne({
             folderId: favouriteFolder._id,
             flashcardId: flashcard._id,
         });
         if (!isExistingFlashcard) {
-            return res.status(404).json({ 
-                message: "Flashcard is not in the favourites" ,
-                found: false
+            return res.status(404).json({
+                message: "Flashcard is not in the favourites",
+                found: false,
             });
         }
         return res.status(200).json({
@@ -368,7 +392,10 @@ module.exports.checkFlashcardInFavourite = async (req, res) => {
             found: true,
         });
     } catch (error) {
-        console.error(`[GET /api/v1/folders/flashcards/:fc_slug/favourite] Error:`, error);
+        console.error(
+            `[GET /api/v1/folders/flashcards/:fc_slug/favourite] Error:`,
+            error
+        );
         return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
