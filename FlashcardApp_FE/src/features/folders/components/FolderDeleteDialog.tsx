@@ -1,62 +1,62 @@
 import { useState } from "react";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, CircleCheck } from "lucide-react";
+import { Trash } from "lucide-react";
+import { Dialog, DialogTrigger, DialogTitle, DialogDescription, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
 
 interface DeleteFolderCardProps {
   slug: string;
   name: string;
-  onCancel: () => void;
 }
 
-export default function DeleteFolderCard({ slug, name, onCancel }: DeleteFolderCardProps) {
+export default function DeleteFolderCard({ slug, name }: DeleteFolderCardProps) {
+  const { deleteFolder } = useFolderService();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [open, setOpen] = useState(false); // Add controlled state
 
   const handleDelete = async () => {
     setLoading(true);
-    setError(null);
     try {
-      await folderService.deleteFolder(slug);
-      setSuccess("Folder has been deleted.");
+      await deleteFolder(slug);
+      toast.success("Folder has been deleted.");
+      setOpen(false);
+      // setTimeout here is very important
+      // it allows the dialog to close before refreshing the folder list
       setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+        triggerFolderListRefresh();
+      }, 1000);
     } catch (err) {
-      setError("Failed to delete folder.");
+      toast.error("Failed to delete folder.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-card w-lg rounded-lg p-6 shadow-md">
-      <p className="mb-2 text-xl font-bold">Delete Folder</p>
-      <p className="">
-        Are you sure you want to delete <span className="font-semibold">{name || "this folder"}</span>?<br />
-        This action cannot be undone.
-      </p>
-      {error && (
-        <div className="bg-destructive/15 text-destructive mt-6 flex items-center gap-2 rounded-md p-3 text-sm">
-          <AlertCircle className="h-4 w-4" />
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mt-4 mt-6 flex items-center gap-2 rounded-md bg-green-200 p-3 text-sm text-green-500 dark:bg-green-700 dark:text-green-300">
-          <CircleCheck className="h-4 w-4" />
-          {success}
-        </div>
-      )}
-      <div className="mt-6 flex items-center justify-end gap-4">
-        <Button variant="outline" onClick={onCancel} disabled={loading}>
-          Cancel
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent">
+          <Trash className="text-red-500" />
+          <p className="text-red-500">Delete</p>
         </Button>
-        <Button className="bg-destructive/20 text-red-500 hover:bg-red-500/40" onClick={handleDelete} disabled={loading}>
-          {loading ? "Deleting..." : "Delete"}
-        </Button>
-      </div>
-    </div>
+      </DialogTrigger>
+      <DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
+        <DialogTitle>Delete Folder</DialogTitle>
+        <DialogDescription>
+          Are you sure you want to delete <span className="font-semibold">{name || "this folder"}</span>?<br />
+          This action cannot be undone.
+        </DialogDescription>
+        <div className="mt-6 flex items-center justify-end gap-4">
+          <DialogClose asChild disabled={loading}>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button className="bg-destructive/20 text-red-500 hover:bg-red-500/40" onClick={handleDelete} disabled={loading}>
+            {loading ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,24 +1,22 @@
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
 import { FolderTypes } from "@/types/folder.types";
-import { FolderIcon, FolderUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FolderPlus } from "lucide-react";
 import { useEffect, useState } from "react";
-
-interface FolderPickerModalProps {
-  onCancel: () => void;
-  word: string;
-}
+import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFolder: string | null; setSelectedFolder: (slug: string) => void }) {
+  const { getAllFolders } = useFolderService();
   const [folders, setFolders] = useState<FolderTypes[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     const fetchFolders = async () => {
-      const folders = await folderService.getAllFolder({ page: 1, limit: 30 });
+      const folders = await getAllFolders({ getAll: true });
       setFolders(folders);
       setTimeout(() => {
         setLoading(false);
@@ -37,7 +35,7 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
   }
 
   return (
-    <div className="grid w-full min-w-xs grid-cols-2 gap-4 transition-all md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid w-full min-w-xs grid-cols-3 gap-4 transition-all">
       {folders.map((folder: FolderTypes) => (
         <div
           key={folder.slug}
@@ -47,7 +45,6 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
           <div className="flex w-full items-center justify-between gap-2">
             <div className="flex w-full items-center justify-start">
               <Button variant="link" className="-ml-2 max-w-full overflow-hidden text-lg" tabIndex={-1}>
-                {folder.isPublic ? <FolderUp className="h-4 w-4" /> : <FolderIcon className="h-4 w-4" />}
                 <div className="truncate overflow-hidden">{folder.name}</div>
               </Button>
             </div>
@@ -59,29 +56,29 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
   );
 }
 
-export default function FolderPickerDialog({ onCancel, word }: FolderPickerModalProps) {
+export default function FolderPickerDialog({ word }: { word: string }) {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <Card className="h-3xl w-3xl space-y-4 py-6">
-        <CardHeader>
-          <h2 className="text-2xl font-bold">Select a folder</h2>
-          <p className="text-neutral-600 dark:text-neutral-400">Choose a folder to add "{word}"</p>
-        </CardHeader>
-
-        <CardContent>
-          <FolderList selectedFolder={selectedFolder} setSelectedFolder={setSelectedFolder} />
-          <div className="mt-6 flex items-center justify-end gap-4">
-            <Button variant="outline" className="rounded-xl" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button className="rounded-xl" onClick={() => console.log("Folder selected")}>
-              Add flashcard to folder
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <ExpandableButton
+          Icon={FolderPlus}
+          label="Add to folder"
+          variant="outline"
+          className="hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/40"
+        />
+      </DialogTrigger>
+      <DialogContent className="!max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Add to folder</DialogTitle>
+          <DialogDescription>
+            Select a folder to add the word <strong>{word}</strong> to
+          </DialogDescription>
+        </DialogHeader>
+        <FolderList selectedFolder={selectedFolder} setSelectedFolder={setSelectedFolder} />
+        <Button>Add flashcard to folder</Button>
+      </DialogContent>
+    </Dialog>
   );
 }
