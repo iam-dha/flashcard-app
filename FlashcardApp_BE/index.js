@@ -15,6 +15,10 @@ const adminRoute = require("./routes/admin/index.routes");
 const database = require("./config/database.js")
 database.connect();
 
+//Discord Bot Connect
+const discordBot = require("./config/discordBot.js");
+discordBot.connect();
+
 const app = express();
 const port = process.env.PORT;
 

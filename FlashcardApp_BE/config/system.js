@@ -8,8 +8,10 @@ const OTP_VERIFIED_EXPIRATION = 5; // minutes
 const OTP_RESEND_LIMIT = 1; // minutes
 const PASSWORD_RESET_EXPIRATION = 15; // minutes
 const CLIENT_URL = "http://localhost:5173";
+const DISCORD_CHANNEL_ID = ["1377077006750974023"];
 module.exports = {
     prefixAdmin: ADMIN_PATH,
+    discordChannelId: DISCORD_CHANNEL_ID,
     refreshTokenExpiration: {
         inNumber: REFRESH_TOKEN_EXPIRATION,
         inString: `${REFRESH_TOKEN_EXPIRATION}d`
