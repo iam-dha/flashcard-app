@@ -1,6 +1,6 @@
 function SearchTips() {
   return (
-    <div className="mt-8 rounded-2xl bg-neutral-100 p-8 dark:bg-neutral-900">
+    <div className="bg-card mt-8 rounded-2xl p-8">
       <h2 className="mb-4 text-lg font-semibold">Search Tips</h2>
       <ul className="list-inside list-disc space-y-2 text-neutral-600 dark:text-neutral-400">
         <li>Search for words in either English or Vietnamese</li>
@@ -14,7 +14,7 @@ function SearchTips() {
 
 function SearchNextSteps() {
   return (
-    <div className="mt-8 rounded-2xl bg-neutral-100 p-8 dark:bg-neutral-900">
+    <div className="bg-card mt-8 rounded-2xl p-8">
       <h2 className="mb-4 text-lg font-semibold">What to do next?</h2>
       <ul className="list-inside list-disc space-y-2 text-neutral-600 dark:text-neutral-400">
         <li>Save your favorite words for later</li>

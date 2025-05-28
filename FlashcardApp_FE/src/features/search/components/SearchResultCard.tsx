@@ -2,11 +2,12 @@ import { Card, CardDescription } from "@/components/ui/card";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
-import { FolderPlus, Star, Volume2 } from "lucide-react";
+import { Star, Volume2 } from "lucide-react";
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FolderPickerDialog from "./FolderPickerDialog";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
+import { toast } from "sonner";
 
 export function SearchResultCardSide(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audioUrl);
@@ -30,18 +31,78 @@ export function SearchResultCardSide(result: FlashcardTypes) {
   );
 }
 
-export default function SearchResultCard({ results }: { results: FlashcardTypes[] }) {
-  const [showFolderPicker, setShowFolderPicker] = useState(false);
-  const [isFavouritesSelected, setIsFavouritesSelected] = useState(false);
+export function useToggleFavourites(result: FlashcardTypes) {
+  const { checkFlashcardInFavourites, addFlashcardToFolder, deleteFlashcardInFolder, getFavouritesSlug } = useFolderService();
+  const [isFavourites, setIsFavourites] = useState(false);
+  const [favouritesLoading, setFavouritesLoading] = useState(false);
 
-  const handleAddToFavorites = async (result: FlashcardTypes) => {
-    const response = await folderService.getAllFolder({ page: 1, limit: 10 });
-    const favouritesFolderSlug = response.find((folder) => folder.name === "Favourites")?.slug;
-    console.log("Favourites folder slug:", favouritesFolderSlug);
-    console.log("Adding to favourites folder:", result.flashcardId);
-    await folderService.addFlashcardToFolder(favouritesFolderSlug, result.flashcardId);
-    console.log("Add to favorites clicked for:", result.word);
+  useEffect(() => {
+    try {
+      const checkIfFavourites = async (result: FlashcardTypes) => {
+        const response = await checkFlashcardInFavourites(result.word);
+        setIsFavourites(response);
+      };
+
+      checkIfFavourites(result);
+    } catch (error) {
+      console.error("Error checking if favourites:", error);
+    }
+  }, [result]);
+
+  const handleAddToFavourites = async (result: FlashcardTypes) => {
+    try {
+      setFavouritesLoading(true);
+      const favouritesSlug = await getFavouritesSlug();
+      await addFlashcardToFolder(favouritesSlug, result.flashcardId);
+      setIsFavourites(true);
+      toast.info(`"${result.word}" added to favourites`, {
+        action: {
+          label: "Go to Favourites",
+          onClick: () => {
+            window.location.href = `/folders/${favouritesSlug}`;
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error adding to favourites:", error);
+    } finally {
+      setFavouritesLoading(false);
+    }
   };
+  const handleRemoveFromFavourites = async (result: FlashcardTypes) => {
+    try {
+      setFavouritesLoading(true);
+      const favouritesSlug = await getFavouritesSlug();
+      await deleteFlashcardInFolder(favouritesSlug, result.word);
+      setIsFavourites(false);
+      toast.info(`"${result.word}" removed from favourites`, {
+        action: {
+          label: "Go to Favourites",
+          onClick: () => {
+            window.location.href = `/folders/${favouritesSlug}`;
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error removing from favourites:", error);
+    } finally {
+      setFavouritesLoading(false);
+    }
+  };
+  const handleToggleFavourites = (result: FlashcardTypes) => {
+    if (isFavourites) {
+      handleRemoveFromFavourites(result);
+    } else {
+      handleAddToFavourites(result);
+    }
+  };
+
+  return { isFavourites, favouritesLoading, handleToggleFavourites };
+}
+
+export default function SearchResultCard({ results }: { results: FlashcardTypes[] }) {
+  const { isFavourites, favouritesLoading, handleToggleFavourites } = useToggleFavourites(results[0]);
+
   return (
     <div className="space-y-4">
       {results.length > 0 &&
@@ -50,39 +111,18 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
             <div className="flex w-full justify-end gap-2">
               <ExpandableButton
                 Icon={Star}
-                label="Add to favorites"
+                label={isFavourites ? "Remove from favorites" : "Add to favorites"}
                 variant="outline"
                 className={
-                  isFavouritesSelected ? "bg-yellow-700 text-yellow-500" : "hover:bg-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/40"
+                  isFavourites
+                    ? "hover:bg-yellow-00/50 bg-yellow-300/50 text-yellow-600 hover:text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-500 dark:hover:bg-yellow-900/50 dark:hover:text-yellow-500"
+                    : "hover:bg-yellow-300/50 hover:text-yellow-600 dark:hover:bg-yellow-900/50"
                 }
-                onClick={() => {
-                  handleAddToFavorites(result);
-                  setIsFavouritesSelected((prev) => !prev);
-                }}
+                onClick={() => handleToggleFavourites(result)}
+                disabled={favouritesLoading}
               />
-              <ExpandableButton
-                Icon={FolderPlus}
-                label="Add to folder"
-                variant="outline"
-                className="hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/40"
-                onClick={() => {
-                  setShowFolderPicker(true);
-                }}
-              />
+              <FolderPickerDialog word={result.word} />
             </div>
-            {showFolderPicker && (
-              <div
-                className="fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center bg-black/30"
-                onClick={() => setShowFolderPicker(false)}
-              >
-                <FolderPickerDialog
-                  onCancel={() => {
-                    setShowFolderPicker(false);
-                  }}
-                  word={result.word}
-                />
-              </div>
-            )}
 
             <div className="flex gap-4">
               <SearchResultCardSide {...result} />
