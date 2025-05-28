@@ -3,10 +3,11 @@ import { getRouteByPath } from "@/routes/router";
 import { useIsMobile } from "@/hooks/useMobile";
 import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
 import UserDropdownMenu from "./sidebar/UserDropdownMenu";
 
 export function usePageTitle() {
+  const { getFolderBySlug } = useFolderService();
   const location = useLocation();
   const currentRoute = getRouteByPath(location.pathname);
   const [pageTitle, setPageTitle] = useState<string>("");
@@ -16,7 +17,7 @@ export function usePageTitle() {
 
     const getFolderName = async () => {
       if ("type" in currentRoute && currentRoute.type === "folder" && "slug" in currentRoute) {
-        const folder = await folderService.getFolderBySlug(currentRoute.slug);
+        const folder = await getFolderBySlug(currentRoute.slug);
         setPageTitle(folder ? folder.name : "Folder");
       } else {
         setPageTitle(currentRoute.title || "");
