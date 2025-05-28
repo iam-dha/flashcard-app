@@ -10,11 +10,6 @@ import SearchResultCard from "@/features/search/components/SearchResultCard";
 import { useParams } from "react-router-dom";
 import { mockFlashcards } from "@/test/mockData";
 
-const cardContentStyles = "flex h-full items-center justify-center overflow-hidden align-middle text-center p-4";
-const cardTextStyles = "text-4xl leading-tight text-wrap select-none md:text-5xl lg:text-6xl";
-const flashcardBadgeStyles = "text-md select-none md:text-xl lg:text-2xl shadow-sm";
-const cardFaceStyles = "absolute inset-0 h-full w-full backface-hidden";
-
 export default function FlashcardDeck() {
   const { folderId } = useParams<{ folderId: string }>();
   const [flashcardDeck, setFlashcardDeck] = useState<FlashcardTypes[]>([]);
@@ -56,22 +51,22 @@ export default function FlashcardDeck() {
       <div className="perspective-500 mb-4 aspect-[4/3] cursor-pointer md:mb-8 md:aspect-[4/3] lg:aspect-[21/9]" onClick={() => setFlip(!isFlipped)}>
         <div className={`relative h-full w-full transition-transform duration-300 transform-3d ${isFlipped ? "rotate-x-180" : ""}`}>
           {/* Front */}
-          <Card className={cardFaceStyles}>
+          <Card className="absolute inset-0 h-full w-full backface-hidden">
             <CardHeader className="flex justify-between pt-6">
-              <Badge className={flashcardBadgeStyles} variant="secondary">
+              <Badge className="text-md select-none md:text-xl lg:text-2xl shadow-sm" variant="secondary">
                 {flashcardDeck[currentFlashcardIndex]?.wordType}
               </Badge>
-              <Badge className={flashcardBadgeStyles} variant="secondary">
+              <Badge className={"text-md select-none md:text-xl lg:text-2xl shadow-sm"} variant="secondary">
                 {flashcardDeck[currentFlashcardIndex]?.phonetic}
               </Badge>
             </CardHeader>
-            <CardContent className={cardContentStyles}>
-              <p className={cardTextStyles}>{flashcardDeck[currentFlashcardIndex]?.word}</p>
+            <CardContent className="flex h-full items-center justify-center overflow-hidden align-middle text-center p-4">
+              <p className="text-4xl leading-tight text-wrap select-none md:text-5xl lg:text-6xl">{flashcardDeck[currentFlashcardIndex]?.word}</p>
             </CardContent>
           </Card>
 
           {/* Back */}
-          <div className={`${cardFaceStyles} rotate-x-180 overflow-auto`}>
+          <div className={`${"absolute inset-0 h-full w-full backface-hidden"} rotate-x-180 overflow-auto`}>
             <div className="flex h-full w-full items-center justify-center">
               <SearchResultCard results={[flashcardDeck[currentFlashcardIndex]]} />
             </div>
