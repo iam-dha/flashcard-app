@@ -20,7 +20,7 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_KEY }}
         script: |
-          cd /home/ec2-user/flashcardd-app/FlashcardApp_BE
+          cd /home/ec2-user/flashcard-app/FlashcardApp_BE
           git pull origin main
           docker stop flascardApp-be || true
           docker rm flascardApp-be || true
