@@ -22,7 +22,7 @@ jobs:
         script: |
           cd /home/ec2-user/flashcard-app/FlashcardApp_BE
           git pull origin main
-          docker stop flascardApp-be || true
-          docker rm flascardApp-be || true
-          docker build -t flascardApp-be .
-          docker run -d --name flascardApp-be -p 9090:9090 --env-file .env flascardApp-be
+          docker stop flashcardapp-be || true
+          docker rm flashcardapp-be || true
+          docker build -t flashcardapp-be .
+          docker run -d --name flashcardapp-be -p 9090:9090 --env-file .env flashcardapp-be
