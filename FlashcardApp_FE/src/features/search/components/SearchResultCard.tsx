@@ -69,6 +69,7 @@ export function useToggleFavourites(result: FlashcardTypes) {
       setFavouritesLoading(false);
     }
   };
+
   const handleRemoveFromFavourites = async (result: FlashcardTypes) => {
     try {
       setFavouritesLoading(true);
@@ -89,6 +90,7 @@ export function useToggleFavourites(result: FlashcardTypes) {
       setFavouritesLoading(false);
     }
   };
+
   const handleToggleFavourites = (result: FlashcardTypes) => {
     if (isFavourites) {
       handleRemoveFromFavourites(result);
@@ -121,7 +123,7 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
                 onClick={() => handleToggleFavourites(result)}
                 disabled={favouritesLoading}
               />
-              <FolderPickerDialog word={result.word} />
+              <FolderPickerDialog result={result} />
             </div>
 
             <div className="flex gap-4">

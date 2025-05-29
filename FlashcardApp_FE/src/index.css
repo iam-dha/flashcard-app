@@ -126,3 +126,12 @@
 .frosted-glass {
   @apply backdrop-blur-sm bg-background/40;
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: transparent;
+}
