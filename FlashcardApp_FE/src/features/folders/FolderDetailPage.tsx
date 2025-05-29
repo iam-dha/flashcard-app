@@ -1,10 +1,10 @@
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
 import { useFolderService } from "@/services/useFolderService";
 import { FolderTypes } from "@/types/folder.types";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
+import Flashcard from "../flashcards/Flashcard";
 
 export default function FolderDetailPage() {
   const { getFolderFlashcardList, getFolderBySlug } = useFolderService();
@@ -43,11 +43,7 @@ export default function FolderDetailPage() {
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {flashcards.map((flashcard) => (
-            <Card key={flashcard.word} className="mb-4 w-full py-4">
-              <CardContent>
-                <h3 className="text-lg font-semibold">{flashcard.word}</h3>
-              </CardContent>
-            </Card>
+            <Flashcard {...flashcard} />
           ))}
         </div>
       )}

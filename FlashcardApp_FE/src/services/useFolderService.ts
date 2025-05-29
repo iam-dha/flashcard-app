@@ -54,7 +54,7 @@ export function useFolderService() {
     }
   }, []);
 
-  const getFolderFlashcardList = useCallback(async (slug: string, page: number, limit: number): Promise<GetFolderFlashcardListResponse> => {
+  const getFolderFlashcardList = useCallback(async (slug: string, page?: number, limit?: number): Promise<GetFolderFlashcardListResponse> => {
     page = 1;
     limit = 30;
     try {

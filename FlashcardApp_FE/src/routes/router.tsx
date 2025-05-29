@@ -6,7 +6,7 @@ import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
 import HomePage from "@/features/home/HomePage";
 import SearchPage from "@/features/search/SearchPage";
-import FlashcardDeck from "@/features/flashcards/FlashcardDeck";
+import { FlashcardDeck } from "@/features/flashcards/FlashcardDeck";
 import FoldersListPage from "@/features/folders/FolderListPage";
 import GamesPage from "@/features/games/GamesPage";
 import FolderDetailPage from "@/features/folders/FolderDetailPage";

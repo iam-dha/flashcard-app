@@ -10,7 +10,7 @@ import SearchResultCard from "@/features/search/components/SearchResultCard";
 import { useParams } from "react-router-dom";
 import { mockFlashcards } from "@/test/mockData";
 
-export default function FlashcardDeck() {
+export function FlashcardDeck() {
   const { folderId } = useParams<{ folderId: string }>();
   const [flashcardDeck, setFlashcardDeck] = useState<FlashcardTypes[]>([]);
   const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
@@ -53,20 +53,20 @@ export default function FlashcardDeck() {
           {/* Front */}
           <Card className="absolute inset-0 h-full w-full backface-hidden">
             <CardHeader className="flex justify-between pt-6">
-              <Badge className="text-md select-none md:text-xl lg:text-2xl shadow-sm" variant="secondary">
+              <Badge className="text-md shadow-sm select-none md:text-xl lg:text-2xl" variant="secondary">
                 {flashcardDeck[currentFlashcardIndex]?.wordType}
               </Badge>
-              <Badge className={"text-md select-none md:text-xl lg:text-2xl shadow-sm"} variant="secondary">
+              <Badge className={"text-md shadow-sm select-none md:text-xl lg:text-2xl"} variant="secondary">
                 {flashcardDeck[currentFlashcardIndex]?.phonetic}
               </Badge>
             </CardHeader>
-            <CardContent className="flex h-full items-center justify-center overflow-hidden align-middle text-center p-4">
+            <CardContent className="flex h-full items-center justify-center overflow-hidden p-4 text-center align-middle">
               <p className="text-4xl leading-tight text-wrap select-none md:text-5xl lg:text-6xl">{flashcardDeck[currentFlashcardIndex]?.word}</p>
             </CardContent>
           </Card>
 
           {/* Back */}
-          <div className={`${"absolute inset-0 h-full w-full backface-hidden"} rotate-x-180 overflow-auto`}>
+          <div className={"absolute inset-0 h-full w-full rotate-x-180 overflow-auto backface-hidden"}>
             <div className="flex h-full w-full items-center justify-center">
               <SearchResultCard results={[flashcardDeck[currentFlashcardIndex]]} />
             </div>
