@@ -54,6 +54,8 @@ app.use(methodOverride("_method"));
 clientRoute(app);
 adminRoute(app);
 
+console.log("test cicd");;
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
   })
