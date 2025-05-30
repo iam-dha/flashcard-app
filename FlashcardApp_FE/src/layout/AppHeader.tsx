@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
 import { useFolderService } from "@/services/useFolderService";
-import UserDropdownMenu from "./sidebar/UserDropdownMenu";
+import UserDropdownMenu from "./UserDropdownMenu";
 
 export function usePageTitle() {
   const { getFolderBySlug } = useFolderService();

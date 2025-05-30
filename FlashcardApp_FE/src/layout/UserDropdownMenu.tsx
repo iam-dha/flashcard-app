@@ -14,7 +14,7 @@ export default function FolderCardDropdownMenu() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2 flex flex-col rounded-xl">
-        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
+        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent" onClick={() => window.location.href = "/user/profile"}>
           <CircleUserRound />
           Profile
         </Button>

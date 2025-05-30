@@ -12,6 +12,8 @@ import GamesPage from "@/features/games/GamesPage";
 import FolderDetailPage from "@/features/folders/FolderDetailPage";
 import RegisterPage from "@/features/auth/RegisterPage";
 import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
+import UserLayout from "@/layout/UserLayout";
+import UserProfilePage from "@/features/user/UserProfilePage";
 
 // discriminated union type for all possible route configurations
 type RouteConfig = BaseRouteConfig | FolderRouteConfig | UserRouteConfig;
@@ -178,4 +180,14 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/user",
+    element: <UserLayout />,
+    children: [
+      {
+        path: "/user/profile",
+        element: <UserProfilePage />,
+      }
+    ]
+  }
 ]);
