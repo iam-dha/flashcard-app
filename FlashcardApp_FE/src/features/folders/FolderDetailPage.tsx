@@ -5,6 +5,7 @@ import { useFolderService } from "@/services/useFolderService";
 import { FolderTypes } from "@/types/folder.types";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import Flashcard from "../flashcards/Flashcard";
+import { Button } from "@/components/ui/button";
 
 export default function FolderDetailPage() {
   const { getFolderFlashcardList, getFolderBySlug } = useFolderService();
@@ -36,7 +37,15 @@ export default function FolderDetailPage() {
 
   return (
     <div className="space-y-4">
-      <p className="">{folder?.description}</p>
+      <div className="flex items-center justify-between">
+        <p className="">{folder?.description}</p>
+        <Button
+          className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
+          onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
+        >
+          Study
+        </Button>
+      </div>
       <p className="text-xl font-bold">Flashcard List</p>
       {flashcards.length === 0 ? (
         <p>There are no flashcards in this folder. Try to add some using search!</p>
