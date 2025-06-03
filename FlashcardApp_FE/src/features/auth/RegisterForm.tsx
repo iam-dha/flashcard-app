@@ -114,9 +114,7 @@ export default function RegisterEmailForm() {
       <Card className="space-y-4 py-4">
         <CardHeader className="w-md">
           <CardTitle className="text-2xl">Register</CardTitle>
-          <CardDescription>
-
-          </CardDescription>
+          <CardDescription></CardDescription>
           {error && (
             <div className="bg-destructive/15 text-destructive flex items-center gap-2 rounded-md p-3 text-sm">
               <AlertCircle className="h-4 w-4" />
@@ -135,7 +133,7 @@ export default function RegisterEmailForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" />
+                      <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -190,7 +188,7 @@ export default function RegisterEmailForm() {
           </form>
         )}
 
-         {otpSent && otpVerified && (
+        {otpSent && otpVerified && (
           <form onSubmit={registerForm.handleSubmit(handleRegisterSubmit)}>
             <CardContent className="space-y-4">
               <FormField
@@ -200,7 +198,7 @@ export default function RegisterEmailForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} autoComplete="current-password" />
+                      <Input type="password" {...field} autoComplete="current-password" className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -213,7 +211,7 @@ export default function RegisterEmailForm() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input type="text" {...field} className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -226,7 +224,7 @@ export default function RegisterEmailForm() {
                   <FormItem>
                     <FormLabel>Address</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input type="text" {...field} className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -239,7 +237,7 @@ export default function RegisterEmailForm() {
                   <FormItem>
                     <FormLabel>Phone</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input type="text" {...field} className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

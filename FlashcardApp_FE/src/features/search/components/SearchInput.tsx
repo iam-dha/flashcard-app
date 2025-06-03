@@ -26,7 +26,7 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         }}
         disabled={searchLoading}
         size="icon"
-        className="h-12 w-12 rounded-2xl"
+        className="h-12 w-12 rounded-2xl bg-accent text-accent-foreground hover:bg-accent/80 transition-colors duration-300 disabled:opacity-50 disabled:pointer-events-none"
       >
         <SearchIcon className="h-5 w-5" />
       </Button>
