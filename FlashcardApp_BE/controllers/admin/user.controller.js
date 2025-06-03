@@ -46,6 +46,11 @@ module.exports.getAllUserInfo = async (req, res) => {
     }
 };
 
+//[POST] /api/v1/admin/users
+module.exports.createAdmin = async (req, res) => {
+    const {email, password, fullName, address, phone} = req.body;
+}
+
 //[GET] /api/v1/admin/users/:userId
 module.exports.getUserInfo = async (req, res) => {
     const { userId } = req.params;

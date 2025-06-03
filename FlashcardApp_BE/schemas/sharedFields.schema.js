@@ -19,6 +19,7 @@ const postTitleField = joi.string().max(256).required();
 const imageUrlField = joi.string().uri();
 const postContentField = joi.string().required();
 const roleTitleField = joi.string().max(20).required();
+const objectIdField = joi.string().length(24).required();
 
 module.exports = {
     passwordField,
@@ -36,5 +37,6 @@ module.exports = {
     postTitleField,
     imageUrlField,
     postContentField,
-    roleTitleField
+    roleTitleField,
+    objectIdField
 };
