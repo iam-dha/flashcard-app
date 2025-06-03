@@ -22,7 +22,7 @@ export const routes: BaseRouteConfig[] = [
   {
     path: "/home",
     title: "Home",
-    icon: <Home />,
+    icon: <Home/>,
     element: <HomePage />,
     showInSidebar: true,
   },
@@ -31,13 +31,6 @@ export const routes: BaseRouteConfig[] = [
     title: "Search",
     icon: <Search />,
     element: <SearchPage />,
-    showInSidebar: true,
-  },
-  {
-    path: "/flashcards",
-    title: "Flashcards",
-    icon: <PanelTop />,
-    element: <FlashcardDeck />,
     showInSidebar: true,
   },
   {
@@ -54,7 +47,7 @@ export const routes: BaseRouteConfig[] = [
     element: <FolderDetailPage />,
   },
   {
-    path: "/folders/:folderId/study",
+    path: "/folders/:slug/study",
     element: <FlashcardDeck />,
   },
   {

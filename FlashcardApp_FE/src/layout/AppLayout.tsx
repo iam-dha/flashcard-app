@@ -8,12 +8,13 @@ import { Toaster } from "sonner";
 
 export default function AppLayout() {
   const { isAuthenticated, authLoading } = useAuth();
+  const defaultOpen = localStorage.getItem("sidebarOpen") === "true" || false;
 
   return authLoading ? (
     <CustomLoader />
   ) : isAuthenticated ? (
     <>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
         <SidebarInset className="relative">
           <div className="flex min-w-xs flex-1 flex-col">

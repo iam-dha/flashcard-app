@@ -5,7 +5,7 @@ import SidebarFooterContent from "./SidebarFooterContent";
 
 export default function AppSidebar() {
   return (
-    <Sidebar collapsible="icon" className="transition-all duration-500 ease-in-out z-20" variant="sidebar">
+    <Sidebar collapsible="offcanvas" className="transition-all duration-500 ease-in-out z-20" variant="sidebar">
       <SidebarHeaderContent />
       <SidebarMenuList />
       <SidebarFooterContent />

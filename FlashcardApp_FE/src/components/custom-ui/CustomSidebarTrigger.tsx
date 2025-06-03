@@ -7,8 +7,20 @@ export default function CustomSidebarTrigger({ variant }: { variant: "open" | "c
 
   function SidebarTriggerButton({ Icon }: { Icon: React.ElementType }) {
     return (
-      <Button onClick={toggleSidebar} title="Toggle sidebar" variant="ghost" style={{ paddingInline: 8 }}>
-        <Icon style={{ width: "16px", height: "16px" }} />
+      <Button
+        onClick={() => {
+          if (localStorage.getItem("sidebarOpen") === "true") {
+            localStorage.setItem("sidebarOpen", "false");
+          } else {
+            localStorage.setItem("sidebarOpen", "true");
+          }
+          toggleSidebar();
+        }}
+        title="Toggle sidebar"
+        variant="ghost"
+        className="hover:bg-card/50"
+      >
+        <Icon style={{ width: "20px", height: "20px" }} />
       </Button>
     );
   }
