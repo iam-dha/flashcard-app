@@ -11,6 +11,7 @@ import { Dialog, DialogTrigger, DialogTitle, DialogDescription, DialogContent } 
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import { toast } from "sonner";
 import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
+import { Input } from "@/components/ui/input";
 
 export default function CreateFolderCard() {
   const { createFolder } = useFolderService();
@@ -49,7 +50,7 @@ export default function CreateFolderCard() {
       <DialogTrigger asChild>
         <ExpandableButton Icon={FolderPlus} label="New Folder" variant="ghost" />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-popover text-card-foreground shadow-lg">
         <DialogTitle>Create new folder</DialogTitle>
         <DialogDescription>Enter folder name and description</DialogDescription>
         <Form {...folderCreateForm}>
@@ -67,7 +68,7 @@ export default function CreateFolderCard() {
                       </div>
                     </div>
                     <FormControl>
-                      <input type="text" placeholder="Enter folder name" {...field} className="w-full rounded-md border p-2" />
+                      <Input type="text" placeholder="Enter folder name" {...field} className="bg-input w-full rounded-md border p-2" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -80,7 +81,7 @@ export default function CreateFolderCard() {
                   <FormItem>
                     <FormLabel>Folder Description</FormLabel>
                     <FormControl>
-                      <textarea placeholder="Enter folder description" {...field} className="min-h-[40px] w-full rounded-md border p-2" />
+                      <textarea placeholder="Enter folder description" {...field} className="min-h-[40px] w-full rounded-md border p-2 bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

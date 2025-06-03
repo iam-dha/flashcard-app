@@ -1,16 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { SortField } from "../hooks/useGetFolderList";
 
-interface FolderSortDropdownMenuProps {
-  sort: "createdAt" | "name" | "updatedAt" | "isPublic";
-  setSort: React.Dispatch<React.SetStateAction<"createdAt" | "name" | "updatedAt" | "isPublic">>;
-}
-
-export default function FolderSortDropdownMenu({ sort, setSort }: FolderSortDropdownMenuProps) {
+export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: SortField; updateSort: (field: SortField) => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="-mr-4">
+        <Button variant="ghost" className="-mr-4 hover:-mr-2 rounded-xl">
           {sort === "createdAt" ? "Date Created" : sort === "name" ? "Name" : sort === "updatedAt" ? "Date Modified" : "Public Status"}
         </Button>
       </DropdownMenuTrigger>
@@ -18,28 +14,28 @@ export default function FolderSortDropdownMenu({ sort, setSort }: FolderSortDrop
         <Button
           variant="ghost"
           className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
-          onClick={() => setSort("name")}
+          onClick={() => updateSort("name")}
         >
           Name
         </Button>
         <Button
           variant="ghost"
           className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
-          onClick={() => setSort("createdAt")}
+          onClick={() => updateSort("createdAt")}
         >
           Date Created
         </Button>
         <Button
           variant="ghost"
           className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
-          onClick={() => setSort("updatedAt")}
+          onClick={() => updateSort("updatedAt")}
         >
           Date Modified
         </Button>
         <Button
           variant="ghost"
           className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
-          onClick={() => setSort("isPublic")}
+          onClick={() => updateSort("isPublic")}
         >
           Public Status
         </Button>

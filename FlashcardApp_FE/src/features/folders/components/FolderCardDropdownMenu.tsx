@@ -14,7 +14,7 @@ export default function FolderCardDropdownMenu({ slug, name }: FolderCardDropdow
       <DropdownMenuTrigger className="text-card-foreground hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mt-2 flex flex-col rounded-xl">
+      <DropdownMenuContent className="mt-2 flex flex-col rounded-xl bg-popover border border-transparent shadow-lg">
         <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
           <PencilLine />
           Rename

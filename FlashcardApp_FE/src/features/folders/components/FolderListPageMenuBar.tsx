@@ -2,30 +2,31 @@ import { EllipsisVertical, Share, Trash, ArrowUp, ArrowDown } from "lucide-react
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import CreateFolderCard from "./FolderCreateDialog";
 import FolderSortDropdownMenu from "./FolderSortDropdownMenu";
+import { SortField, SortOrder } from "../hooks/useGetFolderList";
 
 interface FolderListPageMenuBarProps {
   sort: "createdAt" | "name" | "updatedAt" | "isPublic";
-  setSort: React.Dispatch<React.SetStateAction<"createdAt" | "name" | "updatedAt" | "isPublic">>;
+  updateSort: (field: SortField) => void;
   order: "asc" | "desc";
-  setOrder: React.Dispatch<React.SetStateAction<"asc" | "desc">>;
+  toggleSortOrder: () => void;
 }
 
-function OrderButton({ order, setOrder }: Pick<FolderListPageMenuBarProps, "order" | "setOrder">) {
+function OrderButton({ order, toggleSortOrder }: { order: SortOrder, toggleSortOrder: () => void }) {
   return (
     <ExpandableButton
       Icon={order === "asc" ? ArrowUp : ArrowDown}
       label={order === "asc" ? "Ascending order" : "Descending order"}
-      className="group hover:bg-accent/50 flex items-center overflow-auto rounded-xl transition-all duration-700"
+      className="group hover:bg-accent flex items-center overflow-auto rounded-xl transition-all duration-700 hover:ml-2"
       variant="ghost"
-      onClick={() => setOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+      onClick={toggleSortOrder}
     />
   );
 }
 
-export function FolderListPageMenuBar({ sort, setSort, order, setOrder }: FolderListPageMenuBarProps) {
+export function FolderListPageMenuBar({ sort, updateSort, order, toggleSortOrder }: FolderListPageMenuBarProps) {
   return (
     <>
-      <div className="frosted-glass sticky top-20 z-10 mb-4 flex h-max justify-between rounded-xl border p-1 md:mb-6">
+      <div className="frosted-glass sticky top-20 z-10 mb-12 flex h-max justify-between rounded-2xl border p-1">
         <div className="flex">
           <CreateFolderCard />
           <ExpandableButton Icon={Share} label="Share" variant="ghost" />
@@ -38,8 +39,8 @@ export function FolderListPageMenuBar({ sort, setSort, order, setOrder }: Folder
           <ExpandableButton Icon={EllipsisVertical} label="More" variant="ghost" />
         </div>
         <div className="flex">
-          <FolderSortDropdownMenu sort={sort} setSort={setSort} />
-          <OrderButton order={order} setOrder={setOrder} />
+          <FolderSortDropdownMenu sort={sort} updateSort={updateSort} />
+          <OrderButton order={order} toggleSortOrder={toggleSortOrder} />
         </div>
       </div>
     </>
