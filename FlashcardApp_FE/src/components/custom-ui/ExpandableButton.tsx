@@ -15,7 +15,7 @@ export function ExpandableButton({
 } & ButtonProps) {
   return (
     <Button
-      className={`group flex items-center overflow-auto rounded-xl transition-all duration-500 ${className}`}
+      className={`group flex items-center rounded-xl transition-all duration-500 ${className}`}
       {...props}
     >
       <Icon className="-mr-2 h-4 w-4" />

@@ -39,7 +39,13 @@ export function useAddToFolder(result: FlashcardTypes) {
   return { handleAddToFolder, addToFolderLoading, selectedFolderSlug, setSelectedFolderSlug };
 }
 
-export function FolderList({ selectedFolderSlug, setSelectedFolderSlug }: { selectedFolderSlug?: string, setSelectedFolderSlug: (slug: string | undefined) => void }) {
+export function FolderList({
+  selectedFolderSlug,
+  setSelectedFolderSlug,
+}: {
+  selectedFolderSlug?: string;
+  setSelectedFolderSlug: (slug: string | undefined) => void;
+}) {
   const { getAllFolders } = useFolderService();
   const [folders, setFolders] = useState<FolderTypes[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,9 +70,9 @@ export function FolderList({ selectedFolderSlug, setSelectedFolderSlug }: { sele
       </div>
     );
   }
-  
+
   return (
-    <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+    <div className="custom-scrollbar max-h-[400px] overflow-y-auto">
       <div className="grid w-full min-w-xs grid-cols-3 gap-4 transition-all">
         {folders.map((folder: FolderTypes) => (
           <div
@@ -75,8 +81,7 @@ export function FolderList({ selectedFolderSlug, setSelectedFolderSlug }: { sele
             onClick={() => {
               setSelectedFolderSlug(folder.slug);
               console.log("folder slug:", folder.slug);
-            }
-            }
+            }}
           >
             <div className="flex w-full items-center justify-between gap-2">
               <div className="flex w-full items-center justify-start">
@@ -103,7 +108,7 @@ export default function FolderPickerDialog({ result }: { result: FlashcardTypes 
           Icon={FolderPlus}
           label="Add to folder"
           variant="outline"
-          className="hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/40"
+          className="border-transparent hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/80 dark:hover:text-blue-500"
         />
       </DialogTrigger>
       <DialogContent className="!max-w-3xl">
@@ -113,7 +118,7 @@ export default function FolderPickerDialog({ result }: { result: FlashcardTypes 
             Select a folder to add the word <strong>{result.word}</strong> to
           </DialogDescription>
         </DialogHeader>
-        <FolderList selectedFolderSlug={selectedFolderSlug} setSelectedFolderSlug={setSelectedFolderSlug}/>
+        <FolderList selectedFolderSlug={selectedFolderSlug} setSelectedFolderSlug={setSelectedFolderSlug} />
         <Button onClick={() => handleAddToFolder()}>Add flashcard to folder</Button>
       </DialogContent>
     </Dialog>
