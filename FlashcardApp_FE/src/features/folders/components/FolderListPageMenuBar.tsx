@@ -11,7 +11,7 @@ interface FolderListPageMenuBarProps {
   toggleSortOrder: () => void;
 }
 
-function OrderButton({ order, toggleSortOrder }: { order: SortOrder, toggleSortOrder: () => void }) {
+function OrderButton({ order, toggleSortOrder }: { order: SortOrder; toggleSortOrder: () => void }) {
   return (
     <ExpandableButton
       Icon={order === "asc" ? ArrowUp : ArrowDown}
@@ -26,7 +26,11 @@ function OrderButton({ order, toggleSortOrder }: { order: SortOrder, toggleSortO
 export function FolderListPageMenuBar({ sort, updateSort, order, toggleSortOrder }: FolderListPageMenuBarProps) {
   return (
     <>
-      <div className="frosted-glass sticky top-20 z-10 mb-12 flex h-max justify-between rounded-2xl border p-1">
+      <div className="bg-card/30 sticky top-20 z-10 flex justify-between rounded-2xl border p-1 shadow-sm backdrop-blur-md">
+        <div className="flex">
+          <FolderSortDropdownMenu sort={sort} updateSort={updateSort} />
+          <OrderButton order={order} toggleSortOrder={toggleSortOrder} />
+        </div>
         <div className="flex">
           <CreateFolderCard />
           <ExpandableButton Icon={Share} label="Share" variant="ghost" />
@@ -37,10 +41,6 @@ export function FolderListPageMenuBar({ sort, updateSort, order, toggleSortOrder
             label="Delete folder"
           />
           <ExpandableButton Icon={EllipsisVertical} label="More" variant="ghost" />
-        </div>
-        <div className="flex">
-          <FolderSortDropdownMenu sort={sort} updateSort={updateSort} />
-          <OrderButton order={order} toggleSortOrder={toggleSortOrder} />
         </div>
       </div>
     </>

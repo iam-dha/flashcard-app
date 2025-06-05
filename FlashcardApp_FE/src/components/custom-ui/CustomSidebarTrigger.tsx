@@ -9,11 +9,7 @@ export default function CustomSidebarTrigger({ variant }: { variant: "open" | "c
     return (
       <Button
         onClick={() => {
-          if (localStorage.getItem("sidebarOpen") === "true") {
-            localStorage.setItem("sidebarOpen", "false");
-          } else {
-            localStorage.setItem("sidebarOpen", "true");
-          }
+          localStorage.setItem("sidebarOpen", localStorage.getItem("sidebarOpen") === "true" ? "false" : "true");
           toggleSidebar();
         }}
         title="Toggle sidebar"

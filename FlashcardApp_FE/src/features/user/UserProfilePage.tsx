@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { authService } from "@/services/authService";
 import { UserTypes } from "@/types/user.types";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User } from "lucide-react";
+import { Card, CardHeader } from "@/components/ui/card";
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<UserTypes | null>(null);
@@ -22,16 +24,26 @@ export default function UserProfilePage() {
   }, []);
 
   return (
-    <>
-      <Button onClick={() => (window.location.href = "/")}>Back to home</Button>
-      <div className="flex w-full justify-between p-4">
-        <p className="">Appearance</p>
-        <ThemeToggle variant="compact" />
+    <div>
+      <Button onClick={() => (window.location.href = "/")} className="m-4">
+        Back to home
+      </Button>
+      <div className="mx-4 md:flex gap-4">
+        <div className="flex h-fit w-full flex-1">
+          <Card className="w-full p-4 shadow-lg backdrop-blur-xl">
+            <CardHeader className="flex flex-col items-center mt-4">
+              <Avatar className="w-48 h-48">
+                <AvatarImage />
+                <AvatarFallback className="flex items-center justify-center rounded-full bg-gray-200">
+                  <User className="w-full h-full" />
+                </AvatarFallback>
+              </Avatar>
+              <h1 className="mt-4 text-4xl font-bold">{user?.fullName ? user?.fullName : null}</h1>
+            </CardHeader>
+          </Card>
+        </div>
+        <div className="flex h-screen w-full flex-2 items-center bg-red-500"></div>
       </div>
-      <p>{user?.fullName ? user.fullName : "Guest"}</p>
-      <p>{user?.email ? user.email : "No email"}</p>
-      <p>{user?.address ? user.address : "No address"}</p>
-      <p>{user?.phone ? user.phone : "No phone number"}</p>
-    </>
+    </div>
   );
 }

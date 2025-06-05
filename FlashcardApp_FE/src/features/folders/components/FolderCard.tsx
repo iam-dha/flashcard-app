@@ -3,6 +3,7 @@ import FolderCardDropdownMenu from "./FolderCardDropdownMenu";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { User, Users } from "lucide-react";
 
 export default function FolderCard({ folder }: { folder: FolderTypes }) {
   return (
@@ -16,7 +17,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
       ></div>
 
       {/* Main folder body with 3D hover effect */}
-      <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between space-y-4 rounded-xl border p-5 shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
+      <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between space-y-4 rounded-xl border p-4 shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
         <Link to={`/folders/${folder.slug}`} className="flex flex-grow flex-col" title={folder.name}>
           <div className="flex items-center">
             <div className="min-w-0 flex-1">
@@ -24,22 +25,28 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
                 <div className="block truncate overflow-hidden">{folder.name}</div>
               </Button>
             </div>
-            <div className="flex-shrink-0">
+            <div className="flex flex-shrink-0 gap-2">
+              <Badge variant="secondary">
+                {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
+              </Badge>
               {folder.isPublic ? (
                 <Badge variant="secondary" className="bg-muted">
-                  Public
+                  <Users />
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="bg-muted">
-                  Private
+                  <User />
                 </Badge>
               )}
             </div>
           </div>
           <p className="line-clamp-2 min-h-[2.5rem]">{folder.description}</p>
         </Link>
-        <div className="mt-4 flex items-end justify-between">
-          <Button className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm" onClick={() => window.location.href = `/folders/${folder.slug}/study`}>
+        <div className="flex items-end justify-between">
+          <Button
+            className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
+            onClick={() => (window.location.href = `/folders/${folder.slug}/study`)}
+          >
             Study
           </Button>
           <FolderCardDropdownMenu slug={folder.slug} name={folder.name} />
