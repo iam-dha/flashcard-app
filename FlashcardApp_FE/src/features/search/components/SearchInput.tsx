@@ -18,7 +18,7 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         value={searchWord}
         onChange={(e) => setSearchWord(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        className="rounded-2xl py-6"
+        className="rounded-2xl py-6 bg-input"
       />
       <Button
         onClick={() => {
@@ -26,7 +26,7 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         }}
         disabled={searchLoading}
         size="icon"
-        className="h-12 w-12 rounded-2xl"
+        className="h-12 w-12 rounded-2xl bg-accent text-accent-foreground hover:bg-accent/80 transition-colors duration-300 disabled:opacity-50 disabled:pointer-events-none"
       >
         <SearchIcon className="h-5 w-5" />
       </Button>

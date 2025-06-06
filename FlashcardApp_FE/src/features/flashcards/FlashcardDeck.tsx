@@ -1,32 +1,33 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CustomProgressBar from "@/components/custom-ui/CustomProgressBar";
 import useFlashcardKeyboardEvents from "@/features/flashcards/useFlashcardKeyboardEvents";
 import { FlashcardTypes } from "@/types/flashcard.types";
-import SearchResultCard from "@/features/search/components/SearchResultCard";
 import { useParams } from "react-router-dom";
-import { mockFlashcards } from "@/test/mockData";
+import { useFolderService } from "@/services/useFolderService";
 
-const cardContentStyles = "flex h-full items-center justify-center overflow-hidden align-middle text-center p-4";
-const cardTextStyles = "text-4xl leading-tight text-wrap select-none md:text-5xl lg:text-6xl";
-const flashcardBadgeStyles = "text-md select-none md:text-xl lg:text-2xl shadow-sm";
-const cardFaceStyles = "absolute inset-0 h-full w-full backface-hidden";
-
-export default function FlashcardDeck() {
-  const { folderId } = useParams<{ folderId: string }>();
-  const [flashcardDeck, setFlashcardDeck] = useState<FlashcardTypes[]>([]);
+export function FlashcardDeck() {
+  const { getFolderFlashcardList, getFolderBySlug } = useFolderService();
+  const { slug } = useParams<{ slug: string }>();
+  const [flashcards, setFlashcards] = useState<FlashcardTypes[]>([]);
   const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
   const [isFlipped, setFlip] = useState(false);
 
   useEffect(() => {
-    if (folderId && mockFlashcards[folderId]) {
-      // in a real app, fetch flashcards for this folder from API
-      setFlashcardDeck(mockFlashcards[folderId]);
-    }
-  }, [folderId]);
+    const fetchFolderData = async () => {
+      try {
+        console.log("Fetching folder data for slug:", slug);
+        const response = await getFolderFlashcardList(slug as string);
+        setFlashcards(response.flashcards);
+      } catch (error) {
+        console.error("Error fetching folder data:", error);
+      }
+    };
+
+    fetchFolderData();
+  }, [slug]);
 
   function clickNavigationButton({ navigationDirection }: { navigationDirection: "previous" | "next" }) {
     setFlip(false); // flip the card back to front
@@ -41,7 +42,7 @@ export default function FlashcardDeck() {
       // setTimeout at 100ms allow the card to finish flipping before changing the word
       setTimeout(() => {
         setCurrentFlashcardIndex((prevIndex) => {
-          return prevIndex < flashcardDeck.length - 1 ? prevIndex + 1 : flashcardDeck.length - 1;
+          return prevIndex < flashcards.length - 1 ? prevIndex + 1 : flashcards.length - 1;
         });
       }, 100);
     }
@@ -53,34 +54,45 @@ export default function FlashcardDeck() {
   return (
     <div className="container mx-auto">
       {/* Flashcard */}
-      <div className="perspective-500 mb-4 aspect-[4/3] cursor-pointer md:mb-8 md:aspect-[4/3] lg:aspect-[21/9]" onClick={() => setFlip(!isFlipped)}>
+      <div
+        className="perspective-500 aspect-[21/9] cursor-pointer transition-transform duration-200 ease-in-out hover:scale-101"
+        onClick={() => setFlip(!isFlipped)}
+      >
         <div className={`relative h-full w-full transition-transform duration-300 transform-3d ${isFlipped ? "rotate-x-180" : ""}`}>
           {/* Front */}
-          <Card className={cardFaceStyles}>
-            <CardHeader className="flex justify-between pt-6">
-              <Badge className={flashcardBadgeStyles} variant="secondary">
-                {flashcardDeck[currentFlashcardIndex]?.wordType}
+          <div className="bg-accent/70 absolute inset-0 h-full w-full rounded-2xl p-4 backface-hidden">
+            <div className="flex justify-between">
+              <Badge className="shadow-sm select-none" variant="secondary">
+                English
               </Badge>
-              <Badge className={flashcardBadgeStyles} variant="secondary">
-                {flashcardDeck[currentFlashcardIndex]?.phonetic}
-              </Badge>
-            </CardHeader>
-            <CardContent className={cardContentStyles}>
-              <p className={cardTextStyles}>{flashcardDeck[currentFlashcardIndex]?.word}</p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="flex h-full items-center justify-center overflow-hidden p-4 text-center align-middle">
+              <p className="text-4xl leading-tight text-wrap select-none">{flashcards[currentFlashcardIndex]?.word}</p>
+            </div>
+          </div>
 
           {/* Back */}
-          <div className={`${cardFaceStyles} rotate-x-180 overflow-auto`}>
+          <div className={"absolute inset-0 h-full w-full rotate-x-180 overflow-auto backface-hidden"}>
             <div className="flex h-full w-full items-center justify-center">
-              <SearchResultCard results={[flashcardDeck[currentFlashcardIndex]]} />
+              <div className="bg-accent/70 absolute inset-0 h-full w-full rounded-2xl p-4 backface-hidden">
+                <div className="flex justify-between">
+                  <Badge className="shadow-sm select-none" variant="secondary">
+                    Vietnamese
+                  </Badge>
+                </div>
+                <div className="flex h-full items-center justify-center overflow-hidden p-4 text-center align-middle">
+                  <p className="text-4xl leading-tight text-wrap select-none">
+                    {flashcards[currentFlashcardIndex]?.word_vi ? flashcards[currentFlashcardIndex]?.word_vi : "No Vietnamese word available."}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* progress bar */}
-      <CustomProgressBar currentIndex={currentFlashcardIndex} length={flashcardDeck.length} />
+      <CustomProgressBar currentIndex={currentFlashcardIndex} length={flashcards.length} />
 
       {/* previous and next button */}
       <div className="flex justify-between select-none">

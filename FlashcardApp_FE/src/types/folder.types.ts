@@ -11,6 +11,11 @@ export interface FolderTypes {
   slug: string;
 }
 
+export interface GetAllFoldersResponse {
+  total_pages: number;
+  folders: FolderTypes[];
+}
+
 export interface GetFolderFlashcardListResponse {
   total_count: number;
   page: number;

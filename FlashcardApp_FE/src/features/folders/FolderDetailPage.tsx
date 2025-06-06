@@ -1,12 +1,15 @@
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
 import { FolderTypes } from "@/types/folder.types";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
+import Flashcard from "../flashcards/Flashcard";
+import { Button } from "@/components/ui/button";
+import { GraduationCap } from "lucide-react";
 
 export default function FolderDetailPage() {
+  const { getFolderFlashcardList, getFolderBySlug } = useFolderService();
   const { slug } = useParams<{ slug: string }>();
   const [folder, setFolder] = useState<FolderTypes>();
   const [flashcards, setFlashcards] = useState<FlashcardTypes[]>([]);
@@ -16,8 +19,8 @@ export default function FolderDetailPage() {
     setLoading(true);
     const fetchFolderData = async () => {
       try {
-        const response = await folderService.getFolderFlashcardList(slug as string);
-        const folder = await folderService.getFolderBySlug(slug as string);
+        const response = await getFolderFlashcardList(slug as string);
+        const folder = await getFolderBySlug(slug as string);
         setFolder(folder);
         setFlashcards(response.flashcards);
         setLoading(false);
@@ -35,20 +38,25 @@ export default function FolderDetailPage() {
 
   return (
     <div className="space-y-4">
-      <p className="">{folder?.description}</p>
+      <div className="flex items-center justify-between">
+        <p className="">{folder?.description}</p>
+        <Button
+          className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
+          onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
+        >
+          <GraduationCap className="h-4 w-4" />
+          Study
+        </Button>
+      </div>
       <p className="text-xl font-bold">Flashcard List</p>
       {flashcards.length === 0 ? (
         <p>There are no flashcards in this folder. Try to add some using search!</p>
       ) : (
-        flashcards.map((flashcard) => (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" key={flashcard.word}>
-            <Card key={flashcard.word} className="mb-4 py-4 w-full">
-              <CardContent>
-                <h3 className="text-lg font-semibold">{flashcard.word}</h3>
-              </CardContent>
-            </Card>
-          </div>
-        ))
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {flashcards.map((flashcard) => (
+            <Flashcard {...flashcard} />
+          ))}
+        </div>
       )}
     </div>
   );

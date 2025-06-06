@@ -1,25 +1,60 @@
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { folderService } from "@/services/folderService";
+import { useFolderService } from "@/services/useFolderService";
 import { FolderTypes } from "@/types/folder.types";
-import { FolderIcon, FolderUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FolderPlus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { FlashcardTypes } from "@/types/flashcard.types";
+import { toast } from "sonner";
 
-interface FolderPickerModalProps {
-  onCancel: () => void;
-  word: string;
+export function useAddToFolder(result: FlashcardTypes) {
+  const { addFlashcardToFolder, getFolderBySlug } = useFolderService();
+  const [addToFolderLoading, setAddToFolderLoading] = useState(false);
+  const [selectedFolderSlug, setSelectedFolderSlug] = useState<string | undefined>(undefined);
+
+  const handleAddToFolder = async () => {
+    try {
+      setAddToFolderLoading(true);
+      setSelectedFolderSlug(selectedFolderSlug);
+      const folder = await getFolderBySlug(selectedFolderSlug || "");
+      await addFlashcardToFolder(selectedFolderSlug, result.flashcardId);
+      toast.info(`"${result.word}" added to "${folder.name}"`, {
+        action: {
+          label: `Go to "${folder.name}"`,
+          onClick: () => {
+            window.location.href = `/folders/${selectedFolderSlug}`;
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error adding to folder:", error);
+    } finally {
+      setAddToFolderLoading(false);
+    }
+  };
+
+  return { handleAddToFolder, addToFolderLoading, selectedFolderSlug, setSelectedFolderSlug };
 }
 
-export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFolder: string | null; setSelectedFolder: (slug: string) => void }) {
+export function FolderList({
+  selectedFolderSlug,
+  setSelectedFolderSlug,
+}: {
+  selectedFolderSlug?: string;
+  setSelectedFolderSlug: (slug: string | undefined) => void;
+}) {
+  const { getAllFolders } = useFolderService();
   const [folders, setFolders] = useState<FolderTypes[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     const fetchFolders = async () => {
-      const folders = await folderService.getAllFolder({ page: 1, limit: 30 });
-      setFolders(folders);
+      const response = await getAllFolders({ page: 1, limit: 30 });
+      setFolders(response.folders);
       setTimeout(() => {
         setLoading(false);
       }, 1000);
@@ -37,51 +72,55 @@ export function FolderList({ selectedFolder, setSelectedFolder }: { selectedFold
   }
 
   return (
-    <div className="grid w-full min-w-xs grid-cols-2 gap-4 transition-all md:grid-cols-3 lg:grid-cols-4">
-      {folders.map((folder: FolderTypes) => (
-        <div
-          key={folder.slug}
-          className={`bg-accent text-card-foreground hover:bg-accent/50 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${selectedFolder === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
-          onClick={() => setSelectedFolder(folder.slug)}
-        >
-          <div className="flex w-full items-center justify-between gap-2">
-            <div className="flex w-full items-center justify-start">
-              <Button variant="link" className="-ml-2 max-w-full overflow-hidden text-lg" tabIndex={-1}>
-                {folder.isPublic ? <FolderUp className="h-4 w-4" /> : <FolderIcon className="h-4 w-4" />}
-                <div className="truncate overflow-hidden">{folder.name}</div>
-              </Button>
+    <div className="custom-scrollbar max-h-[400px] overflow-y-auto">
+      <div className="grid w-full min-w-xs grid-cols-3 gap-4 transition-all">
+        {folders.map((folder: FolderTypes) => (
+          <div
+            key={folder.slug}
+            className={`bg-accent text-card-foreground hover:bg-accent/50 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${selectedFolderSlug === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
+            onClick={() => {
+              setSelectedFolderSlug(folder.slug);
+              console.log("folder slug:", folder.slug);
+            }}
+          >
+            <div className="flex w-full items-center justify-between gap-2">
+              <div className="flex w-full items-center justify-start">
+                <Button variant="link" className="-ml-4 max-w-full overflow-hidden text-lg" tabIndex={-1}>
+                  <div className="truncate overflow-hidden">{folder.name}</div>
+                </Button>
+              </div>
             </div>
+            <p className="text-muted-foreground line-clamp-2 truncate">{folder.description}</p>
           </div>
-          <p className="text-muted-foreground line-clamp-2 truncate">{folder.description}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
 
-export default function FolderPickerDialog({ onCancel, word }: FolderPickerModalProps) {
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+export default function FolderPickerDialog({ result }: { result: FlashcardTypes }) {
+  const { selectedFolderSlug, setSelectedFolderSlug, handleAddToFolder } = useAddToFolder(result);
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <Card className="h-3xl w-3xl space-y-4 py-6">
-        <CardHeader>
-          <h2 className="text-2xl font-bold">Select a folder</h2>
-          <p className="text-neutral-600 dark:text-neutral-400">Choose a folder to add "{word}"</p>
-        </CardHeader>
-
-        <CardContent>
-          <FolderList selectedFolder={selectedFolder} setSelectedFolder={setSelectedFolder} />
-          <div className="mt-6 flex items-center justify-end gap-4">
-            <Button variant="outline" className="rounded-xl" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button className="rounded-xl" onClick={() => console.log("Folder selected")}>
-              Add flashcard to folder
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <ExpandableButton
+          Icon={FolderPlus}
+          label="Add to folder"
+          variant="outline"
+          className="border-transparent hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/80 dark:hover:text-blue-500"
+        />
+      </DialogTrigger>
+      <DialogContent className="!max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Add to folder</DialogTitle>
+          <DialogDescription>
+            Select a folder to add the word <strong>{result.word}</strong> to
+          </DialogDescription>
+        </DialogHeader>
+        <FolderList selectedFolderSlug={selectedFolderSlug} setSelectedFolderSlug={setSelectedFolderSlug} />
+        <Button onClick={() => handleAddToFolder()}>Add flashcard to folder</Button>
+      </DialogContent>
+    </Dialog>
   );
 }

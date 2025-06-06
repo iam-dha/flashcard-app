@@ -6,12 +6,14 @@ import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
 import HomePage from "@/features/home/HomePage";
 import SearchPage from "@/features/search/SearchPage";
-import FlashcardDeck from "@/features/flashcards/FlashcardDeck";
-import FoldersPage from "@/features/folders/FolderListPage";
+import { FlashcardDeck } from "@/features/flashcards/FlashcardDeck";
+import FoldersListPage from "@/features/folders/FolderListPage";
 import GamesPage from "@/features/games/GamesPage";
 import FolderDetailPage from "@/features/folders/FolderDetailPage";
 import RegisterPage from "@/features/auth/RegisterPage";
 import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
+import UserLayout from "@/layout/UserLayout";
+import UserProfilePage from "@/features/user/UserProfilePage";
 
 // discriminated union type for all possible route configurations
 type RouteConfig = BaseRouteConfig | FolderRouteConfig | UserRouteConfig;
@@ -20,7 +22,7 @@ export const routes: BaseRouteConfig[] = [
   {
     path: "/home",
     title: "Home",
-    icon: <Home />,
+    icon: <Home/>,
     element: <HomePage />,
     showInSidebar: true,
   },
@@ -32,17 +34,10 @@ export const routes: BaseRouteConfig[] = [
     showInSidebar: true,
   },
   {
-    path: "/flashcards",
-    title: "Flashcards",
-    icon: <PanelTop />,
-    element: <FlashcardDeck />,
-    showInSidebar: true,
-  },
-  {
     path: "/folders",
     title: "Folders",
     icon: <Folder />,
-    element: <FoldersPage />,
+    element: <FoldersListPage />,
     showInSidebar: true,
   },
   {
@@ -52,7 +47,7 @@ export const routes: BaseRouteConfig[] = [
     element: <FolderDetailPage />,
   },
   {
-    path: "/folders/:folderId/study",
+    path: "/folders/:slug/study",
     element: <FlashcardDeck />,
   },
   {
@@ -102,6 +97,12 @@ export interface BaseRouteConfig {
 export interface FolderRouteConfig extends BaseRouteConfig {
   type: "folder";
   slug: string;
+  folderParams?: {
+    page?: number;
+    limit?: number;
+    sort?: "createdAt" | "name" | "updatedAt" | "isPublic";
+    order?: "asc" | "desc";
+  };
 }
 
 // user-specific route configuration
@@ -109,6 +110,28 @@ export interface UserRouteConfig extends BaseRouteConfig {
   type: "user";
   userId: string;
 }
+
+export const getPaginationParams = (searchParams: URLSearchParams, route?: FolderRouteConfig) => {
+  const page = parseInt(searchParams.get("page") || route?.folderParams?.page?.toString() || "1");
+  const limit = parseInt(searchParams.get("limit") || route?.folderParams?.limit?.toString() || "12");
+  const sort = searchParams.get("sort") || route?.folderParams?.sort || "createdAt";
+  const order = (searchParams.get("order") as "asc" | "desc") || route?.folderParams?.order || "desc";
+
+  return { page, limit, sort, order };
+};
+
+// Utility function to build URL with pagination parameters
+export const buildPaginationUrl = (basePath: string, params: { page?: number; limit?: number; sort?: string; order?: "asc" | "desc" }) => {
+  const searchParams = new URLSearchParams();
+
+  if (params.page && params.page > 1) searchParams.set("page", params.page.toString());
+  if (params.limit && params.limit !== 12) searchParams.set("limit", params.limit.toString());
+  if (params.sort && params.sort !== "createdAt") searchParams.set("sort", params.sort);
+  if (params.order && params.order !== "desc") searchParams.set("order", params.order);
+
+  const queryString = searchParams.toString();
+  return queryString ? `${basePath}?${queryString}` : basePath;
+};
 
 // create child routes from the configuration
 const childRoutes = routes.map((route) => ({
@@ -132,7 +155,7 @@ export const router = createBrowserRouter([
       {
         path: "/reset-password/:token",
         element: <ResetPasswordPage />,
-      }
+      },
     ],
   },
   {
@@ -150,4 +173,14 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/user",
+    element: <UserLayout />,
+    children: [
+      {
+        path: "/user/profile",
+        element: <UserProfilePage />,
+      }
+    ]
+  }
 ]);

@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(user);
             setIsAuthenticated(true);
           }
-          setIsAuthenticated(true);
         }
       } catch (error) {
         console.error("Authentication initialization error:", error);

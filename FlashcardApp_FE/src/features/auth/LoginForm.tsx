@@ -98,7 +98,7 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" />
+                    <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" className="bg-input"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,7 +117,7 @@ export default function LoginForm() {
                       </Button>
                     </div>
                     <FormControl>
-                      <Input type="password" {...field} autoComplete="current-password" />
+                      <Input type="password" {...field} autoComplete="current-password" className="bg-input"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -14,7 +14,7 @@ export default function LoginPage() {
   }, [isAuthenticated, authLoading, navigate]);
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center py-10">
+    <div className="flex flex-col items-center justify-center">
       <LoginForm />
     </div>
   );
