@@ -15,7 +15,7 @@ interface FolderCardDropdownMenuProps {
 export function FolderCardDropdownMenu({ slug, name }: FolderCardDropdownMenuProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-card-foreground hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent hover:ml-2 transition-all duration-200">
+      <DropdownMenuTrigger className="hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent hover:ml-2 transition-all duration-200">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-popover mt-2 flex flex-col rounded-xl border border-transparent shadow-lg">
@@ -50,7 +50,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
 
       {/* Main folder body with 3D hover effect */}
       <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between rounded-xl border shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
-        <Link to={`/folders/${folder.slug}`} className="flex flex-grow flex-col gap-4 px-4 pt-4 pb-10" title={folder.name}>
+        <Link to={`/folders/${folder.slug}`} className="flex flex-grow flex-col gap-4 px-4 pt-4 pb-4" title={folder.name}>
           <div className="flex flex-col overflow-hidden">
             <Button variant="link" className="-ml-4 w-full justify-start text-lg font-medium cursor-pointer">
               <div className="block truncate overflow-hidden">{folder.name}</div>
@@ -60,9 +60,9 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
             </p>
           </div>
         </Link>
-        <div className="flex items-end justify-between p-4">
+        <div className="flex flex-wrap items-end justify-between p-4 gap-4">
           <Link to={`/folders/${folder.slug}`} className="flex flex-shrink-0 gap-2">
-            <Badge variant="secondary" title="Flashcards in this folder">
+            <Badge variant="default" title="Flashcards in this folder">
               {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
             </Badge>
             {folder.isPublic ? (
@@ -75,9 +75,9 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
               </Badge>
             )}
           </Link>
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             <Button
-              className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-xl shadow-sm hover:scale-105"
+              className="hover:bg-accent/80 bg-accent justify-start rounded-xl shadow-sm hover:scale-105"
               onClick={() => (window.location.href = `/folders/${folder.slug}/study`)}
             >
               <GraduationCap className="h-4 w-4" />
@@ -87,6 +87,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
           </div>
         </div>
       </div>
+
       {/* Paper inside the folder */}
       <div className="absolute top-0 right-0 left-0 z-20 mx-auto h-32 w-[90%] translate-y-2 scale-[.98] rounded-md bg-gray-200 shadow-sm transition-all duration-300 ease-in-out group-hover:-translate-y-3" />
     </div>

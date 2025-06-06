@@ -16,7 +16,7 @@ function OrderButton({ order, toggleSortOrder }: { order: SortOrder; toggleSortO
     <ExpandableButton
       Icon={order === "asc" ? ArrowUp : ArrowDown}
       label={order === "asc" ? "Ascending order" : "Descending order"}
-      className="group hover:bg-accent flex items-center overflow-auto rounded-xl transition-all duration-700 hover:ml-2"
+      className="group hover:bg-accent flex items-center overflow-auto rounded-xl transition-all duration-300 hover:ml-2"
       variant="ghost"
       onClick={toggleSortOrder}
     />
