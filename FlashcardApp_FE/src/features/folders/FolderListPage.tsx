@@ -45,17 +45,12 @@ export default function FoldersListPage() {
           </div>
         </div>
         <TabsContent value="grid">
-          <div className="space-y-4">
             <FolderListGridView {...folderListState} />
-            <FolderListPagePagination />
-          </div>
         </TabsContent>
         <TabsContent value="table">
-          <div className="space-y-4">
             <FolderListTableView {...folderListState} />
-            <FolderListPagePagination />
-          </div>
         </TabsContent>
+        <FolderListPagePagination />
       </Tabs>
     </div>
   );

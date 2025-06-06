@@ -4,6 +4,7 @@ import { useGetFolderList } from "../hooks/useGetFolderList";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import DeleteFolderCard from "./FolderDeleteDialog";
 
 export function FolderListGridView({ folderList }: { folderList: FolderTypes[] }) {
   const { folderListLoading } = useGetFolderList();
@@ -54,6 +55,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
                 >
                   Study
                 </Button>
+                <DeleteFolderCard slug={folder.slug} name={folder.name} />
               </TableCell>
               <TableCell className=""></TableCell>
             </TableRow>
