@@ -50,7 +50,7 @@ export default function CreateFolderCard() {
       <DialogTrigger asChild>
         <ExpandableButton Icon={FolderPlus} label="New Folder" variant="ghost" />
       </DialogTrigger>
-      <DialogContent className="bg-popover text-card-foreground shadow-lg">
+      <DialogContent className="text-card-foreground shadow-lg border-transparent">
         <DialogTitle>Create new folder</DialogTitle>
         <DialogDescription>Enter folder name and description</DialogDescription>
         <Form {...folderCreateForm}>

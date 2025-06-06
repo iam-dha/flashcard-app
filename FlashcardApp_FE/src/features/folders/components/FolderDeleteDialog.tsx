@@ -49,7 +49,7 @@ export default function DeleteFolderCard({ trigger, slug, name }: DeleteFolderCa
           <DialogClose asChild disabled={loading}>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button className="bg-destructive/20 text-red-500 hover:bg-red-500/40" onClick={handleDelete} disabled={loading}>
+          <Button className="bg-destructive/30 text-red-500 hover:bg-red-500/40" onClick={handleDelete} disabled={loading}>
             {loading ? "Deleting..." : "Delete"}
           </Button>
         </div>
