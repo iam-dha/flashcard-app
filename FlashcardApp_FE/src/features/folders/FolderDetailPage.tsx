@@ -6,6 +6,7 @@ import { FolderTypes } from "@/types/folder.types";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import Flashcard from "../flashcards/Flashcard";
 import { Button } from "@/components/ui/button";
+import { GraduationCap } from "lucide-react";
 
 export default function FolderDetailPage() {
   const { getFolderFlashcardList, getFolderBySlug } = useFolderService();
@@ -43,6 +44,7 @@ export default function FolderDetailPage() {
           className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
           onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
         >
+          <GraduationCap className="h-4 w-4" />
           Study
         </Button>
       </div>

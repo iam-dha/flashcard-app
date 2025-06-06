@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useFolderService } from "@/services/useFolderService";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
 import { Dialog, DialogTrigger, DialogTitle, DialogDescription, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
 
 interface DeleteFolderCardProps {
+  trigger: React.ReactNode; // Optional trigger prop for custom button
   slug: string;
   name: string;
 }
 
-export default function DeleteFolderCard({ slug, name }: DeleteFolderCardProps) {
+export default function DeleteFolderCard({ trigger, slug, name }: DeleteFolderCardProps) {
   const { deleteFolder } = useFolderService();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false); // Add controlled state
@@ -37,10 +37,7 @@ export default function DeleteFolderCard({ slug, name }: DeleteFolderCardProps) 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent">
-          <Trash className="text-red-500" />
-          <p className="text-red-500">Delete</p>
-        </Button>
+        {trigger}
       </DialogTrigger>
       <DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
         <DialogTitle>Delete Folder</DialogTitle>

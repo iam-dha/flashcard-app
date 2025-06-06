@@ -3,7 +3,7 @@ import FolderCardDropdownMenu from "./FolderCardDropdownMenu";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Users } from "lucide-react";
+import { User, Users, GraduationCap } from "lucide-react";
 
 export default function FolderCard({ folder }: { folder: FolderTypes }) {
   return (
@@ -30,11 +30,11 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
                 {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
               </Badge>
               {folder.isPublic ? (
-                <Badge variant="secondary" className="bg-muted">
+                <Badge variant="secondary" className="text-green-800 bg-green-200" title="Public folder">
                   <Users />
                 </Badge>
               ) : (
-                <Badge variant="secondary" className="bg-muted">
+                <Badge variant="secondary" className="bg-blue-300 text-blue-800" title="Private folder">
                   <User />
                 </Badge>
               )}
@@ -47,6 +47,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
             className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
             onClick={() => (window.location.href = `/folders/${folder.slug}/study`)}
           >
+            <GraduationCap className="h-4 w-4" />
             Study
           </Button>
           <FolderCardDropdownMenu slug={folder.slug} name={folder.name} />
