@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useFolderService } from "@/services/useFolderService";
 import UserDropdownMenu from "./UserDropdownMenu";
 import { useSidebar } from "@/components/ui/sidebar";
+import CustomBackButton from "@/components/custom-ui/CustomBackButton";
 
 export function usePageTitle() {
   const { getFolderBySlug } = useFolderService();
@@ -47,6 +48,9 @@ export default function AppHeader() {
             <CustomSidebarTrigger variant="open" />
           </div>
         )}
+        <div className="-ml-4">
+          <CustomBackButton />
+        </div>
         <h1 className="text-3xl font-semibold select-none">{pageTitle}</h1>
       </div>
       <UserDropdownMenu />
