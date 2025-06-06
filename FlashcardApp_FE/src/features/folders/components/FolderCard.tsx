@@ -9,12 +9,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
   return (
     <div className="group relative w-full perspective-[1000px]">
       {/* Folder tab */}
-      <div
-        className="bg-card border-border/50 absolute -top-6 z-10 h-12 w-28 rounded-t-lg border shadow-md"
-        style={{
-          clipPath: "polygon(0 100%, 100%, 100% 0, 15% 0, 10% 30%, 0 30%)",
-        }}
-      ></div>
+      <div className="bg-card border-border/50 absolute -top-6 z-10 h-12 w-28 rounded-t-lg border shadow-md"></div>
 
       {/* Main folder body with 3D hover effect */}
       <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between space-y-4 rounded-xl border p-4 shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
@@ -30,7 +25,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
                 {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
               </Badge>
               {folder.isPublic ? (
-                <Badge variant="secondary" className="text-green-800 bg-green-200" title="Public folder">
+                <Badge variant="secondary" className="bg-green-200 text-green-800" title="Public folder">
                   <Users />
                 </Badge>
               ) : (
@@ -44,7 +39,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
         </Link>
         <div className="flex items-end justify-between">
           <Button
-            className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
+            className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
             onClick={() => (window.location.href = `/folders/${folder.slug}/study`)}
           >
             <GraduationCap className="h-4 w-4" />

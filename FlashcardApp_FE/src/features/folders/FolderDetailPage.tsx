@@ -41,7 +41,7 @@ export default function FolderDetailPage() {
       <div className="flex items-center justify-between">
         <p className="">{folder?.description}</p>
         <Button
-          className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm"
+          className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
           onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
         >
           <GraduationCap className="h-4 w-4" />
