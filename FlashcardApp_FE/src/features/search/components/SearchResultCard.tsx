@@ -85,7 +85,7 @@ export function SearchResultCardSide(result: FlashcardTypes) {
   return (
     <Card className="flex-1 rounded-lg p-4 border-transparent shadow-md">
       <div className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-        <p className="text-2xl text-primary-foreground font-bold">{result.word}</p>
+        <p className="text-2xl text-foreground font-bold">{result.word}</p>
         <Button variant="outline" onClick={playAudio} className="rounded-xl border-transparent">
           <Volume2 className="h-5 w-5" />
           {result.phonetic && <p className="text-sm text-secondary-foreground">{result.phonetic}</p>}

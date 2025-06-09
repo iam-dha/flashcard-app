@@ -52,7 +52,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
       <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between rounded-xl border shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
         <Link to={`/folders/${folder.slug}`} className="flex flex-grow flex-col gap-4 px-4 pt-4 pb-4" title={folder.name}>
           <div className="flex flex-col overflow-hidden">
-            <Button variant="link" className="-ml-4 w-full justify-start text-lg font-medium cursor-pointer">
+            <Button variant="link" className="-ml-4 w-full justify-start text-lg font-medium cursor-pointer text-foreground">
               <div className="block truncate overflow-hidden">{folder.name}</div>
             </Button>
             <p className="line-clamp-2 truncate overflow-hidden">
@@ -62,7 +62,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
         </Link>
         <div className="flex flex-wrap items-end justify-between p-4 gap-4">
           <Link to={`/folders/${folder.slug}`} className="flex flex-shrink-0 gap-2">
-            <Badge variant="default" title="Flashcards in this folder">
+            <Badge variant="default" title="Flashcards in this folder" className="text-white">
               {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
             </Badge>
             {folder.isPublic ? (

@@ -81,8 +81,8 @@
   --card-foreground: rgba(10, 50, 68, 1);
   --popover: rgba(255, 255, 255, 1);
   --popover-foreground: rgba(10, 50, 68, 1);
-  --primary: rgb(54, 191, 255);
-  --primary-foreground: rgb(0, 0, 0);
+  --primary: rgb(0, 75, 110);
+  --primary-foreground: rgb(255, 255, 255);
   --secondary: rgb(102, 209, 248);
   --secondary-foreground: rgba(10, 50, 68, 1);
   --muted: rgba(230, 247, 253, 1);

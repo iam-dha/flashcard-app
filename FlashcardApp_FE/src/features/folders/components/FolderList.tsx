@@ -47,7 +47,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
               <TableCell className="flex flex-1 px-4 min-w-xl justify-between">
                 <Button
                   variant="link"
-                  className="h-auto p-0 font-medium transition-colors"
+                  className="h-auto p-0 font-medium transition-colors text-foreground"
                   onClick={() => (window.location.href = `/folders/${folder?.slug}`)}
                 >
                   {folder.name}
@@ -78,7 +78,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
               </TableCell>
               <TableCell className="px-4">{new Date(folder.createdAt).toLocaleDateString("en-GB")}</TableCell>
               <TableCell className="px-4">
-                <span className="bg-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
+                <span className="bg-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs text-white font-medium">
                   {folder.flashcardCount < 2 ? `${folder.flashcardCount} flashcard` : `${folder.flashcardCount} flashcards`}
                 </span>
               </TableCell>
