@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { authService } from "@/services/authService";
+import { useAuth } from "@/services/useAuth";
 import {
   AlertDialog,
   AlertDialogFooter,
@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
 export default function LogoutConfirmDialog() {
+  const { logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export default function LogoutConfirmDialog() {
     setLoading(true);
     setError(null);
     try {
-      authService.logout();
+      logout();
       setSuccess("Logged out successfully.");
       setTimeout(() => {
         window.location.reload();

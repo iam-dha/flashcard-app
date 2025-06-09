@@ -1,14 +1,14 @@
 import LoginForm from "@/features/auth/LoginForm";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuthContext } from "@/features/auth/AuthContext";
 
 export default function LoginPage() {
-  const { isAuthenticated, authLoading } = useAuth();
+  const { isAuthenticated, authLoading } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated && !authLoading) {
+    if (isAuthenticated() && !authLoading) {
       navigate("/");
     }
   }, [isAuthenticated, authLoading, navigate]);

@@ -1,14 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuthContext } from "@/features/auth/AuthContext";
 import CustomLoader from "../components/custom-ui/CustomLoader";
 import { Toaster } from "sonner";
 
 export default function UserLayout() {
-  const { isAuthenticated, authLoading } = useAuth();
+  const { isAuthenticated, authLoading } = useAuthContext();
 
   return authLoading ? (
     <CustomLoader />
-  ) : isAuthenticated ? (
+  ) : isAuthenticated() ? (
     <>
       <Outlet />
       <Toaster richColors closeButton />

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuthContext } from "@/features/auth/AuthContext";
 import CustomLoader from "../components/custom-ui/CustomLoader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "./sidebar/AppSidebar";
@@ -7,12 +7,12 @@ import AppHeader from "./AppHeader";
 import { Toaster } from "sonner";
 
 export default function AppLayout() {
-  const { isAuthenticated, authLoading } = useAuth();
+  const { isAuthenticated, authLoading } = useAuthContext();
   const defaultOpen = localStorage.getItem("sidebarOpen") === "true" || false;
 
   return authLoading ? (
     <CustomLoader />
-  ) : isAuthenticated ? (
+  ) : isAuthenticated() ? (
     <>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />

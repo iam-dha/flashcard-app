@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { authService } from "@/services/authService";
+import { useAuth } from "@/services/useAuth";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ const schema = z
 type ResetInputs = z.infer<typeof schema>;
 
 export default function ResetPasswordPage() {
+  const { resetPassword, login } = useAuth();
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [success, setSuccess] = useState<string | null>(null);
@@ -42,10 +43,10 @@ export default function ResetPasswordPage() {
     setError(null);
     setSuccess(null);
     try {
-      await authService.resetPassword(token!, data.newPassword, data.reNewPassword);
+      await resetPassword(token!, data.newPassword, data.reNewPassword);
       setSuccess("Password reset successfully! Redirecting to home page...");
       setTimeout(async () => {
-        await authService.login({ email: emailFromUrl ?? "", password: data.newPassword });
+        await login({ email: emailFromUrl ?? "", password: data.newPassword });
         navigate("/");
       }, 2000);
     } catch (err: any) {

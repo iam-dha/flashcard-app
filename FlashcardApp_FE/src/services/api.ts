@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authService } from "./authService";
+import { useAuth } from "./useAuth";
 
 const api = axios.create({
   // baseURL: "http://54.208.12.109:9090/api/v1",
@@ -19,7 +19,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // response interceptor to handle errors
@@ -32,13 +32,13 @@ api.interceptors.response.use(
       try {
         const refreshResponse = await api.post("/auth/refresh");
         const newAccessToken = refreshResponse.data.accessToken;
-        
-        authService.setAccessToken(newAccessToken); // update accessToken in local storage
+
+        localStorage.setItem("accessToken", newAccessToken); // update accessToken in local storage
 
         // update headers with new accessToken
         api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
         error.config.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        
+
         return api(error.config); // retry the original request
       } catch (refreshError) {
         window.location.href = "/auth/login"; // redirect to login if refresh fails
@@ -46,7 +46,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, CircleCheck } from "lucide-react";
@@ -8,7 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authService } from "@/services/authService";
+import { useAuth } from "@/services/useAuth";
 import { useState } from "react";
 
 const loginSchema = z.object({
@@ -19,7 +18,7 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const { login, authLoading, error } = useAuth();
+  const { login, authLoading, error, forgotPassword } = useAuth();
   const navigate = useNavigate();
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState("");
@@ -32,9 +31,9 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = async (data: LoginFormInputs) => {
+  const onSubmit = async (authData: LoginFormInputs) => {
     try {
-      await login(data.email, data.password);
+      await login(authData);
       navigate("/");
     } catch (error: any) {
       console.log("Login error catched in form:", error);
@@ -50,7 +49,7 @@ export default function LoginForm() {
   };
 
   const handleForgotPassword = async () => {
-    await authService.forgotPassword(form.getValues("email"));
+    await forgotPassword(form.getValues("email"));
     setForgotPasswordSuccess("An email has been sent to you. Please check your inbox.");
     console.log("Password reset email sent to ", form.getValues("email"));
   };
@@ -98,7 +97,7 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" className="bg-input"/>
+                    <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" className="bg-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,7 +116,7 @@ export default function LoginForm() {
                       </Button>
                     </div>
                     <FormControl>
-                      <Input type="password" {...field} autoComplete="current-password" className="bg-input"/>
+                      <Input type="password" {...field} autoComplete="current-password" className="bg-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
@@ -8,7 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authService } from "@/services/authService";
+import { useAuth } from "@/services/useAuth";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useState } from "react";
 
@@ -33,7 +32,7 @@ type VerifyOtpFormInputs = z.infer<typeof otpSchema>;
 type RegisterFormInputs = z.infer<typeof registerSchema>;
 
 export default function RegisterEmailForm() {
-  const { register, authLoading, error } = useAuth();
+  const { register, authLoading, error, requestOtp, verifyOtp } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -69,7 +68,7 @@ export default function RegisterEmailForm() {
 
   const handleEmailSubmit = async (data: Pick<RegisterFormInputs, "email">) => {
     try {
-      await authService.requestOtp(data.email);
+      await requestOtp(data.email);
       setOtpSent(true);
       setEmail(data.email);
       registerForm.setValue("email", data.email); // keep email in form state
@@ -82,7 +81,7 @@ export default function RegisterEmailForm() {
     console.log("OTP submit called", data);
     setOtpLoading(true);
     try {
-      const result = await authService.verifyOtp(email, data.otp);
+      const result = await verifyOtp(email, data.otp);
       setOtpVerified(true);
       setToken(result.token); // store the token for later use
       registerForm.setValue("token", result.token); // keep token in form state
