@@ -77,7 +77,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
           </Link>
           <div className="flex items-center justify-between">
             <Button
-              className="hover:bg-accent/80 bg-accent justify-start rounded-xl shadow-sm hover:scale-105"
+              className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-xl shadow-sm hover:scale-105"
               onClick={() => (window.location.href = `/folders/${folder.slug}/study`)}
             >
               <GraduationCap className="h-4 w-4" />

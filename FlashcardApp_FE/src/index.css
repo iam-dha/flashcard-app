@@ -87,7 +87,7 @@
   --secondary-foreground: rgba(10, 50, 68, 1);
   --muted: rgba(230, 247, 253, 1);
   --muted-foreground: rgba(93, 141, 161, 1);
-  --accent: rgba(255, 216, 116, 1);
+  --accent: rgb(255, 187, 15);
   --accent-foreground: rgba(0, 0, 0, 1);
   --destructive: rgba(225, 29, 72, 1);
   --border: rgba(152, 222, 255, 1);
