@@ -75,7 +75,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: rgba(196, 237, 255, 1);
+  --background: rgb(224, 246, 255);
   --foreground: rgba(10, 50, 68, 1);
   --card: rgba(88, 202, 252, 1);
   --card-foreground: rgba(10, 50, 68, 1);
