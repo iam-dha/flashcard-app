@@ -190,7 +190,7 @@
 }
 
 .frosted-glass {
-  @apply backdrop-blur-sm bg-background/40;
+  @apply bg-background/40 backdrop-blur-sm;
 }
 
 .custom-scrollbar {
@@ -200,4 +200,8 @@
 
 .dark .custom-scrollbar {
   scrollbar-color: transparent;
+}
+
+.liquid-glass {
+  @apply text-foreground rounded-full border border-white/20 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:scale-102 hover:bg-white/20;
 }

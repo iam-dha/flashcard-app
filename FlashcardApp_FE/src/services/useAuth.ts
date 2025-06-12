@@ -103,7 +103,8 @@ export function useAuth() {
       handleAuth(response.data);
       return response.data;
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to register";
+      const errorMessage = error.response?.data?.message || "Failed to register";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -119,7 +120,8 @@ export function useAuth() {
       handleAuth(response.data);
       return response.data;
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to login";
+      const errorMessage = error.response?.data?.message || "Failed to login";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -150,7 +152,8 @@ export function useAuth() {
       setAuthError(null);
       await api.post("/auth/register/request-otp", { email });
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to request OTP";
+      const errorMessage = error.response?.data?.message || "Failed to request OTP";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -165,7 +168,8 @@ export function useAuth() {
       const response = await api.post("/auth/register/verOtp", { email, otp });
       return { token: response.data.token };
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to verify OTP";
+      const errorMessage = error.response?.data?.message || "Failed to verify OTP";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -179,7 +183,8 @@ export function useAuth() {
       setAuthError(null);
       await api.post("/auth/forgot-password", { email });
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to send password reset email";
+      const errorMessage = error.response?.data?.message || "Failed to send password reset email";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -193,7 +198,8 @@ export function useAuth() {
       setAuthError(null);
       await api.post(`/auth/reset-password/${token}`, { newPassword, reNewPassword });
     } catch (error: any) {
-      const errorMessage = "From API: " + error.response?.data?.message || "Failed to reset password";
+      const errorMessage = error.response?.data?.message || "Failed to reset password";
+      console.log("From API:", errorMessage);
       setAuthError(errorMessage);
       throw new Error(errorMessage);
     } finally {
