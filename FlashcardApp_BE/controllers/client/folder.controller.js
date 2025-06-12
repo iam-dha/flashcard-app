@@ -91,11 +91,18 @@ module.exports.getFolderBySlug = async (req, res) => {
     try {
         const folder = await Folder.findOne({
             slug: slug,
-            userId: userId,
-        }).select("-__v -updatedAt -userId -_id");
+        }).select("-__v -updatedAt -_id");
 
         if (!folder) {
             return res.status(404).json({ message: "Folder is not found" });
+        }
+        if (folder.userId.toString() !== userId) {
+            if (!folder.isPublic) {
+                return res.status(403).json({
+                    message: "You do not have permission to access this folder",
+                });
+            }
+            return res.status(200).json(folder);
         }
         return res.status(200).json(folder);
     } catch (error) {
@@ -154,11 +161,17 @@ module.exports.getFolderFlashcards = async (req, res) => {
     try {
         const folder = await Folder.findOne({
             slug: slug,
-            userId: userId,
         }).select("-__v -updatedAt -userId");
         if (!folder) {
             return res.status(404).json({ message: "Folder is not found" });
         }
+        if (folder.userId.toString() !== userId) {
+            if (!folder.isPublic) {
+                return res.status(403).json({
+                    message: "You do not have permission to access this folder",
+                });
+            }
+        } 
         const totalCount = await FolderFlashcard.countDocuments({
             folderId: folder._id,
         });

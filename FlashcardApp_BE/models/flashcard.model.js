@@ -25,6 +25,11 @@ const flashcard_schema = new mongoose.Schema(
                 ]
             }
         ],
+        vi_meanings: {
+            type: String,
+            trim: true,
+            default: "Chưa có nghĩa tiếng Việt"
+        },
         phonetics:[
             {
                 pronunciation: {type: String, required: true},
