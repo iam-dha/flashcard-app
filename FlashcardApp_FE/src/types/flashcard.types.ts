@@ -6,8 +6,8 @@ export interface FlashcardTypes {
   definition: string[];
   example: string;
   phonetic?: string;
-  imageUrl?: string;
-  audioUrl?: string;
+  image_url?: string;
+  audio_url?: string;
   word_vi: string;
   wordType_vi?: string;
   definition_vi: string[];

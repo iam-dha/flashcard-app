@@ -3,37 +3,14 @@ import { useAudio } from "@/hooks/useAudio";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import api from "@/services/api";
 
-function oldMapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
-  return apiData.flatMap((e: any) => {
-    const flashcardId = e._id ?? "";
-    const word = e.word;
-    const phonetic = e.phonetics?.[0]?.pronunciation ?? "";
-    const audioUrl = e.phonetics?.find((p: any) => p.sound)?.sound ?? "";
-
-    return e.meanings.map((meaning: any) => ({
-      flashcardId,
-      word,
-      wordType: meaning.partOfSpeech,
-      definition: meaning.definitions.map((def: any) => def.definition + " "),
-      example: meaning.definitions.find((def: any) => def.example)?.example ?? "",
-      phonetic,
-      imageUrl: "", // not provided by API
-      audioUrl,
-      word_vi: "", // not provided by API
-      wordType_vi: "",
-      definition_vi: [],
-      example_vi: "",
-      slug: e.slug || "",
-    }));
-  });
-}
-
 function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
   return apiData.flatMap((flashcard: any) => {
     const flashcardId = flashcard._id ?? "";
     const word = flashcard.word;
+    const word_vi = flashcard.vi_meanings ?? "";
     const phonetic = flashcard.phonetics?.[0]?.pronunciation ?? "";
-    const audioUrl = flashcard.phonetics?.find((p: any) => p.sound)?.sound ?? "";
+    const audio_url = flashcard.phonetics?.find((p: any) => p.sound)?.sound ?? "";
+    const image_url = flashcard.image_url ?? "";
 
     // for each meaning, for each definition, create a flashcard
     return flashcard.meanings.flatMap((meaning: any) =>
@@ -45,11 +22,11 @@ function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
         definition: def.definition,
         example: def.example ?? "",
         phonetic,
-        imageUrl: "", // not provided by API
-        audioUrl,
-        word_vi: "", // not provided by API
+        image_url,
+        audio_url,
+        word_vi,
         wordType_vi: "",
-        definition_vi: [],
+        definition_vi: def.vi_definition,
         example_vi: "",
         slug: flashcard.slug || "",
       })),
