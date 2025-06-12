@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
 import { Input } from "@/components/ui/input";
 
-export default function CreateFolderCard() {
+export default function FolderCreateDialog() {
   const { createFolder } = useFolderService();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function CreateFolderCard() {
       <DialogTrigger asChild>
         <ExpandableButton Icon={FolderPlus} label="New Folder" variant="ghost" />
       </DialogTrigger>
-      <DialogContent className="text-card-foreground shadow-lg border-transparent">
+      <DialogContent className="text-card-foreground border-transparent shadow-lg">
         <DialogTitle>Create new folder</DialogTitle>
         <DialogDescription>Enter folder name and description</DialogDescription>
         <Form {...folderCreateForm}>
@@ -81,7 +81,7 @@ export default function CreateFolderCard() {
                   <FormItem>
                     <FormLabel>Folder Description</FormLabel>
                     <FormControl>
-                      <textarea placeholder="Enter folder description" {...field} className="min-h-[40px] w-full rounded-md border p-2 bg-input" />
+                      <textarea placeholder="Enter folder description" {...field} className="bg-input min-h-[40px] w-full rounded-md border p-2" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

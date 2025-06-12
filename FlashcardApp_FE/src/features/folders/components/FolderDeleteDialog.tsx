@@ -11,7 +11,7 @@ interface DeleteFolderCardProps {
   name: string;
 }
 
-export default function DeleteFolderCard({ trigger, slug, name }: DeleteFolderCardProps) {
+export default function FolderDeleteDialog({ trigger, slug, name }: DeleteFolderCardProps) {
   const { deleteFolder } = useFolderService();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false); // Add controlled state
@@ -36,9 +36,7 @@ export default function DeleteFolderCard({ trigger, slug, name }: DeleteFolderCa
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
         <DialogTitle>Delete Folder</DialogTitle>
         <DialogDescription>

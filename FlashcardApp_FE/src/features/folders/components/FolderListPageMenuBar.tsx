@@ -1,6 +1,6 @@
 import { EllipsisVertical, Share, Trash, ArrowUp, ArrowDown } from "lucide-react"; // Import the form
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
-import CreateFolderCard from "./FolderCreateDialog";
+import FolderCreateDialog from "./FolderCreateDialog";
 import FolderSortDropdownMenu from "./FolderSortDropdownMenu";
 import { SortField, SortOrder } from "../hooks/useGetFolderList";
 
@@ -32,7 +32,7 @@ export function FolderListPageMenuBar({ sort, updateSort, order, toggleSortOrder
           <OrderButton order={order} toggleSortOrder={toggleSortOrder} />
         </div>
         <div className="flex">
-          <CreateFolderCard />
+          <FolderCreateDialog />
           <ExpandableButton Icon={Share} label="Share" variant="ghost" />
           <ExpandableButton
             Icon={Trash}

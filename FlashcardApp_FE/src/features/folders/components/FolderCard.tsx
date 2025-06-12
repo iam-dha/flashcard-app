@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Users, GraduationCap } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical, PencilLine, Share, Trash } from "lucide-react";
-import DeleteFolderCard from "./FolderDeleteDialog";
+import FolderDeleteDialog from "./FolderDeleteDialog";
 
 interface FolderCardDropdownMenuProps {
   slug: string;
@@ -15,7 +15,7 @@ interface FolderCardDropdownMenuProps {
 export function FolderCardDropdownMenu({ slug, name }: FolderCardDropdownMenuProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent hover:ml-2 transition-all duration-200">
+      <DropdownMenuTrigger className="hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:ml-2">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-popover mt-2 flex flex-col rounded-xl border border-transparent shadow-lg">
@@ -27,7 +27,7 @@ export function FolderCardDropdownMenu({ slug, name }: FolderCardDropdownMenuPro
           <Share />
           Share
         </Button>
-        <DeleteFolderCard
+        <FolderDeleteDialog
           trigger={
             <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent">
               <Trash className="text-red-500" />
@@ -52,7 +52,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
       <div className="bg-card text-card-foreground border-border/50 relative z-30 flex w-full transform flex-col justify-between rounded-xl border shadow-md transition-all duration-300 ease-in-out group-hover:-rotate-x-15 group-hover:shadow-xl">
         <Link to={`/folders/${folder.slug}`} className="flex flex-grow flex-col gap-4 px-4 pt-4 pb-4" title={folder.name}>
           <div className="flex flex-col overflow-hidden">
-            <Button variant="link" className="-ml-4 w-full justify-start text-lg font-medium cursor-pointer text-foreground">
+            <Button variant="link" className="text-foreground -ml-4 w-full cursor-pointer justify-start text-lg font-medium">
               <div className="block truncate overflow-hidden">{folder.name}</div>
             </Button>
             <p className="line-clamp-2 truncate overflow-hidden">
@@ -60,7 +60,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
             </p>
           </div>
         </Link>
-        <div className="flex flex-wrap items-end justify-between p-4 gap-4">
+        <div className="flex flex-wrap items-end justify-between gap-4 p-4">
           <Link to={`/folders/${folder.slug}`} className="flex flex-shrink-0 gap-2">
             <Badge variant="default" title="Flashcards in this folder" className="text-white">
               {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}

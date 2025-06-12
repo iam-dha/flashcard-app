@@ -4,7 +4,7 @@ import { useGetFolderList } from "../hooks/useGetFolderList";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import DeleteFolderCard from "./FolderDeleteDialog";
+import FolderDeleteDialog from "./FolderDeleteDialog";
 import { GraduationCap, Trash } from "lucide-react";
 import { useIsMobile } from "@/hooks/useMobile";
 
@@ -44,10 +44,10 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
         <TableBody className="bg-card/30">
           {folderList.map((folder: FolderTypes) => (
             <TableRow key={folder.slug} className="group hover:bg-card/60 border-none transition-colors duration-200">
-              <TableCell className="flex flex-1 px-4 min-w-xl justify-between">
+              <TableCell className="flex min-w-xl flex-1 justify-between px-4">
                 <Button
                   variant="link"
-                  className="h-auto p-0 font-medium transition-colors text-foreground"
+                  className="text-foreground h-auto p-0 font-medium transition-colors"
                   onClick={() => (window.location.href = `/folders/${folder?.slug}`)}
                 >
                   {folder.name}
@@ -61,7 +61,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
                     <GraduationCap className="h-4 w-4" />
                     Study
                   </Button>
-                  <DeleteFolderCard
+                  <FolderDeleteDialog
                     slug={folder.slug}
                     name={folder.name}
                     trigger={
@@ -78,7 +78,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
               </TableCell>
               <TableCell className="px-4">{new Date(folder.createdAt).toLocaleDateString("en-GB")}</TableCell>
               <TableCell className="px-4">
-                <span className="bg-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs text-white font-medium">
+                <span className="bg-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white">
                   {folder.flashcardCount < 2 ? `${folder.flashcardCount} flashcard` : `${folder.flashcardCount} flashcards`}
                 </span>
               </TableCell>
