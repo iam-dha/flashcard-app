@@ -25,7 +25,7 @@ module.exports.search = async (req, res) => {
             const wordSearchResponse = (await axios.get(wordSeachEndpoint))
                 .data[0];
             const meanings = await Promise.all(
-                (wordSearchResponse.meanings || []).map(async (meaning) => {
+                (wordSearchResponse.meanings || []).slice(0, 3).map(async (meaning) => {
                     const definitions = await Promise.all(
                         (meaning.definitions || []).slice(0, 2).map(async (def) => {
                             const definition = def.definition?.trim() || "";
@@ -40,7 +40,6 @@ module.exports.search = async (req, res) => {
                                     console.error("Translation Error:", err.message);
                                 }
                             }
-
                             return { definition, example, vi_definition };
                         })
                     );
@@ -51,6 +50,8 @@ module.exports.search = async (req, res) => {
                     };
                 })
             );
+            let vi_meanings = "Chưa có nghĩa tiếng Việt";
+            vi_meanings = await translateHelper(word);
             const phonetics = (wordSearchResponse.phonetics || [])
             .filter(p => p.text)
             .map(p => ({
@@ -61,6 +62,7 @@ module.exports.search = async (req, res) => {
                 image_url: imageUrl,
                 word: word,
                 meanings: meanings,
+                vi_meanings: vi_meanings,
                 phonetics: phonetics,
             };
             let record = new Flashcard(flashcard);
@@ -78,7 +80,8 @@ module.exports.search = async (req, res) => {
                         image_url: imageUrl,
                         word: word,
                         meanings: meanings,
-                        phonetics: phonetics
+                        phonetics: phonetics,
+                        vi_meanings: vi_meanings,
                     },
                 ],
             });
