@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { getRouteByPath } from "@/routes/router";
 import { useIsMobile } from "@/hooks/useMobile";
-import CustomSidebarTrigger from "../components/custom-ui/CustomSidebarTrigger";
+import CustomSidebarTrigger from "../../components/custom-ui/CustomSidebarTrigger";
 import { useEffect, useState } from "react";
 import { useFolderService } from "@/services/useFolderService";
 import UserDropdownMenu from "./UserDropdownMenu";
@@ -41,7 +41,7 @@ export default function AppHeader() {
   const { state } = useSidebar();
 
   return (
-    <div className="frosted-glass sticky top-0 z-10 flex shrink-0 items-center justify-between border-b px-4 md:px-6 py-4">
+    <div className="frosted-glass sticky top-0 z-10 flex shrink-0 items-center justify-between border-b px-4 py-4 md:px-6">
       <div className="flex items-center md:space-x-2">
         {(isMobile || state === "collapsed") && (
           <div className="-ml-4">

@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "@/features/client/auth/AuthContext";
-import CustomLoader from "../components/custom-ui/CustomLoader";
+import CustomLoader from "../../components/custom-ui/CustomLoader";
 import { Toaster } from "sonner";
 
 export default function UserLayout() {

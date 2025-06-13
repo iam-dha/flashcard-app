@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AppLayout from "../layout/AppLayout";
-import AuthLayout from "@/layout/AuthLayout";
+import AppLayout from "../layout/client/AppLayout";
+import AuthLayout from "@/layout/client/AuthLayout";
 import LoginPage from "@/features/client/auth/LoginPage";
 import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
@@ -12,7 +12,7 @@ import GamesPage from "@/features/client/games/GamesPage";
 import FolderDetailPage from "@/features/client/folders/FolderDetailPage";
 import RegisterPage from "@/features/client/auth/RegisterPage";
 import ResetPasswordPage from "@/features/client/auth/ResetPasswordPage";
-import UserLayout from "@/layout/UserLayout";
+import UserLayout from "@/layout/client/UserLayout";
 import UserProfilePage from "@/features/client/user/UserProfilePage";
 
 // discriminated union type for all possible route configurations
