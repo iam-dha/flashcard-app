@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import LogoutConfirmDialog from "@/features/auth/LogoutConfirmDialog";
+import LogoutConfirmDialog from "@/features/client/auth/LogoutConfirmDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, Cog, User } from "lucide-react";
 

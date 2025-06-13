@@ -1,9 +1,9 @@
+import LoginForm from "@/features/client/auth/LoginForm";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "@/features/auth/AuthContext";
-import RegisterForm from "./RegisterForm";
+import { useAuthContext } from "@/features/client/auth/AuthContext";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const { isAuthenticated, authLoading } = useAuthContext();
   const navigate = useNavigate();
 
@@ -14,8 +14,8 @@ export default function RegisterPage() {
   }, [isAuthenticated, authLoading, navigate]);
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center py-10">
-      <RegisterForm />
+    <div className="flex items-center justify-center">
+      <LoginForm />
     </div>
   );
 }

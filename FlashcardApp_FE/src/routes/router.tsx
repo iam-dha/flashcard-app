@@ -1,19 +1,19 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "../layout/AppLayout";
 import AuthLayout from "@/layout/AuthLayout";
-import LoginPage from "@/features/auth/LoginPage";
+import LoginPage from "@/features/client/auth/LoginPage";
 import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
-import HomePage from "@/features/home/HomePage";
-import SearchPage from "@/features/search/SearchPage";
-import { FlashcardDeck } from "@/features/flashcards/FlashcardDeck";
-import FoldersListPage from "@/features/folders/FolderListPage";
-import GamesPage from "@/features/games/GamesPage";
-import FolderDetailPage from "@/features/folders/FolderDetailPage";
-import RegisterPage from "@/features/auth/RegisterPage";
-import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
+import HomePage from "@/features/client/home/HomePage";
+import SearchPage from "@/features/client/search/SearchPage";
+import { FlashcardDeck } from "@/features/client/flashcards/FlashcardDeck";
+import FoldersListPage from "@/features/client/folders/FolderListPage";
+import GamesPage from "@/features/client/games/GamesPage";
+import FolderDetailPage from "@/features/client/folders/FolderDetailPage";
+import RegisterPage from "@/features/client/auth/RegisterPage";
+import ResetPasswordPage from "@/features/client/auth/ResetPasswordPage";
 import UserLayout from "@/layout/UserLayout";
-import UserProfilePage from "@/features/user/UserProfilePage";
+import UserProfilePage from "@/features/client/user/UserProfilePage";
 
 // discriminated union type for all possible route configurations
 type RouteConfig = BaseRouteConfig | FolderRouteConfig | UserRouteConfig;
@@ -22,7 +22,7 @@ export const routes: BaseRouteConfig[] = [
   {
     path: "/home",
     title: "Home",
-    icon: <Home/>,
+    icon: <Home />,
     element: <HomePage />,
     showInSidebar: true,
   },
@@ -180,7 +180,7 @@ export const router = createBrowserRouter([
       {
         path: "/user/profile",
         element: <UserProfilePage />,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ]);

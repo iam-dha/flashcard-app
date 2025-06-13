@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthContext } from "@/features/auth/AuthContext";
+import { useAuthContext } from "@/features/client/auth/AuthContext";
 import CustomLoader from "../components/custom-ui/CustomLoader";
 import { Toaster } from "sonner";
 

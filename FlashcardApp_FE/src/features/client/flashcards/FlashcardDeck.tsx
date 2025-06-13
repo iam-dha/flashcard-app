@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CustomProgressBar from "@/components/custom-ui/CustomProgressBar";
-import useFlashcardKeyboardEvents from "@/features/flashcards/useFlashcardKeyboardEvents";
+import useFlashcardKeyboardEvents from "@/features/client/flashcards/useFlashcardKeyboardEvents";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { useParams } from "react-router-dom";
 import { useFolderService } from "@/services/useFolderService";
