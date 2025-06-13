@@ -13,9 +13,8 @@ module.exports.getWordScramble = async (req, res) => {
 
       const allDefinitions = card.meanings
         .flatMap(m => m.definitions || [])
-        .filter(def => def.definition); // bỏ qua cái rỗng
+        .filter(def => def.definition);
 
-      // Chọn ngẫu nhiên 1 định nghĩa nếu có
       const randomDef =
         allDefinitions.length > 0
           ? allDefinitions[Math.floor(Math.random() * allDefinitions.length)]
