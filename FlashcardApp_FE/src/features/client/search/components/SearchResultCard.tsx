@@ -80,17 +80,57 @@ export function useToggleFavourites(result: FlashcardTypes) {
   return { isFavourites, favouritesLoading, handleToggleFavourites };
 }
 
-export function SearchResultCardSide(result: FlashcardTypes) {
+export function SearchResultButton(result: FlashcardTypes) {
+  const { isFavourites, favouritesLoading, handleToggleFavourites } = useToggleFavourites(result);
+
+  return (
+    <div className="flex gap-2">
+      <ExpandableButton
+        Icon={Star}
+        label={isFavourites ? "Remove from favorites" : "Add to favorites"}
+        variant="outline"
+        className={
+          isFavourites
+            ? "border-transparent bg-yellow-300/70 text-yellow-700 hover:bg-yellow-300/70 hover:text-yellow-700 dark:bg-yellow-900/80 dark:text-yellow-500 dark:hover:bg-yellow-900/80 dark:hover:text-yellow-500"
+            : "border-transparent hover:bg-yellow-300/70 hover:text-yellow-700 dark:hover:bg-yellow-900/80"
+        }
+        onClick={() => handleToggleFavourites(result)}
+        disabled={favouritesLoading}
+      />
+      <FolderPickerDialog result={result} />
+    </div>
+  );
+}
+
+export function SearchResultWordCard(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audio_url);
   return (
-    <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">
-      <div className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-        <p className="text-foreground text-2xl font-bold">{result.word}</p>
-        <Button variant="outline" onClick={playAudio} className="rounded-xl border-transparent">
-          <Volume2 className="h-5 w-5" />
-          {result.phonetic && <p className="text-secondary-foreground text-sm">{result.phonetic}</p>}
-        </Button>
+    <Card className="rounded-lg border-transparent p-4 shadow-md">
+      <div className="flex justify-between gap-4">
+        <div className="space-y-4">
+          <SearchResultButton {...result} />
+
+          <div className="flex flex-col justify-center gap-2">
+            <div className="flex items-center gap-2">
+              <h2 className="text-foreground text-2xl font-bold">{result.word}</h2>
+              <Button variant="outline" onClick={playAudio} className="rounded-xl border-transparent">
+                <Volume2 className="h-5 w-5" />
+                {result.phonetic && <span className="text-secondary-foreground ml-1 text-sm">{result.phonetic}</span>}
+              </Button>
+            </div>
+            <p className="text-foreground text-2xl font-bold">{result.word_vi}</p>
+          </div>
+        </div>
+
+        {result.image_url && <img src={result.image_url} alt={result.word} className="aspect-square w-48 rounded-lg object-cover hover:scale-102" />}
       </div>
+    </Card>
+  );
+}
+
+export function SearchResultCardSide(result: FlashcardTypes) {
+  return (
+    <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">
       {result.wordType && <p className="text-sm text-neutral-600 dark:text-neutral-400">({result.wordType})</p>}
       {result.definition && <p>{result.definition}</p>}
       {result.example && (
@@ -98,41 +138,46 @@ export function SearchResultCardSide(result: FlashcardTypes) {
           <li className="text-neutral-600 italic dark:text-neutral-400">{result.example}</li>
         </ul>
       )}
-      <img src={result.image_url} alt={result.word} className="h-auto w-full rounded-lg" />
     </Card>
   );
 }
 
 export default function SearchResultCard({ results }: { results: FlashcardTypes[] }) {
-  const { isFavourites, favouritesLoading, handleToggleFavourites } = useToggleFavourites(results[0]);
-
   return (
     <div className="space-y-4">
-      {results.length > 0 &&
-        results.map((result, index) => (
-            <div key={index} className="bg-card/70 text-card-foreground space-y-4 overflow-hidden rounded-xl border p-4 shadow-sm">
-              <div className="flex w-full justify-end gap-2">
-                <ExpandableButton
-                  Icon={Star}
-                  label={isFavourites ? "Remove from favorites" : "Add to favorites"}
-                  variant="outline"
-                  className={
-                    isFavourites
-                      ? "border-transparent bg-yellow-300/70 text-yellow-700 hover:bg-yellow-300/70 hover:text-yellow-700 dark:bg-yellow-900/80 dark:text-yellow-500 dark:hover:bg-yellow-900/80 dark:hover:text-yellow-500"
-                      : "border-transparent hover:bg-yellow-300/70 hover:text-yellow-700 dark:hover:bg-yellow-900/80"
-                  }
-                  onClick={() => handleToggleFavourites(result)}
-                  disabled={favouritesLoading}
-                />
-                <FolderPickerDialog result={result} />
-              </div>
-
-              <div className="flex gap-4">
-                <SearchResultCardSide {...result} />
-                <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">{result.definition_vi}</Card>
-              </div>
+      {results.length > 0 && <SearchResultWordCard {...results[0]} />}
+      {results.length > 0 && (
+        <div className="bg-card/70 text-card-foreground space-y-4 overflow-hidden rounded-xl border p-4 shadow-sm">
+          <p className="text-2xl font-bold">Meanings</p>
+          {results.map((result, index) => (
+            <div key={index} className="flex gap-4">
+              <SearchResultCardSide {...result} />
+              <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  {result.wordType === "noun"
+                    ? "(danh từ)"
+                    : result.wordType === "verb"
+                      ? "(động từ)"
+                      : result.wordType === "adjective"
+                        ? "(tính từ)"
+                        : result.wordType === "adverb"
+                          ? "(trạng từ)"
+                          : result.wordType === "pronoun"
+                            ? "(từ đứng)"
+                            : result.wordType === "preposition"
+                              ? "(giới từ)"
+                              : result.wordType === "conjunction"
+                                ? "(liên từ)"
+                                : result.wordType === "interjection"
+                                  ? "(phó từ)"
+                                  : result.wordType}
+                </p>
+                <p>{result.definition_vi}</p>
+              </Card>
             </div>
-        ))}
+          ))}
+        </div>
+      )}
     </div>
   );
 }
