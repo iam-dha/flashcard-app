@@ -413,5 +413,3 @@ module.exports.checkFlashcardInFavourite = async (req, res) => {
     }
 };
 
-
-// something
