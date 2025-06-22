@@ -16,11 +16,13 @@ router.get("/flashcards/:fc_slug/favourite", authMiddleWare.checkAccessToken(), 
 
 router.get("/:slug", authMiddleWare.checkAccessToken(), controller.getFolderBySlug);
 
+router.patch("/:id", authMiddleWare.checkAccessToken(), validateMiddleWare.validateInput(folderSchema), controller.updateFolder);
+
 router.delete("/:slug", authMiddleWare.checkAccessToken(), controller.deleteFolder);
 
 router.get("/:slug/flashcards", authMiddleWare.checkAccessToken(), controller.getFolderFlashcards);
 
-router.post("/:slug/flashcards", validateMiddleWare.validateInput(folderAddFlashcardSchema), authMiddleWare.checkAccessToken(), controller.addFlashcard);
+router.post("/flashcards", validateMiddleWare.validateInput(folderAddFlashcardSchema), authMiddleWare.checkAccessToken(), controller.addFlashcard);
 
 router.get("/:slug/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), controller.getFlashcardInFolder);
 

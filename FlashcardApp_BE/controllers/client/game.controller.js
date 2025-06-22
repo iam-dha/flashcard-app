@@ -4,7 +4,7 @@ const Flashcard = require("../../models/flashcard.model");
 const getCambridgeWordScramble = require("../../helpers/cambridgeWordScamble.helper");
 
 
-// [GET] /api/v1/game/word-scramble
+// [GET] /api/v1/game/word-scramble?count=x
 module.exports.getWordScramble = async (req, res) => {
     try {
     const flashcards = await Flashcard.aggregate([{ $sample: { size: 10 } }]);
@@ -22,7 +22,7 @@ module.exports.getWordScramble = async (req, res) => {
 
       return {
         word: card.word,
-        definition: randomDef ? randomDef.definition : "Không có định nghĩa",
+        definition: randomDef ? randomDef.definition : "Without definition",
       };
     });
 
