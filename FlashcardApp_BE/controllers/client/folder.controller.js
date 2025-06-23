@@ -448,3 +448,59 @@ module.exports.checkFlashcardInFavourite = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// [POST] /api/v1/folders/share/flashcards/
+module.exports.addMultiFlashcardToFolder = async (req, res) => {
+    const userId = req.userId;
+    const flascardIds = req.body.flashcards;
+    const foldersSlug = req.body.folders;
+    try {
+        for (const flashcardId of flashcardIds) {
+            if (!mongoose.Types.ObjectId.isValid(flashcardId)) {
+                continue;
+            }
+            const flashcard = await Flashcard.findOne({
+                _id: flashcardId,
+            });
+            if (!flashcard) {
+                return res
+                    .status(404)
+                    .json({ message: "Flashcard is not found" });
+            }
+            for (const slug of foldersSlug) {
+                if (typeof slug !== "string" || slug.trim() === "") continue;
+                const folder = await Folder.findOne({
+                    slug: slug,
+                    userId: userId,
+                });
+                if (!folder) {
+                    return res.status(404).json({
+                        message: `Folder with slug ${slug} is not found`,
+                    });
+                }
+                const existingInFolder = await FolderFlashcard.findOne({
+                    folderId: folder._id,
+                    flashcardId: flashcard._id,
+                });
+
+                if (!existingInFolder) {
+                    const folderFlashcardMapping = new FolderFlashcard({
+                        folderId: folder._id,
+                        flashcardId: flashcard._id,
+                    });
+                    await folderFlashcardMapping.save();
+                    folder.flashcardCount += 1;
+                    await folder.save();
+                }
+            }
+        }
+        res.status(200).json({
+            message: "Flashcards added to folder successfully",
+            flashcards: flascardIds,
+            folders: foldersSlug,
+        });
+    } catch (error) {
+        console.error(`[POST /api/v1/folders/share/flashcards] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
