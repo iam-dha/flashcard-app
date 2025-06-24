@@ -23,7 +23,7 @@ module.exports.getAllFolders = async (req, res) => {
         try {
             const totalCount = await Folder.countDocuments({ userId });
             const folders = await Folder.find({ userId })
-                .select("-__v -updatedAt -userId")
+                .select("-__v -updatedAt -userId -_id")
                 .sort({ [sortFilter]: sortOrder })
                 .skip(skip)
                 .limit(limit);
@@ -111,14 +111,14 @@ module.exports.getFolderBySlug = async (req, res) => {
     }
 };
 
-// [PATCH] /api/v1/folders/:id
+// [PATCH] /api/v1/folders/:slug
 module.exports.updateFolder = async (req, res) => {
     const userId = req.userId;
-    const id = req.params.id;
+    const slug = req.params.slug;
     const { name, description, tags, isPublic } = req.body;
     try {
         const folder = await Folder.findOne({
-            _id: id,
+            slug: slug,
             userId: userId,
         });
         if (!folder) {
@@ -129,12 +129,12 @@ module.exports.updateFolder = async (req, res) => {
                 .status(400)
                 .json({ message: "Cannot update default folder" });
         }
-        folder.name = name || post.name;
-        folder.description = description || post.description;
+        folder.name = name || folder.name;
+        folder.description = description || folder.description;
         if (Array.isArray(tags)) {
             folder.tags = tags;
         }
-        folder.isPublic = isPublic !== undefined ? isPublic : post.isPublic;
+        folder.isPublic = isPublic !== undefined ? isPublic : folder.isPublic;
         await folder.save();
         return res.status(200).json({
             message: "Folder updated successfully",
