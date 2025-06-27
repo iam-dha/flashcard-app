@@ -107,11 +107,11 @@ export function SearchResultWordCard(result: FlashcardTypes) {
   return (
     <Card className="rounded-lg border-transparent p-4 shadow-md">
       <div className="flex justify-between gap-4">
-        <div className="space-y-4">
+        <div className="space-y-10">
           <SearchResultButton {...result} />
 
           <div className="flex flex-col justify-center gap-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <h2 className="text-foreground text-2xl font-bold">{result.word}</h2>
               <Button variant="outline" onClick={playAudio} className="rounded-xl border-transparent">
                 <Volume2 className="h-5 w-5" />

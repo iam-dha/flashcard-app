@@ -44,7 +44,7 @@ export default function AppHeader() {
     <div className="frosted-glass sticky top-0 z-10 flex shrink-0 items-center justify-between border-b px-4 py-4 md:px-6">
       <div className="flex items-center md:space-x-2">
         {(isMobile || state === "collapsed") && (
-          <div className="-ml-4">
+          <div className="-ml-4 mr-8">
             <CustomSidebarTrigger variant="open" />
           </div>
         )}

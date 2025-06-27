@@ -161,7 +161,7 @@ module.exports.getFolderFlashcards = async (req, res) => {
     try {
         const folder = await Folder.findOne({
             slug: slug,
-        }).select("-__v -updatedAt -userId");
+        }).select("-__v -updatedAt");
         if (!folder) {
             return res.status(404).json({ message: "Folder is not found" });
         }

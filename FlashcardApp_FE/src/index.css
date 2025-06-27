@@ -203,5 +203,6 @@
 }
 
 .liquid-glass {
-  @apply text-foreground rounded-full border border-white/20 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:scale-102 hover:bg-white/20;
+  @apply text-foreground rounded-full border border-white/20 bg-gray-300/20 backdrop-blur-xl transition-all duration-300 hover:scale-102 hover:bg-white/20 shadow-sm;
 }
+

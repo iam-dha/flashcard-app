@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 export default function CustomBackButton() {
   return (
     <Button
-      className="flex items-center justify-center rounded-full text-foreground hover:bg-card/50"
+      className="flex items-center justify-center rounded-full text-foreground hover:bg-card/50 liquid-glass"
       variant="ghost"
       onClick={() => window.history.back()}
       aria-label="Go back"

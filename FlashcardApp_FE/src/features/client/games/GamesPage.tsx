@@ -1,4 +1,4 @@
-import WordScramblePage from "./WordScramblePage";
+import WordScramblePage from "./word-scramble/WordScramblePage";
 
 function GameCard({
   title = "Game Title",

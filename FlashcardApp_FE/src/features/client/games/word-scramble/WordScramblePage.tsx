@@ -291,8 +291,8 @@ export default function WordScramblePage() {
 
         {/* Success Dialog */}
         {showSuccess && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-            <Card className="w-80 bg-background">
+          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+            <Card className="bg-background w-80">
               <CardContent className="space-y-4 p-6 text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                   <Trophy className="h-8 w-8 text-green-600" />
@@ -311,8 +311,8 @@ export default function WordScramblePage() {
 
         {/* Game Over */}
         {(lives === 0 || currentQuestion === wordsData.length || timeLeft === 0) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-            <Card className="w-80 bg-background">
+          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+            <Card className="bg-background w-80">
               <CardContent className="space-y-4 p-6 text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                   <Heart className="h-8 w-8 text-red-600" />
