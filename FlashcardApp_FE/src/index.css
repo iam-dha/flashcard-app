@@ -90,7 +90,7 @@
   --accent: rgb(255, 187, 15);
   --accent-foreground: rgba(0, 0, 0, 1);
   --destructive: rgba(225, 29, 72, 1);
-  --border: rgba(152, 222, 255, 1);
+  --border: rgb(195, 235, 254);
   --input: rgba(255, 255, 255, 0.25);
   --ring: rgba(78, 181, 230, 1);
   --chart-1: oklch(0.646 0.222 41.116);

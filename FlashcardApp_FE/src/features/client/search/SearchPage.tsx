@@ -16,17 +16,13 @@ export default function SearchPage() {
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-3xl font-bold">Search a word or phrase...</h1>
         {/* search input */}
-        <div className="sticky top-20 z-10 bg-background">
-          <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
-        </div>
+        <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
 
         {/* search results */}
         {searchLoading ? <CustomLoader /> : <SearchResultCard results={results.slice(0, numberOfResults)} />}
 
         {/* error message */}
-        {error && (
-          <AlertMessage type="error" message={error} />
-        )}
+        {error && <AlertMessage type="error" message={error} />}
 
         {/* search suggestions */}
         {!searchLoading && (results.length === 0 ? <SearchTips /> : <SearchNextSteps />)}

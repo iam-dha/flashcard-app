@@ -1,3 +1,4 @@
+import MultipleChoiceQuizPage from "./multiple-choices/MultipleChoiceQuizPage";
 import WordScramblePage from "./word-scramble/WordScramblePage";
 
 function GameCard({
@@ -10,7 +11,7 @@ function GameCard({
   playButton?: React.ReactElement;
 }) {
   return (
-    <div className="flex h-[200px] w-full flex-col justify-between rounded-lg p-4 shadow transition-shadow hover:shadow-lg">
+    <div className="flex h-[500px] bg-card/30 w-full flex-col justify-between rounded-lg p-4 shadow transition-shadow hover:shadow-lg">
       <div className="mt-auto flex flex-col gap-2">
         <h2 className="text-lg font-semibold">{title}</h2>
         <p className="text-sm text-gray-600">{description}</p>
@@ -30,7 +31,11 @@ export default function GamesPage() {
             description="Unscramble the letters to form a word. A fun way to test your vocabulary!"
             playButton={<WordScramblePage />}
           />
-          {/* <GameCard title="Multiple Choice Quiz" description="Test your knowledge with multiple choice questions on various topics." /> */}
+          <GameCard
+            title="Multiple Choice Quiz"
+            description="Test your knowledge with multiple choice questions on various topics."
+            playButton={<MultipleChoiceQuizPage />}
+          />
         </div>
       </div>
     </div>
