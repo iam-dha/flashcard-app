@@ -6,6 +6,7 @@ const dashboardRoute = require("./dashboard.routes")
 const userRoute = require("./user.routes");
 const folderRoute = require("./folder.routes");
 const gameRoute = require("./game.routes");
+const postRoute = require("./post.routes");
 module.exports = (app) => {
     app.use("/login", loginRoute);
     app.use("/dashboard", dashboardRoute);
@@ -14,4 +15,5 @@ module.exports = (app) => {
     app.use(`${systemConfig.apiPath}/v1/user`, userRoute);
     app.use(`${systemConfig.apiPath}/v1/folders`, folderRoute);
     app.use(`${systemConfig.apiPath}/v1/game`, gameRoute);
+    app.use(`${systemConfig.apiPath}/v1/posts`, postRoute);
 }

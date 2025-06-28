@@ -7,20 +7,21 @@ const {
     flashcardId
 } = require("../sharedFields.schema");
 
-const folderSchema = joi.object({
+const folderSchema = {
     body: joi.object({
         name: folderNameField,
         description: descriptionField,
         tags: tagField,
         isPublic: booleanField.required()
     })
-});
+};
 
-const folderAddFlashcardSchema = joi.object({
+const folderAddFlashcardSchema = {
     body: joi.object({
-        flashcardId: flashcardId.required()
+        flashcardId: flashcardId.required(),
+        folders: joi.array().items(joi.string().trim().min(1)).min(1).required()
     })
-});
+};
 
 
 module.exports = {
