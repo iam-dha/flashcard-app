@@ -14,7 +14,7 @@ export default function CustomSidebarTrigger({ variant }: { variant: "open" | "c
         }}
         title="Toggle sidebar"
         variant="ghost"
-        className="hover:bg-card/50"
+        className="hover:bg-card/50 liquid-glass"
       >
         <Icon style={{ width: "20px", height: "20px" }} />
       </Button>

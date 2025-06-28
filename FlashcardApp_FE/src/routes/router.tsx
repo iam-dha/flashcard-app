@@ -1,19 +1,32 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AppLayout from "../layout/AppLayout";
-import AuthLayout from "@/layout/AuthLayout";
-import LoginPage from "@/features/auth/LoginPage";
+import AppLayout from "../layout/client/AppLayout";
+import AuthLayout from "@/layout/client/AuthLayout";
+import LoginPage from "@/features/client/auth/LoginPage";
 import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
-import HomePage from "@/features/home/HomePage";
-import SearchPage from "@/features/search/SearchPage";
-import { FlashcardDeck } from "@/features/flashcards/FlashcardDeck";
-import FoldersListPage from "@/features/folders/FolderListPage";
-import GamesPage from "@/features/games/GamesPage";
-import FolderDetailPage from "@/features/folders/FolderDetailPage";
-import RegisterPage from "@/features/auth/RegisterPage";
-import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
-import UserLayout from "@/layout/UserLayout";
-import UserProfilePage from "@/features/user/UserProfilePage";
+import HomePage from "@/features/client/home/HomePage";
+import SearchPage from "@/features/client/search/SearchPage";
+import { FlashcardDeck } from "@/features/client/flashcards/FlashcardDeck";
+import FoldersListPage from "@/features/client/folders/FolderListPage";
+import GamesPage from "@/features/client/games/GamesPage";
+import FolderDetailPage from "@/features/client/folders/FolderDetailPage";
+import RegisterPage from "@/features/client/auth/RegisterPage";
+import ResetPasswordPage from "@/features/client/auth/ResetPasswordPage";
+import UserLayout from "@/layout/client/UserLayout";
+import UserProfilePage from "@/features/client/user/UserProfilePage";
+import AdminLayout from "@/layout/admin/AdminLayout";
+import AdminLoginPage from "@/layout/admin/AdminLoginPage";
+import AdminDashboardLayout from "@/layout/admin/AdminDashboardLayout";
+import AdminProfilePage from "@/layout/admin/AdminProfilePage";
+import ViewUserPage from "@/features/admin/user/ViewUserPage";
+import UserManagementTable from "@/features/admin/user/UserManagement";
+import PostManagementTable from "@/features/admin/post/PostManagement";
+import PostForm from "@/features/admin/post/AddNewPost";
+import PostDetail from "@/features/admin/post/PostDetail";
+import EditPost from "@/features/admin/post/EditPost";
+import EditUser from "@/features/admin/user/EditUser";
+import RoleManagement from "@/features/admin/role/RoleManagement";
+import { RequireAuth } from "@/layout/admin/RequireAuth";
 
 // discriminated union type for all possible route configurations
 type RouteConfig = BaseRouteConfig | FolderRouteConfig | UserRouteConfig;
@@ -22,7 +35,7 @@ export const routes: BaseRouteConfig[] = [
   {
     path: "/home",
     title: "Home",
-    icon: <Home/>,
+    icon: <Home />,
     element: <HomePage />,
     showInSidebar: true,
   },
@@ -180,7 +193,71 @@ export const router = createBrowserRouter([
       {
         path: "/user/profile",
         element: <UserProfilePage />,
-      }
-    ]
-  }
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "login",
+        element: <AdminLoginPage />,
+      },
+      {
+        path: "",
+        element: (
+          <RequireAuth>
+            <AdminDashboardLayout />
+          </RequireAuth>
+        ),
+        children: [
+          {
+            index: true,
+            element: <AdminProfilePage />,
+          },
+          {
+            path: "user",
+            element: <UserManagementTable />,
+            children: [
+              {
+                path: ":userId",
+                element: <ViewUserPage />,
+              },
+              {
+                path: ":userId/edit",
+                element: <EditUser />,
+              },
+            ],
+          },
+          {
+            path: "post",
+            element: <PostManagementTable />,
+            children: [
+              {
+                path: "add",
+                element: <PostForm />,
+              },
+              {
+                path: ":slug",
+                element: <PostDetail />,
+              },
+              {
+                path: ":_id/edit",
+                element: <EditPost />,
+              },
+            ],
+          },
+          {
+            path: "access",
+            element: <RoleManagement />,
+          },
+        ],
+      },
+      {
+        path: "*",
+        element: <Navigate to="/admin/login" replace />,
+      },
+    ],
+  },
 ]);

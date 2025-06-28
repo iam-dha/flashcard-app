@@ -5,6 +5,7 @@ export interface UserTypes {
   fullName: string;
   address: string;
   phone: string;
+  avatar?: string;
 }
 
 export interface RegisterRequestTypes {

@@ -33,7 +33,7 @@ app.locals.prefixAdmin = systemConfig.prefixAdmin;
 //Turn cors for all origin
 // app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:5173',  // URL Frontend
+  origin: ['http://localhost:5173', 'http://localhost:5174'], // URL Frontend
   credentials: true  // Send cookies for refresh token
 }));
 
