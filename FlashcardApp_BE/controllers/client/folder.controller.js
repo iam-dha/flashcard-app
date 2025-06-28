@@ -23,11 +23,11 @@ module.exports.getAllFolders = async (req, res) => {
         try {
             const totalCount = await Folder.countDocuments({ userId });
             const folders = await Folder.find({ userId })
-                .select("-__v -updatedAt -userId -_id")
+                .select("-__v -updatedAt -userId")
                 .sort({ [sortFilter]: sortOrder })
                 .skip(skip)
                 .limit(limit);
-
+            console.log(folders[0].id);
             return res.status(200).json({
                 total_count: folders.length,
                 page: page,
@@ -111,6 +111,48 @@ module.exports.getFolderBySlug = async (req, res) => {
     }
 };
 
+// [PATCH] /api/v1/folders/:id
+module.exports.updateFolder = async (req, res) => {
+    const userId = req.userId;
+    const id = req.params.id;
+    const { name, description, tags, isPublic } = req.body;
+    try {
+        const folder = await Folder.findOne({
+            _id: id,
+            userId: userId,
+        });
+        if (!folder) {
+            return res.status(404).json({ message: "Folder is not found" });
+        }
+        if (folder.isDefault) {
+            return res
+                .status(400)
+                .json({ message: "Cannot update default folder" });
+        }
+        folder.name = name || post.name;
+        folder.description = description || post.description;
+        if (Array.isArray(tags)) {
+            folder.tags = tags;
+        }
+        folder.isPublic = isPublic !== undefined ? isPublic : post.isPublic;
+        await folder.save();
+        return res.status(200).json({
+            message: "Folder updated successfully",
+            folder: {
+                name: folder.name,
+                slug: folder.slug,
+                description: folder.description,
+                tags: folder.tags,
+                isPublic: folder.isPublic,
+                createdAt: folder.createdAt,
+            },
+        });
+    } catch (error) {
+        console.error(`[PATCH /api/v1/folders/${id}] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 // [DELETE] /api/v1/folders/:slug
 module.exports.deleteFolder = async (req, res) => {
     const userId = req.userId;
@@ -171,7 +213,7 @@ module.exports.getFolderFlashcards = async (req, res) => {
                     message: "You do not have permission to access this folder",
                 });
             }
-        } 
+        }
         const totalCount = await FolderFlashcard.countDocuments({
             folderId: folder._id,
         });
@@ -215,10 +257,10 @@ module.exports.getFolderFlashcards = async (req, res) => {
     }
 };
 
-// [POST] /api/v1/folders/:slug/flashcards
+// [POST] /api/v1/folders/flashcards
 module.exports.addFlashcard = async (req, res) => {
     const userId = req.userId;
-    const slug = req.params.slug;
+    const foldersSlug = req.body.folders;
     const flashcardId = req.body.flashcardId;
     if (!flashcardId) {
         return res.status(400).json({ message: "Flashcard ID is required" });
@@ -227,14 +269,6 @@ module.exports.addFlashcard = async (req, res) => {
         return res.status(400).json({ message: "Invalid flashcard ID" });
     }
     try {
-        const folder = await Folder.findOne({
-            slug: slug,
-            userId: userId,
-        });
-        if (!folder) {
-            return res.status(404).json({ message: "Folder is not found" });
-        }
-
         const flashcard = await Flashcard.findOne({
             _id: flashcardId,
         });
@@ -242,33 +276,35 @@ module.exports.addFlashcard = async (req, res) => {
         if (!flashcard) {
             return res.status(404).json({ message: "Flashcard is not found" });
         }
-        const existingInFolder = await FolderFlashcard.findOne({
-            folderId: folder._id,
-            flashcardId: flashcard._id,
-        });
-
-        if (existingInFolder) {
-            return res.status(400).json({
-                message: "Flashcard already exists in the folder",
+        for (const slug of foldersSlug) {
+            if (typeof slug !== "string" || slug.trim() === "") continue;
+            const folder = await Folder.findOne({
+                slug: slug,
+                userId: userId,
             });
+            if (!folder) {
+                return res.status(404).json({
+                    message: `Folder with slug ${slug} is not found`,
+                });
+            }
+            const existingInFolder = await FolderFlashcard.findOne({
+                folderId: folder._id,
+                flashcardId: flashcard._id,
+            });
+
+            if (!existingInFolder) {
+                const folderFlashcardMapping = new FolderFlashcard({
+                    folderId: folder._id,
+                    flashcardId: flashcard._id,
+                });
+                await folderFlashcardMapping.save();
+                folder.flashcardCount += 1;
+                await folder.save();
+            }
         }
-        const folderFlashcardMapping = new FolderFlashcard({
-            folderId: folder._id,
-            flashcardId: flashcard._id,
-        });
-        await folderFlashcardMapping.save();
-        folder.flashcardCount += 1;
-        await folder.save();
         res.status(200).json({
             message: "Flashcard added to folder successfully",
-            folder: {
-                name: folder.name,
-                slug: folder.slug,
-                description: folder.description,
-                tags: folder.tags,
-                isPublic: folder.isPublic,
-                flashcardCount: folder.flashcardCount,
-            },
+            folder: foldersSlug,
         });
     } catch (error) {
         console.error(`[POST /api/v1/folders/:slug/flashcards] Error:`, error);
@@ -413,3 +449,58 @@ module.exports.checkFlashcardInFavourite = async (req, res) => {
     }
 };
 
+// [POST] /api/v1/folders/share/flashcards/
+module.exports.addMultiFlashcardToFolder = async (req, res) => {
+    const userId = req.userId;
+    const flascardIds = req.body.flashcards;
+    const foldersSlug = req.body.folders;
+    try {
+        for (const flashcardId of flashcardIds) {
+            if (!mongoose.Types.ObjectId.isValid(flashcardId)) {
+                continue;
+            }
+            const flashcard = await Flashcard.findOne({
+                _id: flashcardId,
+            });
+            if (!flashcard) {
+                return res
+                    .status(404)
+                    .json({ message: "Flashcard is not found" });
+            }
+            for (const slug of foldersSlug) {
+                if (typeof slug !== "string" || slug.trim() === "") continue;
+                const folder = await Folder.findOne({
+                    slug: slug,
+                    userId: userId,
+                });
+                if (!folder) {
+                    return res.status(404).json({
+                        message: `Folder with slug ${slug} is not found`,
+                    });
+                }
+                const existingInFolder = await FolderFlashcard.findOne({
+                    folderId: folder._id,
+                    flashcardId: flashcard._id,
+                });
+
+                if (!existingInFolder) {
+                    const folderFlashcardMapping = new FolderFlashcard({
+                        folderId: folder._id,
+                        flashcardId: flashcard._id,
+                    });
+                    await folderFlashcardMapping.save();
+                    folder.flashcardCount += 1;
+                    await folder.save();
+                }
+            }
+        }
+        res.status(200).json({
+            message: "Flashcards added to folder successfully",
+            flashcards: flascardIds,
+            folders: foldersSlug,
+        });
+    } catch (error) {
+        console.error(`[POST /api/v1/folders/share/flashcards] Error:`, error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
