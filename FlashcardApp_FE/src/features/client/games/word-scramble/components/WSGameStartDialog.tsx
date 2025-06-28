@@ -20,8 +20,8 @@ export default function WSGameStartDialog({ isLoading, wordsCount, timeLeft, han
       <DialogTrigger asChild>
         <Button disabled={isLoading}>{isLoading ? "Loading..." : "Play Word Scramble"}</Button>
       </DialogTrigger>
-      <DialogContent className="flex !max-w-none lg:!h-[800px] !h-full lg:!w-[1000px] !w-full flex-col border-none shadow-lg">
-        <div className="space-y-4 text-center">
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[600px] lg:!w-[800px]">
+        <div className="flex h-full flex-col space-y-4 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-300 to-blue-700">
             <Star className="h-8 w-8 text-white" />
           </div>
@@ -31,23 +31,23 @@ export default function WSGameStartDialog({ isLoading, wordsCount, timeLeft, han
             <p className="text-muted-foreground mt-2">Unscramble the letters to form the correct word based on the definition!</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-card flex items-center justify-center rounded-lg p-4 shadow-lg space-x-2">
+          <div className="grid flex-1 grid-cols-2 gap-4">
+            <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">
               <HelpCircle className="h-8 w-8" />
               <div className="text-lg font-semibold">{isLoading ? "" : wordsCount} questions</div>
             </div>
 
-            <div className="bg-card flex items-center justify-center rounded-lg p-4 shadow-lg space-x-2">
+            <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">
               <Heart className="h-8 w-8" />
               <div className="text-lg font-semibold">3 lives</div>
             </div>
 
-            <div className="bg-card flex items-center justify-center rounded-lg p-4 shadow-lg space-x-2">
+            <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">
               <Timer className="h-8 w-8" />
               <div className="text-lg font-semibold">{timeLeft}s per question</div>
             </div>
 
-            <div className="bg-card flex items-center justify-center rounded-lg p-4 shadow-lg space-x-2">
+            <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">
               <Trophy className="h-8 w-8" />
               <div className="text-lg font-semibold">10 points per correct answer</div>
             </div>
