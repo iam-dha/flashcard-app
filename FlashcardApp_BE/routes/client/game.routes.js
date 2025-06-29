@@ -20,4 +20,6 @@ router.get("/word-scramble/history", authMiddleWare.checkAccessToken(), controll
 
 router.get("/word-scramble/history/:id", authMiddleWare.checkAccessToken(), controller.getWordScrambeSessionDetail);
 
+router.get("/multichoice", authMiddleWare.checkAccessToken(), controller.getMultiChoice);
+
 module.exports = router;
