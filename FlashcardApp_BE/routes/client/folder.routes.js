@@ -33,6 +33,4 @@ router.get("/:slug/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), cont
 router.delete("/:slug/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), controller.deleteFlashcardInFolder);
 
 
-
-
 module.exports = router;
