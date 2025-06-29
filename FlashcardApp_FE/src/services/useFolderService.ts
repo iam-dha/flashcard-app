@@ -54,6 +54,16 @@ export function useFolderService() {
     }
   }, []);
 
+  const changeFolderInfo = useCallback(async (slug: string, folderData: FolderCreateTypes): Promise<FolderTypes> => {
+    try {
+      const response = await api.patch(`/folders/${slug}`, folderData);
+      return response.data;
+    } catch (error) {
+      console.error("Error changing folder info:", error);
+      throw new Error("Failed to change folder info");
+    }
+  }, []);
+
   const getFolderFlashcardList = useCallback(async (slug: string, page?: number, limit?: number): Promise<GetFolderFlashcardListResponse> => {
     page = 1;
     limit = 30;
@@ -66,9 +76,10 @@ export function useFolderService() {
     }
   }, []);
 
-  const addFlashcardToFolder = useCallback(async (folderSlug: string | undefined, flashcardId: string | undefined): Promise<void> => {
+  const addFlashcardToFolder = useCallback(async (flashcardId: string | undefined, folders: string[]): Promise<void> => {
+    const noSelectedFolders: string[] = [];
     try {
-      await api.post(`/folders/${folderSlug}/flashcards`, { flashcardId });
+      await api.post(`/folders/flashcards`, { flashcardId, folders, noSelectedFolders });
     } catch (error) {
       console.error("Error adding flashcard to folder:", error);
       throw new Error("Failed to add flashcard to folder");
@@ -107,6 +118,16 @@ export function useFolderService() {
     }
   }, []);
 
+  const checkFlashcardInFolders = useCallback(async (flashcardSlug: string | undefined): Promise<boolean> => {
+    try {
+      const response = await api.get(`/folders/check/flashcards/${flashcardSlug}`);
+      return response.data.folders;
+    } catch (error) {
+      console.error("Error checking flashcard in folders:", error);
+      throw new Error("Failed to check flashcard in folders");
+    }
+  }, []);
+
   const getFavouritesSlug = useCallback(async (): Promise<string | undefined> => {
     try {
       const response = await getAllFolders({ getAll: true });
@@ -123,11 +144,13 @@ export function useFolderService() {
     deleteFolder,
     getAllFolders,
     getFolderBySlug,
+    changeFolderInfo,
     getFolderFlashcardList,
     addFlashcardToFolder,
     getFlashcardInFolder,
     deleteFlashcardInFolder,
     checkFlashcardInFavourites,
+    checkFlashcardInFolders,
     getFavouritesSlug,
   };
 }

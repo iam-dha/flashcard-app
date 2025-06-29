@@ -9,42 +9,71 @@ import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function useAddToFolder(result: FlashcardTypes) {
-  const { addFlashcardToFolder, getFolderBySlug } = useFolderService();
+  const { addFlashcardToFolder, getFolderBySlug, checkFlashcardInFolders } = useFolderService();
   const [addToFolderLoading, setAddToFolderLoading] = useState(false);
-  const [selectedFolderSlug, setSelectedFolderSlug] = useState<string | undefined>(undefined);
+  const [selectedFolderSlugs, setSelectedFolderSlugs] = useState<string[]>([]);
+  const [isInFolders, setIsInFolders] = useState<boolean>(false);
+  useEffect(() => {
+    try {
+      const checkIfInFolders = async (result: FlashcardTypes) => {
+        const response = await checkFlashcardInFolders(result.word);
+        setIsInFolders(response);
+      };
+
+      checkIfInFolders(result);
+    } catch (error) {
+      console.error("Error checking if favourites:", error);
+    }
+  }, [result]);
 
   const handleAddToFolder = async () => {
+    if (selectedFolderSlugs.length === 0) {
+      toast.error("Please select at least one folder");
+      return;
+    }
+
     try {
       setAddToFolderLoading(true);
-      setSelectedFolderSlug(selectedFolderSlug);
-      const folder = await getFolderBySlug(selectedFolderSlug || "");
-      await addFlashcardToFolder(selectedFolderSlug, result.flashcardId);
-      toast.info(`"${result.word}" added to "${folder.name}"`, {
-        action: {
-          label: `Go to "${folder.name}"`,
-          onClick: () => {
-            window.location.href = `/folders/${selectedFolderSlug}`;
+
+      const folderPromises = selectedFolderSlugs.map((slug) => getFolderBySlug(slug));
+      const folders = await Promise.all(folderPromises);
+      const folderNames = folders.map((folder) => folder.name);
+
+      await addFlashcardToFolder(result.flashcardId, selectedFolderSlugs);
+
+      toast.success(
+        `"${result.word}" added to ${selectedFolderSlugs.length} folder${selectedFolderSlugs.length > 1 ? "s" : ""}: ${folderNames.join(", ")}`,
+        {
+          action: {
+            label: "View folders",
+            onClick: () => {
+              window.location.href = `/folders`;
+            },
           },
         },
-      });
+      );
+
+      setSelectedFolderSlugs([]); // clear selections after successful addition
     } catch (error) {
-      console.error("Error adding to folder:", error);
+      console.error("Error adding to folders:", error);
+      toast.error("Failed to add flashcard to folders");
     } finally {
       setAddToFolderLoading(false);
     }
   };
 
-  return { handleAddToFolder, addToFolderLoading, selectedFolderSlug, setSelectedFolderSlug };
+  return { handleAddToFolder, addToFolderLoading, selectedFolderSlugs, setSelectedFolderSlugs };
 }
 
 export function FolderList({
-  selectedFolderSlug,
-  setSelectedFolderSlug,
+  selectedFolderSlugs,
+  setSelectedFolderSlugs,
 }: {
-  selectedFolderSlug?: string;
-  setSelectedFolderSlug: (slug: string | undefined) => void;
+  selectedFolderSlugs: string[];
+  setSelectedFolderSlugs: (slugs: string[]) => void;
 }) {
   const { getAllFolders } = useFolderService();
   const [folders, setFolders] = useState<FolderTypes[]>([]);
@@ -63,6 +92,14 @@ export function FolderList({
     fetchFolders();
   }, []);
 
+  const handleFolderToggle = (folderSlug: string) => {
+    const newSelectedFolderSlugs = [...selectedFolderSlugs];
+    newSelectedFolderSlugs.includes(folderSlug)
+      ? newSelectedFolderSlugs.splice(newSelectedFolderSlugs.indexOf(folderSlug), 1)
+      : newSelectedFolderSlugs.push(folderSlug);
+    setSelectedFolderSlugs(newSelectedFolderSlugs);
+  };
+
   if (loading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -77,14 +114,14 @@ export function FolderList({
         {folders.map((folder: FolderTypes) => (
           <div
             key={folder.slug}
-            className={`bg-accent text-card-foreground hover:bg-accent/50 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${selectedFolderSlug === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
-            onClick={() => {
-              setSelectedFolderSlug(folder.slug);
-              console.log("folder slug:", folder.slug);
-            }}
+            className={`bg-card/50 text-card-foreground hover:bg-card/80 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${
+              selectedFolderSlugs.includes(folder.slug) ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""
+            }`}
+            onClick={() => handleFolderToggle(folder.slug)}
           >
             <div className="flex w-full items-center justify-between gap-2">
               <div className="flex w-full items-center justify-start">
+                <Checkbox checked={selectedFolderSlugs.includes(folder.slug)} onChange={() => handleFolderToggle(folder.slug)} className="mr-2" />
                 <Button variant="link" className="-ml-4 max-w-full overflow-hidden text-lg" tabIndex={-1}>
                   <div className="truncate overflow-hidden">{folder.name}</div>
                 </Button>
@@ -99,7 +136,7 @@ export function FolderList({
 }
 
 export default function FolderPickerDialog({ result }: { result: FlashcardTypes }) {
-  const { selectedFolderSlug, setSelectedFolderSlug, handleAddToFolder } = useAddToFolder(result);
+  const { selectedFolderSlugs, setSelectedFolderSlugs, handleAddToFolder, addToFolderLoading } = useAddToFolder(result);
 
   return (
     <Dialog>
@@ -113,13 +150,22 @@ export default function FolderPickerDialog({ result }: { result: FlashcardTypes 
       </DialogTrigger>
       <DialogContent className="!max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add to folder</DialogTitle>
+          <DialogTitle>Add to folders</DialogTitle>
           <DialogDescription>
-            Select a folder to add the word <strong>{result.word}</strong> to
+            Select one or more folders to add the word <strong>{result.word}</strong> to
           </DialogDescription>
         </DialogHeader>
-        <FolderList selectedFolderSlug={selectedFolderSlug} setSelectedFolderSlug={setSelectedFolderSlug} />
-        <Button onClick={() => handleAddToFolder()}>Add flashcard to folder</Button>
+
+        <FolderList selectedFolderSlugs={selectedFolderSlugs} setSelectedFolderSlugs={setSelectedFolderSlugs} />
+
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground text-sm">
+            {selectedFolderSlugs.length} folder{selectedFolderSlugs.length !== 1 ? "s" : ""} selected
+          </p>
+          <Button onClick={handleAddToFolder} disabled={addToFolderLoading || selectedFolderSlugs.length === 0}>
+            {addToFolderLoading ? "Adding..." : `Add to ${selectedFolderSlugs.length} folder${selectedFolderSlugs.length !== 1 ? "s" : ""}`}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

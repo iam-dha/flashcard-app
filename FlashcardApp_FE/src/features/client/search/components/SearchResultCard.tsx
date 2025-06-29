@@ -31,7 +31,7 @@ export function useToggleFavourites(result: FlashcardTypes) {
     try {
       setFavouritesLoading(true);
       const favouritesSlug = await getFavouritesSlug();
-      await addFlashcardToFolder(favouritesSlug, result.flashcardId);
+      await addFlashcardToFolder(result.flashcardId, [favouritesSlug!]);
       setIsFavourites(true);
       toast.info(`"${result.word}" added to favourites`, {
         action: {

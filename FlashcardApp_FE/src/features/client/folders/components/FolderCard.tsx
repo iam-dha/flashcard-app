@@ -4,29 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { User, Users, GraduationCap } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, PencilLine, Share, Trash } from "lucide-react";
+import { EllipsisVertical, Share, Trash } from "lucide-react";
 import FolderDeleteDialog from "./FolderDeleteDialog";
+import FolderUpdateInfoDialog from "./FolderUpdateInfoDialog";
+import FolderShareDialog from "./FolderShareDialog";
 
 interface FolderCardDropdownMenuProps {
   slug: string;
   name: string;
+  description: string;
+  tags: string[];
+  isPublic: boolean;
 }
 
-export function FolderCardDropdownMenu({ slug, name }: FolderCardDropdownMenuProps) {
+export function FolderCardDropdownMenu({ slug, name, description, tags, isPublic }: FolderCardDropdownMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:ml-2">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-popover mt-2 flex flex-col rounded-xl border border-transparent shadow-lg">
-        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
-          <PencilLine />
-          Rename
-        </Button>
-        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
-          <Share />
-          Share
-        </Button>
+        <FolderUpdateInfoDialog
+          slug={slug}
+          name={name}
+          description={description}
+          tags={tags}
+          isPublic={isPublic}
+        />
+        <FolderShareDialog slug={slug} name={name} description={description || ""} tags={tags || []} isPublic={isPublic} />
         <FolderDeleteDialog
           trigger={
             <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent">
@@ -83,7 +88,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
               <GraduationCap className="h-4 w-4" />
               Study
             </Button>
-            <FolderCardDropdownMenu slug={folder.slug} name={folder.name} />
+            <FolderCardDropdownMenu slug={folder.slug} name={folder.name} description={folder.description || ""} tags={folder.tags || []} isPublic={folder.isPublic || false} />
           </div>
         </div>
       </div>

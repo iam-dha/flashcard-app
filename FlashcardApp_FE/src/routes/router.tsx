@@ -2,18 +2,21 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "../layout/client/AppLayout";
 import AuthLayout from "@/layout/client/AuthLayout";
 import LoginPage from "@/features/client/auth/LoginPage";
-import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
+import { Home, Search, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
 import HomePage from "@/features/client/home/HomePage";
+import PostDetailPage from "@/features/client/post/PostDetailPage";
 import SearchPage from "@/features/client/search/SearchPage";
 import { FlashcardDeck } from "@/features/client/flashcards/FlashcardDeck";
 import FoldersListPage from "@/features/client/folders/FolderListPage";
-import GamesPage from "@/features/client/games/GamesPage";
+import FolderSharePage from "@/features/client/share-folder/FolderSharePage";
 import FolderDetailPage from "@/features/client/folders/FolderDetailPage";
 import RegisterPage from "@/features/client/auth/RegisterPage";
 import ResetPasswordPage from "@/features/client/auth/ResetPasswordPage";
+import GamesPage from "@/features/client/games/GamesPage";
 import UserLayout from "@/layout/client/UserLayout";
 import UserProfilePage from "@/features/client/user/UserProfilePage";
+
 import AdminLayout from "@/layout/admin/AdminLayout";
 import AdminLoginPage from "@/layout/admin/AdminLoginPage";
 import AdminDashboardLayout from "@/layout/admin/AdminDashboardLayout";
@@ -38,6 +41,11 @@ export const routes: BaseRouteConfig[] = [
     icon: <Home />,
     element: <HomePage />,
     showInSidebar: true,
+  },
+  {
+    path: "/posts/:slug",
+    title: "Posts",
+    element: <PostDetailPage />,
   },
   {
     path: "/search",
@@ -69,6 +77,12 @@ export const routes: BaseRouteConfig[] = [
     icon: <Gamepad2 />,
     element: <GamesPage />,
     showInSidebar: true,
+  },
+  {
+    path: "/share-folder/:slug",
+    element: <FolderSharePage />,
+    title: "Share Folder",
+    showInSidebar: false,
   },
 ];
 

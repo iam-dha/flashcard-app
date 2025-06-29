@@ -1,22 +1,95 @@
-import { useEffect } from "react";
-import useGetAllPost from "./useGetAllPost";
+import { useEffect, useState } from "react";
+import usePostService from "@/services/usePostService";
+import { PostTypes } from "@/types/post.types";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
-  const { getAllPost } = useGetAllPost();
+  const navigate = useNavigate();
+  const { getAllPost } = usePostService();
+  const [posts, setPosts] = useState<PostTypes[]>([]);
 
   useEffect(() => {
-    getAllPost();
+    const fetchPosts = async () => {
+      const posts = await getAllPost();
+      console.log(posts);
+      setPosts(posts);
+    };
+    fetchPosts();
   }, [getAllPost]);
 
+  const featuredPost = posts[0];
+  const otherPosts = posts.slice(1, 5);
+
   return (
-    <div>
-      <div
-        className="prose max-w-none"
-        dangerouslySetInnerHTML={{
-          __html:
-            '<table style="border-collapse: collapse; width: 100%;" border="1"><colgroup><col style="width: 16.6667%;"><col style="width: 16.6667%;"><col style="width: 16.6667%;"><col style="width: 16.6667%;"><col style="width: 16.6667%;"><col style="width: 16.6667%;"></colgroup>\n<tbody>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<h1>sadasdasdasdasdasdasdasdasdasd</h1>\n<div class="social_pin">\n<ul class="social_left">\n<li class="li_comment"><a class="social_comment flexbox" title="B&igrave;nh luận" href="https://vnexpress.net/nha-mang-phai-chan-telegram-tai-viet-nam-4889659.html#box_comment_vne"><span class="number_cmt num_cmt_detail widget-comment-4889659-1">309</span></a></li>\n<li>&nbsp;</li>\n<li>&nbsp;</li>\n</ul>\n</div>\n<div class="sidebar-1">\n<div class="header-content width_common">\n<ul class="breadcrumb" data-campaign="Header">\n<li><a title="Khoa học c&ocirc;ng nghệ" href="https://vnexpress.net/khoa-hoc-cong-nghe" data-medium="Menu-KhoaHocCongNghe" data-itm-source="#vn_source=Detail-KhoaHocCongNghe_ChuyenDoiSo_NhipSongSo-4889659&amp;vn_campaign=Header&amp;vn_medium=Menu-KhoaHocCongNghe&amp;vn_term=Desktop" data-itm-added="1">Khoa học c&ocirc;ng nghệ</a></li>\n<li><a title="Chuyển đổi số" href="https://vnexpress.net/khoa-hoc-cong-nghe/chuyen-doi-so" data-medium="Menu-ChuyenDoiSo" data-itm-source="#vn_source=Detail-KhoaHocCongNghe_ChuyenDoiSo_NhipSongSo-4889659&amp;vn_campaign=Header&amp;vn_medium=Menu-ChuyenDoiSo&amp;vn_term=Desktop" data-itm-added="1">Chuyển đổi số</a></li>\n<li><a title="Nhịp sống số" href="https://vnexpress.net/khoa-hoc-cong-nghe/chuyen-doi-so/nhip-song-so" data-medium="Menu-NhipSongSo" data-itm-source="#vn_source=Detail-KhoaHocCongNghe_ChuyenDoiSo_NhipSongSo-4889659&amp;vn_campaign=Header&amp;vn_medium=Menu-NhipSongSo&amp;vn_term=Desktop" data-itm-added="1">Nhịp sống số</a></li>\n</ul>\n<span id="parentCateDetail" data-cate="1006226"></span><span id="site-sub-id" data-cate="1006226"></span><span class="date">Thứ s&aacute;u, 23/5/2025, 13:39 (GMT+7)</span></div>\n<div class="list_diendan">&nbsp;</div>\n<h1 class="title-detail">Nh&agrave; mạng phải chặn Telegram tại Việt Nam</h1>\n<p class="description">Cục Viễn th&ocirc;ng y&ecirc;u cầu c&aacute;c nh&agrave; mạng thực hiện nghĩa vụ ngăn chặn hoạt động của Telegram tại Việt Nam.</p>\n<article class="fck_detail ">\n<p class="Normal">Cục Viễn th&ocirc;ng - Bộ Khoa học v&agrave; C&ocirc;ng nghệ gửi văn bản đề nghị c&aacute;c doanh nghiệp viễn th&ocirc;ng triển khai biện ph&aacute;p ngăn chặn hoạt động của Telegram tại Việt Nam theo y&ecirc;u cầu của cơ quan c&ocirc;ng an. Kết quả cũng như giải ph&aacute;p thực hiện phải được b&aacute;o c&aacute;o bằng văn bản về Cục trước ng&agrave;y 2/6.</p>\n<p class="Normal">Theo th&ocirc;ng tin cung cấp từ c&aacute;c đơn vị chức năng Bộ C&ocirc;ng an, c&oacute; 68% k&ecirc;nh, nh&oacute;m xấu độc trong tổng số c&aacute;c k&ecirc;nh, nh&oacute;m&nbsp;<a href="https://vnexpress.net/chu-de/telegram-7744" rel="dofollow" data-itm-source="#vn_source=Detail-KhoaHocCongNghe_ChuyenDoiSo_NhipSongSo-4889659&amp;vn_campaign=Box-InternalLink&amp;vn_medium=Link-Telegram&amp;vn_term=Desktop&amp;vn_thumb=0" data-itm-added="1">Telegram</a>&nbsp;tại Việt Nam. Nhiều hội, nh&oacute;m trong đ&oacute; c&oacute; h&agrave;ng chục ngh&igrave;n người tham gia, được tạo lập để t&aacute;n ph&aacute;t t&agrave;i liệu chống ph&aacute;. B&ecirc;n cạnh đ&oacute;, thời gian qua, xảy ra nhiều vụ lừa đảo tr&ecirc;n Telegram với tổng số tiền hơn 1.000 tỷ đồng, hơn 13.000 nạn nh&acirc;n được ghi nhận, dữ liệu của 23 triệu người d&acirc;n bị rao b&aacute;n.</p>\n<p class="Normal">Việc lợi dụng hoạt động viễn th&ocirc;ng để thực hiện h&agrave;nh vi chống ph&aacute;, x&acirc;m phạm an ninh quốc gia, trật tự x&atilde; hội l&agrave; h&agrave;nh vi bị nghi&ecirc;m cấm theo Điều 9, Luật Viễn th&ocirc;ng. Khi đ&oacute;, doanh nghiệp viễn th&ocirc;ng c&oacute; nghĩa vụ thực hiện c&aacute;c biện ph&aacute;p ngăn chặn</p>\n</article>\n</div>',
-        }}
-      />
+    <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 sm:mb-8 sm:text-3xl lg:text-4xl">Latest News</h1>
+
+      {/* Featured Post */}
+      {featuredPost && (
+        <div className="mb-6 sm:mb-8">
+          <div
+            className="rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg"
+            onClick={() => navigate(`/posts/${featuredPost.slug}`)}
+          >
+            <div className="relative">
+              <img src={featuredPost.thumbnail} alt={featuredPost.title} className="h-48 w-full rounded-lg object-cover sm:h-64 md:h-80 lg:h-96" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div className="flex h-full flex-col p-4 sm:p-6">
+              <div className="flex-1">
+                <h2 className="mb-3 text-xl leading-tight font-bold text-gray-900 sm:mb-4 sm:text-2xl lg:text-3xl">{featuredPost.title}</h2>
+                <p className="mb-3 text-base leading-relaxed text-gray-600 sm:mb-4 sm:text-lg">{featuredPost.description}</p>
+              </div>
+              <div className="mt-auto text-xs text-gray-500 sm:text-sm">
+                {new Date(featuredPost.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Other Posts Grid */}
+      {otherPosts.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {otherPosts.map((post) => (
+            <div
+              key={post.postId}
+              className="flex flex-col overflow-hidden rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg"
+              onClick={() => navigate(`/posts/${post.slug}`)}
+            >
+              <div className="relative">
+                <img src={post.thumbnail} alt={post.title} className="h-40 w-full object-cover sm:h-48" />
+              </div>
+              <div className="flex flex-1 flex-col p-3 sm:p-4">
+                <div className="flex-1">
+                  <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-gray-900 sm:text-xl" title={post.title}>
+                    {post.title}
+                  </h3>
+                  <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-gray-600">{post.description}</p>
+                </div>
+                <div className="mt-auto text-xs text-gray-500">
+                  {new Date(post.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Show message if no posts */}
+      {posts.length === 0 && (
+        <div className="py-8 text-center sm:py-12">
+          <p className="text-base text-gray-500 sm:text-lg">No posts available at the moment.</p>
+        </div>
+      )}
     </div>
   );
 }

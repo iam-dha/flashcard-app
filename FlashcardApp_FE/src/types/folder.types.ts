@@ -5,7 +5,7 @@ export interface FolderTypes {
   name: string;
   description?: string;
   tags?: string[];
-  isPublic?: boolean;
+  isPublic: boolean;
   flashcardCount: number;
   createdAt: string;
   slug: string;
@@ -28,6 +28,7 @@ export const folderNameMaxLength = 64;
 export const folderCreateSchema = z.object({
   name: z.string().min(1, "Folder name is required").max(folderNameMaxLength, `Folder name must be less than ${folderNameMaxLength} characters`),
   description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   isPublic: z.boolean().optional(),
 });
 
