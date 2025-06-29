@@ -10,7 +10,7 @@ const {
 const folderSchema = {
     body: joi.object({
         name: folderNameField,
-        description: descriptionField,
+        description: descriptionField.allow(""),
         tags: tagField,
         isPublic: booleanField.required()
     })
