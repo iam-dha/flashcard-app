@@ -257,6 +257,10 @@ const RoleManagement: React.FC = () => {
       {roles.length > 0 && (
         <div className="mb-4 flex items-center gap-2">
           <Checkbox
+            style={{
+              border: '1px solid #e0e0e0',
+              borderRadius: '4px',  
+            }}
             checked={selectedRoles.length === roles.length}
             onCheckedChange={handleSelectAll}
           />
@@ -267,7 +271,7 @@ const RoleManagement: React.FC = () => {
       )}
 
       {/* Permissions Table */}
-      <div className="rounded-md border">
+      <div >
         <Table>
           <TableHeader>
             <TableRow>
@@ -277,6 +281,10 @@ const RoleManagement: React.FC = () => {
                   <div className="flex flex-col items-center gap-2">
                     <div className="flex items-center gap-2">
                       <Checkbox
+                        style={{
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '4px',
+                        }}
                         checked={selectedRoles.includes(role._id)}
                         onCheckedChange={(checked) => 
                           handleRoleSelect(role._id, checked as boolean)
@@ -312,6 +320,10 @@ const RoleManagement: React.FC = () => {
                     <TableCell key={role._id} className="text-center">
                       <Checkbox
                         checked={checked}
+                        style={{
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '4px',
+                        }}
                         onCheckedChange={(checked) => 
                           handlePermissionChange(role._id, permission.title, checked as boolean)
                         }

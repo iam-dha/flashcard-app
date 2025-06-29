@@ -39,11 +39,14 @@ export default function AdminLoginPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} />
+          <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} 
+          />
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
+          <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange}
+          
+          />
         </div>
         <Button type="submit" disabled={loading}>
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}

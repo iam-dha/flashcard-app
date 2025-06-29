@@ -21,13 +21,8 @@ import AdminLayout from "@/layout/admin/AdminLayout";
 import AdminLoginPage from "@/layout/admin/AdminLoginPage";
 import AdminDashboardLayout from "@/layout/admin/AdminDashboardLayout";
 import AdminProfilePage from "@/layout/admin/AdminProfilePage";
-import ViewUserPage from "@/features/admin/user/ViewUserPage";
 import UserManagementTable from "@/features/admin/user/UserManagement";
 import PostManagementTable from "@/features/admin/post/PostManagement";
-import PostForm from "@/features/admin/post/AddNewPost";
-import PostDetail from "@/features/admin/post/PostDetail";
-import EditPost from "@/features/admin/post/EditPost";
-import EditUser from "@/features/admin/user/EditUser";
 import RoleManagement from "@/features/admin/role/RoleManagement";
 import { RequireAuth } from "@/layout/admin/RequireAuth";
 
@@ -233,34 +228,10 @@ export const router = createBrowserRouter([
           {
             path: "user",
             element: <UserManagementTable />,
-            children: [
-              {
-                path: ":userId",
-                element: <ViewUserPage />,
-              },
-              {
-                path: ":userId/edit",
-                element: <EditUser />,
-              },
-            ],
           },
           {
             path: "post",
             element: <PostManagementTable />,
-            children: [
-              {
-                path: "add",
-                element: <PostForm />,
-              },
-              {
-                path: ":slug",
-                element: <PostDetail />,
-              },
-              {
-                path: ":_id/edit",
-                element: <EditPost />,
-              },
-            ],
           },
           {
             path: "access",
