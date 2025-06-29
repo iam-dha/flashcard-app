@@ -6,13 +6,17 @@ const authMiddleWare = require("../../middlewares/authenticate.middleware");
 const validateMiddleWare = require("../../middlewares/validate.middleware");
 const router = express.Router();
 //Schemas
-const {folderSchema, folderAddFlashcardSchema} = require("../../schemas/client/folder.schema");
+const {folderSchema, folderAddFlashcardSchema, folderAddMultiFlashcardSchema} = require("../../schemas/client/folder.schema");
 
 router.get("/", authMiddleWare.checkAccessToken(), controller.getAllFolders);
 
 router.post("/",validateMiddleWare.validateInput(folderSchema), authMiddleWare.checkAccessToken(), controller.createFolder);
 
 router.get("/flashcards/:fc_slug/favourite", authMiddleWare.checkAccessToken(), controller.checkFlashcardInFavourite);
+
+router.get("/check/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), controller.checkFlashcardInFolder);
+
+router.post("/share/flashcards", authMiddleWare.checkAccessToken(), validateMiddleWare.validateInput(folderAddMultiFlashcardSchema), controller.addMultiFlashcardToFolder);
 
 router.get("/:slug", authMiddleWare.checkAccessToken(), controller.getFolderBySlug);
 
@@ -27,5 +31,8 @@ router.post("/flashcards", validateMiddleWare.validateInput(folderAddFlashcardSc
 router.get("/:slug/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), controller.getFlashcardInFolder);
 
 router.delete("/:slug/flashcards/:fc_slug", authMiddleWare.checkAccessToken(), controller.deleteFlashcardInFolder);
+
+
+
 
 module.exports = router;

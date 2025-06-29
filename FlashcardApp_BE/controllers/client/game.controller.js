@@ -36,3 +36,10 @@ module.exports.getWordScramble = async (req, res) => {
   }
     
 }
+
+
+// [POST] /api/v1/game/word-scramble
+module.exports.createWordScrambleSession = async (req, res) => {
+    const userId = req.userId;
+    
+};

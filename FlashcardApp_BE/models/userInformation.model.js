@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const userInformation_schema = new mongoose.Schema(
     {
@@ -16,6 +17,10 @@ const userInformation_schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true
+        },
+        totalScore:{
+            type: Number,
+            default: 0
         },
         address: String,
         phone: {

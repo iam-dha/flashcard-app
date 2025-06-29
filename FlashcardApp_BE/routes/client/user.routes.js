@@ -41,4 +41,6 @@ router.patch(
     controller.changeEmail
 );
 
+// router.post("/test", controller.test);
+
 module.exports = router;
