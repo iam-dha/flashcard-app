@@ -3,6 +3,8 @@ const FolderFlashcard = require("../../models/folderFlashcard.model");
 const Flashcard = require("../../models/flashcard.model");
 const getCambridgeWordScramble = require("../../helpers/cambridgeWordScamble.helper");
 const GameSession = require("../../models/gameSession.model");
+const UserInformation = require("../../models/userInformation.model");
+
 
 // [GET] /api/v1/game/word-scramble?count=x
 module.exports.getWordScramble = async (req, res) => {
@@ -54,6 +56,13 @@ module.exports.createWordScrambleSession = async (req, res) => {
             correctWords : correctWords || [],
             playAt: playAt ? new Date(playAt) : new Date(),
         });
+        const userInformation = await UserInformation.findOne({ userId: userId });
+        if (!userInformation) {
+            return res.status(404).json({
+                message: "User information not found",
+            });
+        }
+        userInformation.totalScore += score;
         res.status(201).json({
             message: "Game session created successfully",
             data: gameSession,
