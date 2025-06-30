@@ -226,7 +226,7 @@ module.exports.getFolderFlashcards = async (req, res) => {
             .limit(limit)
             .populate({
                 path: "flashcardId",
-                select: "word _id slug",
+                select: "word _id slug vi_meanings",
             })
             .sort({ [sortFilter]: sortOrder });
         if (sortFilter === "word") {
