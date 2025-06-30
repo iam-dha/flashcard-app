@@ -8,7 +8,6 @@ import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogTrigger, DialogTitle, DialogDescription, DialogContent } from "@/components/ui/dialog";
-import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import { toast } from "sonner";
 import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
 import { Input } from "@/components/ui/input";
@@ -18,11 +17,13 @@ export default function FolderCreateDialog() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const folderCreateForm = useForm<FolderCreateTypes>({
+  const folderCreateForm = useForm({
     resolver: zodResolver(folderCreateSchema),
     defaultValues: {
       name: "",
       description: "",
+      tags: [],
+      isPublic: false
     },
   });
 
