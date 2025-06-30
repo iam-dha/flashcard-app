@@ -17,7 +17,7 @@ export default function FolderShareDialog({
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Use the same base URL as in the API service
+  // use the same base URL as in the API service
   const baseUrl = "http://localhost:5173";
   const shareLink = `${baseUrl}/share-folder/${slug}`;
 

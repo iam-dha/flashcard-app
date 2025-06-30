@@ -21,6 +21,7 @@ export function FlashcardDeck() {
         console.log("Fetching folder data for slug:", slug);
         const response = await getFolderFlashcardList(slug as string);
         setFlashcards(response.flashcards);
+        console.log("Flashcards:", response.flashcards);
       } catch (error) {
         console.error("Error fetching folder data:", error);
       }
@@ -82,7 +83,7 @@ export function FlashcardDeck() {
                 </div>
                 <div className="flex h-full items-center justify-center overflow-hidden p-4 text-center align-middle">
                   <p className="text-4xl leading-tight text-wrap select-none">
-                    {flashcards[currentFlashcardIndex]?.word_vi ? flashcards[currentFlashcardIndex]?.word_vi : "No Vietnamese word available."}
+                    {flashcards[currentFlashcardIndex]?.vi_meanings ? flashcards[currentFlashcardIndex]?.vi_meanings : "No Vietnamese word available."}
                   </p>
                 </div>
               </div>

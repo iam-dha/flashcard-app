@@ -29,7 +29,7 @@ export const folderCreateSchema = z.object({
   name: z.string().min(1, "Folder name is required").max(folderNameMaxLength, `Folder name must be less than ${folderNameMaxLength} characters`),
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  isPublic: z.boolean().optional(),
+  isPublic: z.boolean().optional().default(false),
 });
 
 export type FolderCreateTypes = z.infer<typeof folderCreateSchema>;

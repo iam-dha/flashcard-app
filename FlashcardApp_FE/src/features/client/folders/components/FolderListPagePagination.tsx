@@ -51,7 +51,7 @@ export default function FolderListPagePagination() {
             <PaginationItem key={pageNum}>
               <PaginationLink
                 href="#"
-                className={pageNum === page ? "bg-accent/80" : "cursor-pointer"}
+                className={pageNum === page ? "liquid-glass !rounded-lg" : "cursor-pointer"}
                 onClick={(e) => {
                   e.preventDefault();
                   if (pageNum !== page) handlePageChange(pageNum);

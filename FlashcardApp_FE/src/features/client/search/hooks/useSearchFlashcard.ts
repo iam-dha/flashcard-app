@@ -3,11 +3,11 @@ import { useAudio } from "@/hooks/useAudio";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import api from "@/services/api";
 
-function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
+function mapApiToFlashcardList(apiData: any[]): FlashcardTypes[] {
   return apiData.flatMap((flashcard: any) => {
-    const flashcardId = flashcard._id ?? "";
+    const flashcardId = flashcard._id;
     const word = flashcard.word;
-    const word_vi = flashcard.vi_meanings ?? "";
+    const vi_meanings = flashcard.vi_meanings ?? "";
     const phonetic = flashcard.phonetics?.[0]?.pronunciation ?? "";
     const audio_url = flashcard.phonetics?.find((p: any) => p.sound)?.sound ?? "";
     const image_url = flashcard.image_url ?? "";
@@ -24,7 +24,7 @@ function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
         phonetic,
         image_url,
         audio_url,
-        word_vi,
+        vi_meanings,
         wordType_vi: "",
         definition_vi: def.vi_definition,
         example_vi: "",
@@ -50,7 +50,7 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
 
     try {
       const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchWord)}`);
-      const flashcards: FlashcardTypes[] = mapApiToFlashcards(response.data.flashcards || []);
+      const flashcards: FlashcardTypes[] = mapApiToFlashcardList(response.data.flashcards || []);
       setResults(flashcards);
     } catch (error: any) {
       if (error.response?.status === 404) {

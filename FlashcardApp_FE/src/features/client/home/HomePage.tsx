@@ -28,7 +28,7 @@ export default function HomePage() {
       {featuredPost && (
         <div className="mb-6 sm:mb-8">
           <div
-            className="rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg"
+            className="rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg cursor-pointer"
             onClick={() => navigate(`/posts/${featuredPost.slug}`)}
           >
             <div className="relative">
@@ -58,7 +58,7 @@ export default function HomePage() {
           {otherPosts.map((post) => (
             <div
               key={post.postId}
-              className="flex flex-col overflow-hidden rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg"
+              className="flex flex-col overflow-hidden rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg cursor-pointer"
               onClick={() => navigate(`/posts/${post.slug}`)}
             >
               <div className="relative">

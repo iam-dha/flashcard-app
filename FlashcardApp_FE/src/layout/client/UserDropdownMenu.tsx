@@ -7,10 +7,10 @@ import { CircleUserRound, Cog, User } from "lucide-react";
 export default function FolderCardDropdownMenu() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-card-foreground hover:bg-accent/50 flex items-center justify-center rounded-full bg-transparent">
+      <DropdownMenuTrigger className="text-card-foreground hover:bg-accent/50 flex items-center justify-center rounded-full bg-transparent liquid-glass">
         <Avatar>
           <AvatarImage />
-          <AvatarFallback className="hover:bg-accent/30 flex items-center justify-center rounded-full">
+          <AvatarFallback className="liquid-glass flex items-center justify-center rounded-full">
             <User />
           </AvatarFallback>
         </Avatar>

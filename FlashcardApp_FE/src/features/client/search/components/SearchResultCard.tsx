@@ -118,7 +118,7 @@ export function SearchResultWordCard(result: FlashcardTypes) {
                 {result.phonetic && <span className="text-secondary-foreground ml-1 text-sm">{result.phonetic}</span>}
               </Button>
             </div>
-            <p className="text-foreground text-2xl font-bold">{result.word_vi}</p>
+            <p className="text-foreground text-2xl font-bold">{result.vi_meanings}</p>
           </div>
         </div>
 

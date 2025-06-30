@@ -11,8 +11,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
+export function mapApiToFlashcard(apiData: any): FlashcardTypes {
+  return {
+    flashcardId: apiData._id,
+    word: apiData.word,
+    vi_meanings: apiData.vi_meanings,
+    slug: apiData.slug,
+    definition: apiData.definition,
+    example: apiData.example,
+    definition_vi: apiData.definition_vi,
+    example_vi: apiData.example_vi,
+  };
+}
+
 export default function FolderDetailPage() {
-  const { getFolderFlashcardList, getFolderBySlug, addFlashcardToFolder, getAllFolders } = useFolderService();
+  const { getFolderFlashcardList, getFolderBySlug, addFlashcardsToFolders, getAllFolders } = useFolderService();
   const { slug } = useParams<{ slug: string }>();
   const [folder, setFolder] = useState<FolderTypes>();
   const [flashcards, setFlashcards] = useState<FlashcardTypes[]>([]);
@@ -35,7 +48,7 @@ export default function FolderDetailPage() {
         const response = await getFolderFlashcardList(slug as string);
         const folder = await getFolderBySlug(slug as string);
         setFolder(folder);
-        setFlashcards(response.flashcards);
+        setFlashcards(response.flashcards.map(mapApiToFlashcard));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching folder data:", error);
@@ -83,7 +96,7 @@ export default function FolderDetailPage() {
     }
     setAddLoading(true);
     try {
-      await Promise.all(selectedFlashcardIds.map((flashcardId) => addFlashcardToFolder(flashcardId, selectedFolderSlugs)));
+      await addFlashcardsToFolders(selectedFlashcardIds, selectedFolderSlugs);
       toast.success(`Added ${selectedFlashcardIds.length} flashcard(s) to ${selectedFolderSlugs.length} folder(s)`);
       setAddDialogOpen(false);
       setSelectedFlashcardIds([]);
@@ -113,13 +126,13 @@ export default function FolderDetailPage() {
           </Button>
           <Button
             variant="outline"
-            className="justify-start rounded-2xl shadow-sm hover:scale-105"
+            className="hover:bg-card/50 justify-start rounded-2xl shadow-sm hover:scale-105"
             onClick={() => {
               setMultiSelectMode(!multiSelectMode);
               setSelectedFlashcardIds([]);
             }}
           >
-            {multiSelectMode ? "Cancel Multi-Select" : "Multi-Select"}
+            {multiSelectMode ? "Cancel" : "Select"}
           </Button>
           {multiSelectMode && (
             <Button
@@ -164,12 +177,8 @@ export default function FolderDetailPage() {
                       isSelected ? "bg-blue-500/20 ring-2 ring-blue-500 ring-offset-2" : "hover:bg-accent/10"
                     }`}
                   >
-                    <div className="absolute top-2 left-2 z-10 rounded-full bg-white/90 p-1 shadow-sm">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => handleFlashcardToggle(flashcard.flashcardId)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                    <div className="absolute top-2 right-2 rounded-full p-1">
+                      <Checkbox checked={isSelected} onCheckedChange={() => handleFlashcardToggle(flashcard.flashcardId)} />
                     </div>
                   </div>
                 )}

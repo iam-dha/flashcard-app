@@ -18,7 +18,7 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         value={searchWord}
         onChange={(e) => setSearchWord(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        className="rounded-2xl py-6 bg-input"
+        className="!rounded-2xl py-6 bg-input liquid-glass"
       />
       <Button
         onClick={() => {

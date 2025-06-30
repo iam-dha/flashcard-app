@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import api from "@/services/api";
 import { FolderCreateTypes, FolderTypes, GetAllFoldersResponse, GetFolderFlashcardListResponse } from "@/types/folder.types";
+import { FlashcardTypes } from "@/types/flashcard.types";
 
 export function useFolderService() {
   const createFolder = useCallback(async (folderData: FolderCreateTypes): Promise<FolderTypes> => {
@@ -69,6 +70,7 @@ export function useFolderService() {
     limit = 30;
     try {
       const response = await api.get(`/folders/${slug}/flashcards?page=${page}&limit=${limit}`);
+      console.log("response.data", response.data);
       return response.data;
     } catch (error) {
       console.error("Error getting folder flashcard list:", error);
@@ -83,6 +85,15 @@ export function useFolderService() {
     } catch (error) {
       console.error("Error adding flashcard to folder:", error);
       throw new Error("Failed to add flashcard to folder");
+    }
+  }, []);
+
+  const addFlashcardsToFolders = useCallback(async (flashcards: string[], folders: string[]): Promise<void> => {
+    try {
+      await api.post(`/folders/share/flashcards`, { flashcards, folders });
+    } catch (error) {
+      console.error("Error adding flashcards to folders:", error);
+      throw new Error("Failed to add flashcards to folders");
     }
   }, []);
 
@@ -147,6 +158,7 @@ export function useFolderService() {
     changeFolderInfo,
     getFolderFlashcardList,
     addFlashcardToFolder,
+    addFlashcardsToFolders,
     getFlashcardInFolder,
     deleteFlashcardInFolder,
     checkFlashcardInFavourites,

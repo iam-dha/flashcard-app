@@ -75,37 +75,59 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: rgba(10, 50, 68, 1);
-  --card: rgba(88, 202, 252, 1);
-  --card-foreground: rgba(10, 50, 68, 1);
-  --popover: rgba(255, 255, 255, 1);
-  --popover-foreground: rgba(10, 50, 68, 1);
-  --primary: rgb(0, 75, 110);
+  /* Pure white background for maximum brightness */
+  --background: rgb(255, 255, 255);
+  /* Deep blue-gray for excellent readability */
+  --foreground: rgb(15, 23, 42);
+  
+  /* Beautiful sky blue cards - the main blue theme */
+  --card: rgb(125, 211, 252);
+  --card-foreground: rgb(15, 23, 42);
+  
+  /* Clean white popovers */
+  --popover: rgb(255, 255, 255);
+  --popover-foreground: rgb(15, 23, 42);
+  
+  /* Strong blue primary - professional yet bright */
+  --primary: rgb(37, 99, 235);
   --primary-foreground: rgb(255, 255, 255);
-  --secondary: rgb(102, 209, 248);
-  --secondary-foreground: rgba(10, 50, 68, 1);
-  --muted: rgba(230, 247, 253, 1);
-  --muted-foreground: rgba(93, 141, 161, 1);
-  --accent: rgb(255, 187, 15);
-  --accent-foreground: rgba(0, 0, 0, 1);
-  --destructive: rgba(225, 29, 72, 1);
-  --border: rgb(236, 248, 253);
-  --input: rgba(241, 250, 255, 0.7);
-  --ring: rgba(78, 181, 230, 1);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: rgba(255, 255, 255, 1);
-  --sidebar-foreground: rgba(10, 50, 68, 1);
-  --sidebar-primary: rgba(10, 50, 68, 1);
-  --sidebar-primary-foreground: rgba(255, 255, 255, 1);
-  --sidebar-accent: rgba(139, 220, 255, 1);
-  --sidebar-accent-foreground: rgba(10, 50, 68, 1);
-  --sidebar-border: rgba(187, 228, 247, 1);
-  --sidebar-ring: rgba(78, 181, 230, 1);
+  
+  /* Lighter blue secondary for variety */
+  --secondary: rgb(147, 197, 253);
+  --secondary-foreground: rgb(15, 23, 42);
+  
+  /* Very light blue muted backgrounds */
+  --muted: rgb(248, 250, 252);
+  --muted-foreground: rgb(100, 116, 139);
+  
+  /* Vibrant orange accent - warm and energetic */
+  --accent: rgb(255, 187, 0); 
+  --accent-foreground: rgb(0, 0, 0);
+  
+  /* Bright red for destructive actions */
+  --destructive: oklch(0.577 0.245 27.325);
+  
+  /* Subtle blue-tinted borders */
+  --border: rgb(226, 232, 240);
+  --input: rgb(230, 241, 254);
+  --ring: rgb(59, 130, 246);
+  
+  /* Harmonious chart colors */
+  --chart-1: rgb(59, 130, 246);
+  --chart-2: rgb(251, 113, 133);
+  --chart-3: rgb(34, 197, 94);
+  --chart-4: rgb(168, 85, 247);
+  --chart-5: rgb(245, 158, 11);
+  
+  /* Clean sidebar with blue accents */
+  --sidebar: rgb(255, 255, 255);
+  --sidebar-foreground: rgb(15, 23, 42);
+  --sidebar-primary: rgb(37, 99, 235);
+  --sidebar-primary-foreground: rgb(255, 255, 255);
+  --sidebar-accent: rgb(240, 249, 255);
+  --sidebar-accent-foreground: rgb(15, 23, 42);
+  --sidebar-border: rgb(226, 232, 240);
+  --sidebar-ring: rgb(59, 130, 246);
 }
 
 .dark {
@@ -113,7 +135,7 @@
   --foreground: rgba(251, 251, 251, 1);
   --card: rgba(0, 53, 75, 1);
   --card-foreground: rgba(251, 251, 251, 1);
-  --popover: rgba(0, 72, 103, 0.9);
+  --popover: rgb(0, 53, 75);
   --popover-foreground: rgba(251, 251, 251, 1);
   --primary: rgb(0, 94, 123);
   --primary-foreground: rgb(255, 255, 255);

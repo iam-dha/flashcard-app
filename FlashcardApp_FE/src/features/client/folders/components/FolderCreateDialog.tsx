@@ -48,7 +48,10 @@ export default function FolderCreateDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <ExpandableButton Icon={FolderPlus} label="New Folder" variant="ghost" />
+        <Button variant="ghost" className="hover:bg-card/50 rounded-xl">
+          <FolderPlus className="h-4 w-4" />
+          New Folder
+        </Button>
       </DialogTrigger>
       <DialogContent className="text-card-foreground border-transparent shadow-lg">
         <DialogTitle>Create new folder</DialogTitle>

@@ -9,7 +9,7 @@ export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: Sor
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="-mr-4 rounded-xl hover:-mr-2">
+        <Button variant="ghost" className="-mr-4 rounded-xl hover:-mr-2 hover:bg-card/50">
           {sort === "createdAt" && <CalendarClock className="h-4 w-4" />}
           {sort === "name" && <FolderPen className="h-4 w-4" />}
           {sort === "updatedAt" && <CalendarArrowUp className="h-4 w-4" />}
@@ -20,7 +20,7 @@ export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: Sor
       <DropdownMenuContent className="mt-2 flex flex-col rounded-xl">
         <Button
           variant="ghost"
-          className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
+          className="hover:bg-accent/50 text-card-foreground justify-start rounded-lg bg-transparent"
           onClick={() => updateSort("name")}
         >
           <FolderPen className="h-4 w-4" />
@@ -28,7 +28,7 @@ export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: Sor
         </Button>
         <Button
           variant="ghost"
-          className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
+          className="hover:bg-accent/50 text-card-foreground justify-start rounded-lg bg-transparent"
           onClick={() => updateSort("createdAt")}
         >
           <CalendarClock className="h-4 w-4" />
@@ -36,7 +36,7 @@ export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: Sor
         </Button>
         <Button
           variant="ghost"
-          className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
+          className="hover:bg-accent/50 text-card-foreground justify-start rounded-lg bg-transparent"
           onClick={() => updateSort("updatedAt")}
         >
           <CalendarArrowUp className="h-4 w-4" />
@@ -44,7 +44,7 @@ export default function FolderSortDropdownMenu({ sort, updateSort }: { sort: Sor
         </Button>
         <Button
           variant="ghost"
-          className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent"
+          className="hover:bg-accent/50 text-card-foreground justify-start rounded-lg bg-transparent"
           onClick={() => updateSort("isPublic")}
         >
           <FolderLock className="h-4 w-4" />
