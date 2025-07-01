@@ -18,6 +18,10 @@ const userInformation_schema = new mongoose.Schema(
             ref: "User",
             required: true
         },
+        thumbnail: {
+            type: String,
+            default: "https://www.thekaratelifestyle.com/wp-content/uploads/2024/01/miyamoto-musashi-the-retainer.jpg"
+        },
         totalScore:{
             type: Number,
             default: 0
