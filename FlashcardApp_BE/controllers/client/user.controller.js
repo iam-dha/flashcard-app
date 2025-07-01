@@ -6,6 +6,7 @@ const PasswordResetToken = require("../../models/passwordResetToken.model");
 const redisClient = require("../../config/redis");
 const systemConfig = require("../../config/system");
 const mailer = require("../../services/mailer.service");
+const Folder = require("../../models/folder.model");
 
 const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 // [GET] /api/v1/user/settings
@@ -25,11 +26,27 @@ module.exports.setting = async (req, res) => {
         const userInformation = userInformationDoc.toObject();
         const userCreateDate = new Date(userInformation.createdAt);
         const currentDate = new Date(Date.now());
+        const folderCount = await Folder.countDocuments({
+            userId: userId
+        });
         delete userInformation.createdAt;
         userInformation.accountAge = Math.floor(
             Math.abs(currentDate - userCreateDate) / YEAR_MILISECONDS
         );
-        res.status(200).json(userInformation);
+        res.status(200).json({
+            message: "Get user information successfully",
+            data: {
+                email: userInformation.email,
+                fullName: userInformation.fullName,
+                address: userInformation.address,
+                phone: userInformation.phone,
+                status: userInformation.status,
+                totalScore: userInformation.totalScore,
+                accountAge: userInformation.accountAge,
+                folderCount: folderCount
+            },
+        }
+        );
     } catch (error) {
         console.error(`[GET /api/v1/user/settings] Error:`, error);
         return res.status(500).json({ message: "Internal server error" });
