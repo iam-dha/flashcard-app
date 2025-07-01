@@ -38,6 +38,7 @@ module.exports.setting = async (req, res) => {
             data: {
                 email: userInformation.email,
                 fullName: userInformation.fullName,
+                thumbnail: userInformation.thumbnail,
                 address: userInformation.address,
                 phone: userInformation.phone,
                 status: userInformation.status,
@@ -78,6 +79,10 @@ module.exports.settingPatch = async (req, res) => {
 
         if (req.body.fullName !== undefined) {
             userInformationDoc.fullName = req.body.fullName;
+        }
+
+        if(req.body.thumbnail !== undefined) { 
+            userInformationDoc.thumbnail = req.body.thumbnail;
         }
 
         await userInformationDoc.save();

@@ -1,9 +1,12 @@
 const express = require("express");
+const multer = require("multer");
 //Controllers
 const controller = require("../../controllers/client/user.controller");
 //Middlewares
 const authMiddleWare = require("../../middlewares/authenticate.middleware");
 const validateMiddleWare = require("../../middlewares/validate.middleware");
+const uploadCloud = require("../../middlewares/uploadCloud.middleware");
+const fileUpload = multer();
 const { verifyEmailSchema, changeEmailSchema } = require("../../schemas/client/user.schema");
 const router = express.Router();
 
@@ -12,6 +15,8 @@ router.get("/settings", authMiddleWare.checkAccessToken(), controller.setting);
 router.patch(
     "/settings",
     authMiddleWare.checkAccessToken(),
+    fileUpload.single("thumbnail"),
+    uploadCloud.upload,
     controller.settingPatch
 );
 
