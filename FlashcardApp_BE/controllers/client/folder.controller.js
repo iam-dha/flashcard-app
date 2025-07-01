@@ -436,7 +436,7 @@ module.exports.deleteFlashcardInFolder = async (req, res) => {
     }
 };
 
-// [POST] /api/v1/folders/flashcards/:fc_slug/favourite
+// [GET] /api/v1/folders/flashcards/:fc_slug/favourite
 module.exports.checkFlashcardInFavourite = async (req, res) => {
     const userId = req.userId;
     const flashcard_slug = req.params.fc_slug;

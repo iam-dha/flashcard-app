@@ -11,6 +11,7 @@ module.exports.generateAccessToken = (user) => {
     );
 }
 
+
 module.exports.generateRefreshToken = (user) => {
     return jwt.sign(
         {userId: user._id},

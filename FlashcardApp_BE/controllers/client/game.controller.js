@@ -72,6 +72,7 @@ module.exports.createWordScrambleSession = async (req, res) => {
             });
         }
         userInformation.totalScore += score;
+        userInformation.save();
         res.status(201).json({
             message: "Game session created successfully",
             data: gameSession,
@@ -187,7 +188,6 @@ module.exports.getMultiChoice = async (req, res) => {
                 answerList,
             });
         }
-
         res.status(200).json({
             message: "Quiz generated successfully",
             data: questions,
