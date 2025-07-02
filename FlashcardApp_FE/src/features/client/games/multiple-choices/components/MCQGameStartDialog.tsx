@@ -36,7 +36,7 @@ export default function MCQGameStartDialog({
             <p className="text-muted-foreground mt-2">Choose the correct answer from the four options provided!</p>
           </div>
 
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center h-full">
             <MCQGameBackground />
           </div>
 

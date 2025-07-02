@@ -17,10 +17,12 @@ export default function PostDetailPage() {
   }, [getPostDetailBySlug, slug]);
 
   return (
-    <div className="mx-auto max-w-8xl px-4 sm:px-6">
-      <h1 className="text-4xl font-bold mb-4">{post?.title}</h1>
-      <div className="flex justify-center"><img src={post?.thumbnail} alt={post?.title} className="w-3xl h-auto mb-4 rounded-lg border-2 border-gray-200" /></div>
-      <div className="prose" dangerouslySetInnerHTML={{ __html: post?.content || "" }} />
+    <div className="max-w-8xl mx-auto px-4 sm:px-6">
+      <h1 className="mb-4 text-4xl font-bold">{post?.title}</h1>
+      <div className="flex justify-center">
+        <img src={post?.thumbnail} alt={post?.title} className="mb-4 h-auto w-3xl rounded-lg border-2 border-gray-200" />
+      </div>
+      <div className="text-foreground [&_*]:!text-foreground [&_a]:!text-blue-600 [&_a]:!underline [&_a]:!underline-offset-2" dangerouslySetInnerHTML={{ __html: post?.content || "" }} />
     </div>
   );
 }
