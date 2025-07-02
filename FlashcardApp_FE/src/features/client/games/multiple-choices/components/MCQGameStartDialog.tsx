@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { HelpCircle, Heart, Timer, Trophy } from "lucide-react";
+import { HelpCircle, Heart, Timer, Trophy, Play } from "lucide-react";
 import { MCQGameBackground } from "../../GamesPage";
 
 interface MCQGameStartDialogProps {
@@ -57,9 +57,9 @@ export default function MCQGameStartDialog({ isLoading, questionsCount, numberOf
 
           <Button
             onClick={handleStartGame}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-            size="lg"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 rounded-xl font-semibold"
           >
+            <Play className="h-8 w-8" />
             Start Game
           </Button>
         </div>

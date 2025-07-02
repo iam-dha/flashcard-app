@@ -1,40 +1,44 @@
 import { useState, useEffect } from "react";
-import api from "@/services/api";
+import { WSGameDataTypes, WSGameSessionTypes } from "@/types/game.types";
+import { useGameService } from "@/services/useGameService";
 
-export interface WordScrambleData {
-  word: string;
-  definition: string;
-}
 
 export default function useWordScrambleGame() {
+  const { getWSGameData, createWSGameSession } = useGameService();
+  const [gameSession, setGameSession] = useState<WSGameSessionTypes | null>(null);
+  const [startTime, setStartTime] = useState<string | null>(null);
+  const [endTime, setEndTime] = useState<string | null>(null);
+  const [duration, setDuration] = useState<number>(0);
+  const [scrambledWords, setScrambledWords] = useState<string[]>([]);
+  const [correctWords, setCorrectWords] = useState<string[]>([]);
+
+  const numberOfQuestions = 3;
   const [gameStarted, setGameStarted] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  const [wordsData, setWordsData] = useState<WordScrambleData[]>([]);
+  const [wordsData, setWordsData] = useState<WSGameDataTypes[]>([]);
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const currentWord = wordsData[currentQuestion];
   const [userAnswer, setUserAnswer] = useState<string[]>([]);
+
   const [showSuccess, setShowSuccess] = useState(false);
 
   const [lives, setLives] = useState(3);
   const [points, setPoints] = useState(0);
+
   const timePerQuestion = 30;
   const [timeLeft, setTimeLeft] = useState(timePerQuestion);
   const [isPaused, setIsPaused] = useState(false);
 
-  const fetchData = async (): Promise<WordScrambleData[]> => {
-    const response = await api.get("/game/word-scramble");
-    const data = await response.data.data;
-    console.log(data);
-    return data;
-  };
+
 
   const handleGameOpen = async () => {
     setDataLoading(true);
     try {
-      const data = await fetchData();
-      setWordsData(data);
+      const gameData = await getWSGameData();
+      setWordsData(gameData.slice(0, numberOfQuestions));
     } catch (error) {
       console.error("Failed to fetch game data:", error);
     } finally {
@@ -43,7 +47,13 @@ export default function useWordScrambleGame() {
   };
 
   const handleStartGame = () => {
+    const gameStartTime = new Date().toISOString();
+    setStartTime(gameStartTime);
     setGameStarted(true);
+    if (wordsData.length > 0) {
+      setScrambledWords([wordsData[0].word]);
+      console.log("scrambledWords", scrambledWords);
+    }
   };
 
   // shuffle letters when game starts or question changes
@@ -106,6 +116,8 @@ export default function useWordScrambleGame() {
       setPoints(points + 10);
       setShowSuccess(true);
       setIsPaused((prev) => !prev);
+      setCorrectWords((prev) => [...prev, currentWord.word]);
+      console.log("correctWords", correctWords);
     } else {
       setLives(lives - 1);
       // reset the answer
@@ -118,20 +130,37 @@ export default function useWordScrambleGame() {
     setShowSuccess(false);
     setIsPaused((prev) => !prev);
     if (currentQuestion < wordsData.length - 1) {
+      setScrambledWords((prev) => [...prev, wordsData[currentQuestion + 1].word]);
+      console.log("scrambledWords", scrambledWords);
       setCurrentQuestion(currentQuestion + 1);
       setTimeLeft(30);
     } else {
       // Game completed
-      setGameStarted(false);
+      setIsGameOver(true);
       setCurrentQuestion(0);
+      setIsPaused(true);
     }
   };
 
-  const isGameOver = lives === 0 || currentQuestion === wordsData.length || timeLeft === 0;
+  useEffect(() => {
+    console.log("Effect check:", { lives, currentQuestion, wordsDataLength: wordsData.length, timeLeft, showSuccess });
+    if (!showSuccess) {
+      if (lives === 0 || (currentQuestion === wordsData.length && wordsData.length > 0) || timeLeft === 0) {
+        console.log("game over");
+        setIsGameOver(true);
+        setIsPaused(true);
+      }
+    }
+  }, [lives, currentQuestion, wordsData.length, timeLeft, showSuccess]);
 
   const resetGame = () => {
+    console.log("resetGame");
+    console.log("scrambledWords", scrambledWords);
+    console.log("correctWords", correctWords);
     setGameStarted(false);
     setCurrentQuestion(0);
+    setScrambledWords([]);
+    setCorrectWords([]);
     setLives(3);
     setPoints(0);
     setTimeLeft(60);
@@ -139,21 +168,34 @@ export default function useWordScrambleGame() {
     setUserAnswer([]);
     setShuffledLetters([]);
     setShowSuccess(false);
+    setIsGameOver(false);
   };
 
   return {
-    gameStarted, setGameStarted,
-    isDataLoading, setDataLoading,
-    wordsData, setWordsData,
-    shuffledLetters, setShuffledLetters,
-    currentQuestion, setCurrentQuestion,
+    gameStarted, 
+    setGameStarted,
+    isDataLoading, 
+    setDataLoading,
+    wordsData, 
+    setWordsData,
+    shuffledLetters, 
+    setShuffledLetters,
+    currentQuestion, 
+    setCurrentQuestion,
     currentWord,
-    userAnswer, setUserAnswer,
-    showSuccess, setShowSuccess,
-    lives, setLives,
-    points, setPoints,
-    timePerQuestion, timeLeft, setTimeLeft,
-    isPaused, setIsPaused,
+    userAnswer, 
+    setUserAnswer,
+    showSuccess, 
+    setShowSuccess,
+    lives, 
+    setLives,
+    points, 
+    setPoints,
+    timePerQuestion, 
+    timeLeft, 
+    setTimeLeft,
+    isPaused, 
+    setIsPaused,
     handleGameOpen,
     handleStartGame,
     handleLetterClick,

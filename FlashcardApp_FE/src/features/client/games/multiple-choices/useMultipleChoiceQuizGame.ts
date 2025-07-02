@@ -4,7 +4,7 @@ import { MCQGameDataTypes } from "@/types/game.types";
 
 export default function useMultipleChoiceQuizGame() {
   const { getMCQGameData } = useGameService();
-  const numberOfQuestions = 5;
+  const numberOfQuestions = 10;
   const [gameStarted, setGameStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -18,7 +18,7 @@ export default function useMultipleChoiceQuizGame() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showIncorrect, setShowIncorrect] = useState(false);
 
-  const numberOfLives = 2;
+  const numberOfLives = 3;
   const [lives, setLives] = useState(numberOfLives);
   const [points, setPoints] = useState(0);
 

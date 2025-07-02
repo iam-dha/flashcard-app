@@ -137,7 +137,7 @@
   --card-foreground: rgba(251, 251, 251, 1);
   --popover: rgb(0, 53, 75);
   --popover-foreground: rgba(251, 251, 251, 1);
-  --primary: rgb(0, 94, 123);
+  --primary: rgb(21, 113, 142);
   --primary-foreground: rgb(255, 255, 255);
   --secondary: rgb(0, 111, 145);
   --secondary-foreground: rgba(251, 251, 251, 1);
@@ -225,6 +225,6 @@
 }
 
 .liquid-glass {
-  @apply text-foreground rounded-full border border-white/20 bg-gray-300/20 backdrop-blur-xl transition-all duration-300 hover:scale-102 hover:bg-white/20 shadow-sm;
+  @apply text-foreground rounded-full border border-white/20 bg-gray-300/20 backdrop-blur-xl transition-all duration-300 hover:bg-white/20 shadow-sm;
 }
 

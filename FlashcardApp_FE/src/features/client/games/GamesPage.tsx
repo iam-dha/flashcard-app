@@ -95,7 +95,7 @@ export function WSGameBackground() {
       {shufflingLetters.map((letter) => (
         <div
           key={letter.id}
-          className={`border-primary/60 bg-primary/20 text-primary/80 absolute flex h-8 w-8 items-center justify-center rounded border-2 text-xs font-bold transition-all duration-1500 ease-in-out ${
+          className={`border-foreground/60 bg-foreground/20 text-foreground/80 absolute flex h-8 w-8 items-center justify-center rounded border-2 text-xs font-bold transition-all duration-1500 ease-in-out ${
             letter.letter === " " ? "opacity-0" : ""
           }`}
           style={{
@@ -146,9 +146,9 @@ export function MCQGameBackground() {
   return (
     <div className="flex flex-col">
       {/* Mock Question */}
-      <div className="border-primary/40 bg-primary/15 mb-4 rounded-lg border-2 p-3">
-        <div className="text-primary/70 text-xs font-medium">Question 3/10</div>
-        <div className="text-primary/90 text-sm font-semibold">{question}</div>
+      <div className="border-foreground/40 bg-foreground/15 mb-4 rounded-lg border-2 p-3">
+        <div className="text-foreground/70 text-xs font-medium">Question 3/10</div>
+        <div className="text-foreground/90 text-sm font-semibold">{question}</div>
       </div>
 
       {/* Mock Answer Options */}
@@ -157,7 +157,7 @@ export function MCQGameBackground() {
           <div
             key={index}
             className={`rounded-lg border-2 p-2 text-xs transition-all duration-500 ${
-              index === currentOption ? "border-primary/60 bg-primary/25 text-primary/90" : "border-primary/30 bg-primary/10 text-primary/70"
+              index === currentOption ? "border-foreground/60 bg-foreground/25 text-foreground/90" : "border-foreground/30 bg-foreground/10 text-foreground/70"
             }`}
             style={{
               transform: index === currentOption ? "scale(1.02)" : "scale(1)",
@@ -203,9 +203,9 @@ function GameCard({
         {/* Animated Background */}
         <div className="flex h-full items-center justify-center">{backgroundComponent}</div>
         {/* Content with better background for readability */}
-        <div className="bg-background/50 relative z-10 mt-auto flex flex-col gap-2 rounded-lg p-4 backdrop-blur-sm">
+        <div className="bg-background/50 relative z-10 mt-auto flex flex-col gap-2 !rounded-lg p-4 backdrop-blur-sm liquid-glass">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm text-gray-600">{description}</p>
+          <p className="text-sm text-muted-foreground">{description}</p>
           {playButton}
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { Heart, HelpCircle, Star, Timer, Trophy } from "lucide-react";
+import { Heart, HelpCircle, Play, Timer, Trophy } from "lucide-react";
 import { WSGameBackground } from "../../GamesPage";
+import { useState } from "react";
+import WSGameHistoryDialog from "./WSGameHistoryDialog";
 
 interface WSGameStartDialogProps {
   isLoading: boolean;
@@ -12,6 +14,8 @@ interface WSGameStartDialogProps {
 }
 
 export default function WSGameStartDialog({ isLoading, wordsCount, timeLeft, handleGameOpen, handleStartGame }: WSGameStartDialogProps) {
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -52,13 +56,16 @@ export default function WSGameStartDialog({ isLoading, wordsCount, timeLeft, han
             </div>
           </div>
 
-          <Button
-            onClick={handleStartGame}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-            size="lg"
-          >
-            Start Game
-          </Button>
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              onClick={handleStartGame}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 font-semibold hover:from-blue-600 hover:to-blue-800"
+            >
+              <Play className="h-8 w-8" />
+              Start Game
+            </Button>
+            <WSGameHistoryDialog isHistoryOpen={isHistoryOpen} setIsHistoryOpen={setIsHistoryOpen} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
