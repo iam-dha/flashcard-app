@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { useAudio } from "@/hooks/useAudio";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import api from "@/services/api";
 
@@ -39,14 +38,10 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
   const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const SEARCH_SOUND_URL = "/sounds/search-click.mp3";
-  const { playAudio } = useAudio(SEARCH_SOUND_URL);
-
   const search = useCallback(async () => {
     if (!searchWord.trim()) return;
     setError(null);
     setSearchLoading(true);
-    playAudio();
 
     try {
       const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchWord)}`);
@@ -64,7 +59,7 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
     } finally {
       setSearchLoading(false);
     }
-  }, [searchWord, playAudio]);
+  }, [searchWord]);
 
   return { search, searchLoading, results, error };
 }
