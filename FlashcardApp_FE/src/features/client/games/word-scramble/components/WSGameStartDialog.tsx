@@ -25,7 +25,7 @@ export default function WSGameStartDialog({ isLoading, wordsCount, timeLeft, han
       <DialogTrigger asChild>
         <Button disabled={isLoading}>{isLoading ? "Loading..." : "Play Word Scramble"}</Button>
       </DialogTrigger>
-      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[600px] lg:!w-[800px]">
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
         <div className="flex h-full flex-col space-y-4 text-center">
           <div className="mt-4">
             <h1 className="bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-3xl font-bold text-transparent">Word Scramble</h1>

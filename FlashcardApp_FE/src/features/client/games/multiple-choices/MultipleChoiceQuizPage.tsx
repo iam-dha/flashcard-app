@@ -88,7 +88,7 @@ export default function MultipleChoiceQuizPage() {
         setGameStarted(open);
       }}
     >
-      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[800px] lg:!w-[1000px]">
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
         {/* Game Header */}
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center gap-4">

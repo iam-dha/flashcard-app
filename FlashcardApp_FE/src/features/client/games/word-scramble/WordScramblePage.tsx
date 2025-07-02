@@ -58,7 +58,7 @@ export default function WordScramblePage() {
         setGameStarted(open);
       }}
     >
-      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[800px] lg:!w-[1000px]">
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
         <WSGameHeader lives={lives} points={points} isPaused={isPaused} setIsPaused={setIsPaused} />
 
         <WSGameContent

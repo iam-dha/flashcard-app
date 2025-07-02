@@ -36,7 +36,7 @@ export default function WSGameHistoryDialog({ isHistoryOpen, setIsHistoryOpen }:
       <DialogTrigger asChild>
         <ExpandableButton Icon={Trophy} label={`Your total score: ${user?.totalScore} points`} className="bg-accent hover:bg-accent text-accent-foreground border mx-auto" onClick={() => setIsHistoryOpen(!isHistoryOpen)} />
       </DialogTrigger>
-      <DialogContent className="!h-full !w-full !max-w-none overflow-y-auto lg:!h-[800px] lg:!w-[600px]">
+      <DialogContent className="!h-full !w-full !max-w-none overflow-y-auto lg:!h-[80vh] lg:!w-[60vw]">
         <div className="flex flex-col gap-4">
           <div className="text-center text-2xl font-bold">Game History</div>
           <div className="text-center text-lg font-semibold">Your total score: {user?.totalScore} points</div>
@@ -93,7 +93,7 @@ export default function WSGameHistoryDialog({ isHistoryOpen, setIsHistoryOpen }:
                   </CollapsibleTrigger>
                   <CollapsibleContent className="bg-card/70 border-border/20 mt-4 rounded-lg border-t p-4">
                     <div className="mb-2">
-                      <span className="font-semibold">Words played:</span>
+                      <p className="font-semibold">Words played:</p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {game.scrambledWords.map((word, idx) => (
                           <span key={idx} className="bg-muted rounded-xl px-2 py-1 text-sm">

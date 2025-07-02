@@ -12,7 +12,14 @@ interface MCQGameStartDialogProps {
   handleStartGame: () => void;
 }
 
-export default function MCQGameStartDialog({ isLoading, questionsCount, numberOfLives, timeLeft, handleGameOpen, handleStartGame }: MCQGameStartDialogProps) {
+export default function MCQGameStartDialog({
+  isLoading,
+  questionsCount,
+  numberOfLives,
+  timeLeft,
+  handleGameOpen,
+  handleStartGame,
+}: MCQGameStartDialogProps) {
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -22,7 +29,7 @@ export default function MCQGameStartDialog({ isLoading, questionsCount, numberOf
       <DialogTrigger asChild>
         <Button disabled={isLoading}>{isLoading ? "Loading..." : "Play Multiple Choice Quiz"}</Button>
       </DialogTrigger>
-      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[600px] lg:!w-[800px]">
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
         <div className="flex h-full flex-col space-y-4">
           <div className="mt-4 text-center">
             <h1 className="bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-3xl font-bold text-transparent">Multiple Choice</h1>
@@ -57,7 +64,7 @@ export default function MCQGameStartDialog({ isLoading, questionsCount, numberOf
 
           <Button
             onClick={handleStartGame}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 rounded-xl font-semibold"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 font-semibold hover:from-blue-600 hover:to-blue-800"
           >
             <Play className="h-8 w-8" />
             Start Game
