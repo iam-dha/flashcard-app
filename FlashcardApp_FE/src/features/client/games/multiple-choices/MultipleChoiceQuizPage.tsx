@@ -7,6 +7,9 @@ import useMultipleChoiceQuizGame from "./useMultipleChoiceQuizGame";
 import MCQGameStartDialog from "./components/MCQGameStartDialog";
 import { useSearchFlashcard } from "@/features/client/search/hooks/useSearchFlashcard";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { useEffect, useState } from "react";
+import { FlashcardTypes } from "@/types/flashcard.types";
+import CustomLoader from "@/components/custom-ui/CustomLoader";
 
 export default function MultipleChoiceQuizPage() {
   const {
@@ -19,6 +22,7 @@ export default function MultipleChoiceQuizPage() {
     selectedAnswers,
     showSuccess,
     showIncorrect,
+    numberOfLives,
     lives,
     points,
     streak,
@@ -40,21 +44,16 @@ export default function MultipleChoiceQuizPage() {
     isGameOver,
   } = useMultipleChoiceQuizGame();
 
-  const { search: search0, results: results0 } = useSearchFlashcard({
-    searchWord: currentQuestionData?.answerList[0] || "",
-  });
-  const { search: search1, results: results1 } = useSearchFlashcard({
-    searchWord: currentQuestionData?.answerList[1] || "",
-  });
-  const { search: search2, results: results2 } = useSearchFlashcard({
-    searchWord: currentQuestionData?.answerList[2] || "",
-  });
-  const { search: search3, results: results3 } = useSearchFlashcard({
-    searchWord: currentQuestionData?.answerList[3] || "",
-  });
+  const [searchResults, setSearchResults] = useState<FlashcardTypes>();
+  const { search, searchLoading, results } = useSearchFlashcard();
 
-  const searchFunctions = [search0, search1, search2, search3];
-  const searchResults = [results0, results1, results2, results3];
+  const handleSearchWord = (word: string) => {
+    search(word);
+  };
+
+  useEffect(() => {
+    setSearchResults(results[0]);
+  }, [results]);
 
   const playWordPronunciation = (audioUrl: string | undefined) => {
     if (!audioUrl) {
@@ -71,6 +70,7 @@ export default function MultipleChoiceQuizPage() {
       <MCQGameStartDialog
         isLoading={isLoading}
         questionsCount={questionsData.length}
+        numberOfLives={numberOfLives}
         timeLeft={timePerQuestion}
         handleGameOpen={handleGameOpen}
         handleStartGame={handleStartGame}
@@ -94,7 +94,7 @@ export default function MultipleChoiceQuizPage() {
           <div className="flex items-center gap-4">
             {/* Lives */}
             <div className="flex items-center gap-1">
-              {[...Array(3)].map((_, i) => (
+              {[...Array(numberOfLives)].map((_, i) => (
                 <Heart key={i} className={`h-8 w-8 ${i < lives ? "fill-red-500 text-red-500" : "text-gray-300"}`} />
               ))}
             </div>
@@ -175,7 +175,7 @@ export default function MultipleChoiceQuizPage() {
             <Button
               onClick={checkAnswer}
               disabled={!selectedAnswers[currentQuestion] || showSuccess || showIncorrect}
-              className="bg-green-500 hover:bg-green-600"
+              className="bg-green-500 p-6 text-xl hover:bg-green-600"
             >
               Submit Answer
             </Button>
@@ -254,7 +254,7 @@ export default function MultipleChoiceQuizPage() {
                       </p>
                       <p className="text-sm text-gray-500">Time taken: {timeTaken[index] ? timeTaken[index] : 0} seconds</p>
                       <div className="space-y-2">
-                        {question.answerList.map((option, answerIndex) => (
+                        {question.answerList.map((option) => (
                           <div
                             key={option}
                             className={`flex items-center justify-between rounded-lg border-2 p-2 ${
@@ -274,36 +274,30 @@ export default function MultipleChoiceQuizPage() {
                                   variant="ghost"
                                   size="sm"
                                   className="hover:bg-transparent hover:shadow-lg"
-                                  onMouseEnter={() => searchFunctions[answerIndex]()}
+                                  onMouseEnter={() => handleSearchWord(option)}
                                 >
                                   <Search className="h-4 w-4" />
                                 </Button>
                               </HoverCardTrigger>
                               <HoverCardContent>
+                              {searchLoading ? <CustomLoader/> : (
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
-                                    <p className="font-semibold">
-                                      {searchResults[answerIndex][0]?.word ? searchResults[answerIndex][0]?.word : "No word found"}
-                                    </p>
+                                    <p className="font-semibold">{searchResults?.word || "No word found"}</p>
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="hover:bg-card/50"
-                                      onClick={() => playWordPronunciation(searchResults[answerIndex][0]?.audio_url)}
+                                      onClick={() => playWordPronunciation(searchResults?.audio_url)}
                                     >
                                       <Volume2 className="h-4 w-4" />
                                     </Button>
                                   </div>
-                                  <p className="text-muted-foreground text-sm">
-                                    {searchResults[answerIndex][0]?.wordType ? searchResults[answerIndex][0]?.wordType : "No word type found"}
-                                  </p>
-                                  <p className="text-sm">
-                                    {searchResults[answerIndex][0]?.definition ? searchResults[answerIndex][0]?.definition : "No definition found"}
-                                  </p>
-                                  <p className="text-muted-foreground text-sm">
-                                    {searchResults[answerIndex][0]?.example ? searchResults[answerIndex][0]?.example : null}
-                                  </p>
-                                </div>
+                                  <p className="text-muted-foreground text-sm">{searchResults?.wordType || "No word type found"}</p>
+                                  <p className="text-sm">{searchResults?.definition || "No definition found"}</p>
+                                    <p className="text-muted-foreground text-sm">{searchResults?.example || ""}</p>
+                                  </div>
+                                )}
                               </HoverCardContent>
                             </HoverCard>
                           </div>

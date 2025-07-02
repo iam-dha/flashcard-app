@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import api from "@/services/api";
 
@@ -33,18 +33,20 @@ function mapApiToFlashcardList(apiData: any[]): FlashcardTypes[] {
   });
 }
 
-export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
+export function useSearchFlashcard() {
+  const [searchWord, setSearchWord] = useState<string>("");
   const [results, setResults] = useState<FlashcardTypes[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = useCallback(async () => {
-    if (!searchWord.trim()) return;
+  const search = async (word?: string) => {
+    const searchTerm = word ?? searchWord;
+    if (!searchTerm.trim()) return;
     setError(null);
     setSearchLoading(true);
-
+  
     try {
-      const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchWord)}`);
+      const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchTerm)}`);
       const flashcards: FlashcardTypes[] = mapApiToFlashcardList(response.data.flashcards || []);
       setResults(flashcards);
     } catch (error: any) {
@@ -59,7 +61,7 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
     } finally {
       setSearchLoading(false);
     }
-  }, [searchWord]);
+  };
 
-  return { search, searchLoading, results, error };
+  return { setSearchWord, search, searchLoading, results, error };
 }

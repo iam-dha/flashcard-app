@@ -18,7 +18,8 @@ export default function useMultipleChoiceQuizGame() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showIncorrect, setShowIncorrect] = useState(false);
 
-  const [lives, setLives] = useState(3);
+  const numberOfLives = 2;
+  const [lives, setLives] = useState(numberOfLives);
   const [points, setPoints] = useState(0);
 
   const [streak, setStreak] = useState(0);
@@ -159,10 +160,20 @@ export default function useMultipleChoiceQuizGame() {
     }
   }, [timeToNextQuestion, showSuccess, showIncorrect]);
 
+  // handle game over
+  useEffect(() => {
+    if (!showSuccess && !showIncorrect) {
+      if (lives === 0 || (currentQuestion === questionsData.length && questionsData.length > 0) || timeLeft === 0) {
+        setIsGameOver(true);
+        setIsPaused(true);
+      }
+    }
+  }, [lives, currentQuestion, questionsData.length, timeLeft, showSuccess, showIncorrect]);
+
   const resetGame = () => {
     setGameStarted(false);
     setCurrentQuestion(0);
-    setLives(3);
+    setLives(numberOfLives);
     setPoints(0);
     setStreak(0);
     setTimeLeft(timePerQuestion);
@@ -172,15 +183,6 @@ export default function useMultipleChoiceQuizGame() {
     setShowIncorrect(false);
     setIsGameOver(false);
   };
-
-  useEffect(() => {
-    if (!showSuccess && !showIncorrect) {
-      if (lives === 0 || (currentQuestion === questionsData.length && questionsData.length > 0) || timeLeft === 0) {
-        setIsGameOver(true);
-        setIsPaused(true);
-      }
-    }
-  }, [lives, currentQuestion, questionsData.length, timeLeft, showSuccess, showIncorrect]);
 
   return {
     gameStarted,
@@ -192,6 +194,7 @@ export default function useMultipleChoiceQuizGame() {
     selectedAnswers,
     showSuccess,
     showIncorrect,
+    numberOfLives,
     lives,
     points,
     streak,

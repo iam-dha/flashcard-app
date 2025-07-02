@@ -6,12 +6,13 @@ import { MCQGameBackground } from "../../GamesPage";
 interface MCQGameStartDialogProps {
   isLoading: boolean;
   questionsCount: number;
+  numberOfLives: number;
   timeLeft: number;
   handleGameOpen: () => void;
   handleStartGame: () => void;
 }
 
-export default function MCQGameStartDialog({ isLoading, questionsCount, timeLeft, handleGameOpen, handleStartGame }: MCQGameStartDialogProps) {
+export default function MCQGameStartDialog({ isLoading, questionsCount, numberOfLives, timeLeft, handleGameOpen, handleStartGame }: MCQGameStartDialogProps) {
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -40,7 +41,7 @@ export default function MCQGameStartDialog({ isLoading, questionsCount, timeLeft
 
             <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">
               <Heart className="h-8 w-8" />
-              <div className="text-lg font-semibold">3 lives</div>
+              <div className="text-lg font-semibold">{numberOfLives} lives</div>
             </div>
 
             <div className="bg-card/50 flex items-center justify-center space-x-2 rounded-lg p-4 shadow-lg">

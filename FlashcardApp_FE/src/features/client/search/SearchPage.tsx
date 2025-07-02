@@ -7,8 +7,7 @@ import CustomLoader from "@/components/custom-ui/CustomLoader";
 import AlertMessage from "@/components/custom-ui/AlertMessage";
 
 export default function SearchPage() {
-  const [searchWord, setSearchWord] = useState("");
-  const { search, searchLoading, results, error } = useSearchFlashcard({ searchWord });
+  const { setSearchWord, search, searchLoading, results, error } = useSearchFlashcard();
   const numberOfResults = 5;
 
   return (
@@ -16,7 +15,7 @@ export default function SearchPage() {
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-3xl font-bold">Search a word or phrase...</h1>
         {/* search input */}
-        <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
+        <SearchInput setSearchWord={setSearchWord} handleSearch={() => search()} searchLoading={searchLoading} />
 
         {/* search results */}
         {searchLoading ? <CustomLoader /> : <SearchResultCard results={results.slice(0, numberOfResults)} />}
