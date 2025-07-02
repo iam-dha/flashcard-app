@@ -21,7 +21,7 @@ export default function HomePage() {
   const otherPosts = posts.slice(1, 5);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+    <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
       <h1 className="mb-6 text-2xl font-bold text-gray-900 sm:mb-8 sm:text-3xl lg:text-4xl">Latest News</h1>
 
       {/* Featured Post */}

@@ -7,6 +7,7 @@ import { User, Mail, Phone, MapPin, ArrowLeft, Edit } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
+import CustomBackButton from "@/components/custom-ui/CustomBackButton";
 
 export default function UserProfilePage() {
   const { getUser } = useAuth();
@@ -55,11 +56,8 @@ export default function UserProfilePage() {
       {/* Header */}
       <div className="sticky top-0 z-10 border-b bg-white/80 backdrop-blur-sm">
         <div className="py-2">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={() => (window.location.href = "/")} className="flex items-center gap-2 hover:bg-gray-100">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
+          <div className="flex items-center justify-between ml-2">
+            <CustomBackButton />
           </div>
         </div>
       </div>
@@ -93,12 +91,12 @@ export default function UserProfilePage() {
                   {/* Quick Stats */}
                   <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="rounded-lg bg-blue-50 p-4 flex flex-col items-center justify-center gap-1">
-                      <div className="text-2xl font-bold text-blue-600">0</div>
-                      <div className="text-sm text-gray-600">Flashcards</div>
+                      <div className="text-2xl font-bold text-blue-600">{user.folderCount}</div>
+                      <div className="text-sm text-gray-600">Folders</div>
                     </div>
                     <div className="rounded-lg bg-green-50 p-4 flex flex-col items-center justify-center gap-1">
-                      <div className="text-2xl font-bold text-green-600">0</div>
-                      <div className="text-sm text-gray-600">Decks</div>
+                      <div className="text-2xl font-bold text-green-600">{user.totalScore}</div>
+                      <div className="text-sm text-gray-600 text-center">Total Score in Word Scramble</div>
                     </div>
                   </div>
                 </div>

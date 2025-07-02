@@ -5,6 +5,9 @@ export interface UserTypes {
   fullName: string;
   address: string;
   phone: string;
+  totalScore: number;
+  folderCount: number;
+  accountAge: number;
   avatar?: string;
 }
 
