@@ -33,3 +33,11 @@ export const folderCreateSchema = z.object({
 });
 
 export type FolderCreateTypes = z.infer<typeof folderCreateSchema>;
+
+export interface FolderCheckResponse {
+  folder: {
+    name: string;
+    slug: string;
+  };
+  existing: boolean;
+}

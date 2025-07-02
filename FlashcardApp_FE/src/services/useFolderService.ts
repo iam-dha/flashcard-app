@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import api from "@/services/api";
-import { FolderCreateTypes, FolderTypes, GetAllFoldersResponse, GetFolderFlashcardListResponse } from "@/types/folder.types";
-import { FlashcardTypes } from "@/types/flashcard.types";
+import { FolderCheckResponse, FolderCreateTypes, FolderTypes, GetAllFoldersResponse, GetFolderFlashcardListResponse } from "@/types/folder.types";
 
 export function useFolderService() {
   const createFolder = useCallback(async (folderData: FolderCreateTypes): Promise<FolderTypes> => {
@@ -78,8 +77,7 @@ export function useFolderService() {
     }
   }, []);
 
-  const addFlashcardToFolder = useCallback(async (flashcardId: string | undefined, folders: string[]): Promise<void> => {
-    const noSelectedFolders: string[] = [];
+  const addFlashcardToFolder = useCallback(async (flashcardId: string | undefined, folders: string[], noSelectedFolders: string[] = []): Promise<void> => {
     try {
       await api.post(`/folders/flashcards`, { flashcardId, folders, noSelectedFolders });
     } catch (error) {
@@ -129,7 +127,7 @@ export function useFolderService() {
     }
   }, []);
 
-  const checkFlashcardInFolders = useCallback(async (flashcardSlug: string | undefined): Promise<boolean> => {
+  const checkFlashcardInFolders = useCallback(async (flashcardSlug: string | undefined): Promise<FolderCheckResponse[]> => {
     try {
       const response = await api.get(`/folders/check/flashcards/${flashcardSlug}`);
       return response.data.folders;
