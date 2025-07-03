@@ -56,7 +56,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <Card className="space-y-4 py-4">
+      <Card className="space-y-4 py-4 bg-card/50">
         <CardHeader className="w-md">
           {!isForgotPassword && (
             <>

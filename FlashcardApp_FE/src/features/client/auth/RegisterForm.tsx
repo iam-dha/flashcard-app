@@ -110,7 +110,7 @@ export default function RegisterEmailForm() {
 
   return (
     <Form {...registerForm}>
-      <Card className="space-y-4 py-4">
+      <Card className="space-y-4 py-4 bg-card/50">
         <CardHeader className="w-md">
           <CardTitle className="text-2xl">Register</CardTitle>
           <CardDescription></CardDescription>

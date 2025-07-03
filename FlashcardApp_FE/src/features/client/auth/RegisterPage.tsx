@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/features/client/auth/AuthContext";
 import RegisterForm from "./RegisterForm";
+import FlashcardAppNameAnimation from "./FlashcardAppNameAnimation";
 
 export default function RegisterPage() {
   const { isAuthenticated, authLoading } = useAuthContext();
@@ -14,8 +15,13 @@ export default function RegisterPage() {
   }, [isAuthenticated, authLoading, navigate]);
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center py-10">
+    <div className="flex min-h-screen min-w-screen">
+      <div className="flex flex-1 items-center justify-center rounded-lg m-4 bg-gradient-to-br from-blue-100 to-blue-300">
+        <FlashcardAppNameAnimation />
+      </div>
+      <div className="flex min-w-2/5 items-center justify-center rounded-lg bg-white p-4">
       <RegisterForm />
+      </div>
     </div>
   );
 }
