@@ -51,7 +51,16 @@ export function useAddToFolder(result: FlashcardTypes) {
 
       await addFlashcardToFolder(result.flashcardId, selectedFolderSlugs, noSelectedFolderSlugs);
 
-      if (selectedFolderSlugs.length > 0) {
+      // Re-check which folders contain the flashcard after update
+      const updatedResponse = await checkFlashcardInFolders(result.word);
+      setIsInFolders(updatedResponse);
+
+      // Reset to new state - pre-select folders that now contain the flashcard
+      const newExistingFolderSlugs = updatedResponse.filter((item) => item.existing).map((item) => item.folder.slug);
+      setSelectedFolderSlugs(newExistingFolderSlugs);
+      setNoSelectedFolderSlugs([]);
+
+      if (selectedFolderSlugs.length > 0 && selectedFolderSlugs.length !== newExistingFolderSlugs.length) {
         toast.success(
           `"${result.word}" added to ${selectedFolderSlugs.length} folder${selectedFolderSlugs.length > 1 ? "s" : ""}: ${folderNames.join(", ")}`,
           {
@@ -68,9 +77,6 @@ export function useAddToFolder(result: FlashcardTypes) {
       if (noSelectedFolderSlugs.length > 0) {
         toast.success(`"${result.word}" removed from ${noSelectedFolderSlugs.length} folder${noSelectedFolderSlugs.length > 1 ? "s" : ""}`);
       }
-
-      setSelectedFolderSlugs([]); // clear selections after successful addition
-      setNoSelectedFolderSlugs([]);
     } catch (error) {
       console.error("Error adding to folders:", error);
       toast.error("Failed to add flashcard to folders");
@@ -123,24 +129,23 @@ export function FolderList({
   const handleFolderToggle = (folderSlug: string) => {
     const wasOriginallyInFolder = isInFolders.some((item) => item.folder.slug === folderSlug && item.existing);
     const isCurrentlySelected = selectedFolderSlugs.includes(folderSlug);
-    const isCurrentlyDeselected = noSelectedFolderSlugs.includes(folderSlug);
 
     if (wasOriginallyInFolder) {
       if (isCurrentlySelected) {
-        // Remove from selected, add to deselected
+        // remove from selected, add to deselected
         setSelectedFolderSlugs(selectedFolderSlugs.filter((slug) => slug !== folderSlug));
         setNoSelectedFolderSlugs([...noSelectedFolderSlugs, folderSlug]);
       } else {
-        // Remove from deselected, add to selected
+        // remove from deselected, add to selected
         setNoSelectedFolderSlugs(noSelectedFolderSlugs.filter((slug) => slug !== folderSlug));
         setSelectedFolderSlugs([...selectedFolderSlugs, folderSlug]);
       }
     } else {
       if (isCurrentlySelected) {
-        // Remove from selected
+        // remove from selected
         setSelectedFolderSlugs(selectedFolderSlugs.filter((slug) => slug !== folderSlug));
       } else {
-        // Add to selected
+        // add to selected
         setSelectedFolderSlugs([...selectedFolderSlugs, folderSlug]);
       }
     }
@@ -180,9 +185,7 @@ export function FolderList({
           return (
             <div
               key={folder.slug}
-              className={`bg-card/50 text-card-foreground hover:bg-card/80 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm transition-all ${
-                isSelected ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""
-              } ${alreadyInFolder ? "border-2 border-green-500" : ""}`}
+              className={`bg-card/50 text-card-foreground hover:bg-card/80 flex w-full cursor-pointer flex-col space-y-4 rounded-xl border-2 p-4 shadow-sm transition-all ${alreadyInFolder ? (isSelected ? "border-green-500" : "border-red-500") : isSelected ? "border-blue-500" : "border-transparent"}`}
               onClick={() => handleFolderToggle(folder.slug)}
             >
               <div className="flex w-full items-center justify-between gap-2">
@@ -195,7 +198,12 @@ export function FolderList({
               </div>
               <div className="flex w-full items-center justify-between">
                 <p className="text-muted-foreground line-clamp-2 truncate">{folder.description}</p>
-                {alreadyInFolder && <Badge className="ml-2 bg-green-500 text-white">{isSelected ? "Added" : "Will be removed"}</Badge>}
+                {alreadyInFolder &&
+                  (isSelected ? (
+                    <Badge className="ml-2 bg-green-500 text-white">Added</Badge>
+                  ) : (
+                    <Badge className="ml-2 bg-red-500 text-white">Will be removed</Badge>
+                  ))}
               </div>
             </div>
           );
@@ -244,7 +252,8 @@ export default function FolderPickerDialog({ result }: { result: FlashcardTypes 
 
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
-            {selectedFolderSlugs.length} folder{selectedFolderSlugs.length !== 1 ? "s" : ""} selected
+            {selectedFolderSlugs.length} folder
+            {selectedFolderSlugs.length !== 1 ? "s" : ""} selected
             {noSelectedFolderSlugs.length > 0 && <span>, {noSelectedFolderSlugs.length} to remove</span>}
           </p>
           <Button
