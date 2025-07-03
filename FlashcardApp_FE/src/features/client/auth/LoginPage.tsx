@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/features/client/auth/AuthContext";
 import FlashcardAppNameAnimation from "./FlashcardAppNameAnimation";
+import { useIsMobile } from "@/hooks/useMobile";
 
 export default function LoginPage() {
   const { isAuthenticated, authLoading } = useAuthContext();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (isAuthenticated() && !authLoading) {
@@ -15,15 +17,19 @@ export default function LoginPage() {
   }, [isAuthenticated, authLoading, navigate]);
 
   return (
-    <div className="flex min-h-screen min-w-screen">
-      {/* Left: Animation */}
-      <div className="flex flex-1 items-center justify-center rounded-lg m-4 bg-gradient-to-br from-blue-100 to-blue-300">
-        <FlashcardAppNameAnimation />
-      </div>
-      {/* Right: Login Form */}
-      <div className="flex min-w-2/5 items-center justify-center rounded-lg bg-white p-4">
-        <LoginForm />
-      </div>
-    </div>
+    <>
+      {!isMobile ? (
+        <div className="flex min-h-screen min-w-screen">
+          <FlashcardAppNameAnimation />
+          <div className="flex min-w-2/5 items-center justify-center rounded-lg bg-white p-4">
+            <LoginForm />
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center">
+          <LoginForm />
+        </div>
+      )}
+    </>
   );
 }

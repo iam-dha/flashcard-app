@@ -16,9 +16,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen min-w-screen">
-      <div className="flex flex-1 items-center justify-center rounded-lg m-4 bg-gradient-to-br from-blue-100 to-blue-300">
-        <FlashcardAppNameAnimation />
-      </div>
+      <FlashcardAppNameAnimation />
       <div className="flex min-w-2/5 items-center justify-center rounded-lg bg-white p-4">
       <RegisterForm />
       </div>

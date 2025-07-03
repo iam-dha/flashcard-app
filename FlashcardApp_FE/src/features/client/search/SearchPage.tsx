@@ -40,7 +40,7 @@ export default function SearchPage() {
   return (
     <div className="container mx-auto space-y-8 py-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-center text-3xl font-bold">Search a word or phrase...</h1>
+        <h1 className="mb-8 text-center text-3xl font-bold">Search a word and...</h1>
         {/* search input */}
         <SearchInput searchWord={searchWord} setSearchWord={handleSearchWordChange} handleSearch={() => handleSearch()} searchLoading={searchLoading} />
 
