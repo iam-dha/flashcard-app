@@ -43,11 +43,18 @@ export const routes: BaseRouteConfig[] = [
     element: <PostDetailPage />,
   },
   {
-    path: "/search",
+    path: "/search/",
     title: "Search",
     icon: <Search />,
     element: <SearchPage />,
     showInSidebar: true,
+  },
+  {
+    path: "/search/:word",
+    title: "Search",
+    icon: <Search />,
+    element: <SearchPage />,
+    showInSidebar: false,
   },
   {
     path: "/folders",

@@ -4,12 +4,13 @@ import { useAudio } from "@/hooks/useAudio";
 import { SearchIcon } from "lucide-react";
 
 type SearchInputProps = {
+  searchWord: string;
   setSearchWord: (word: string) => void;
   handleSearch: () => void;
   searchLoading: boolean;
 };
 
-export default function SearchInput({ setSearchWord, handleSearch, searchLoading }: SearchInputProps) {
+export default function SearchInput({ searchWord, setSearchWord, handleSearch, searchLoading }: SearchInputProps) {
   const SEARCH_SOUND_URL = "/sounds/search-click.mp3";
   const { playAudio } = useAudio(SEARCH_SOUND_URL);
   return (
@@ -17,6 +18,7 @@ export default function SearchInput({ setSearchWord, handleSearch, searchLoading
       <Input
         type="text"
         placeholder="Search a word or phrase in English or Vietnamese..."
+        value={searchWord}
         onChange={(e) => setSearchWord(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         className="!rounded-2xl py-6 bg-input liquid-glass"
