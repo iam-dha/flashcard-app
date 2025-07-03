@@ -6,10 +6,11 @@ import { FolderTypes } from "@/types/folder.types";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import Flashcard from "../flashcards/Flashcard";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, FolderPlus } from "lucide-react";
+import { GraduationCap, FolderPlus, SquarePen, Globe, Lock, WalletCards } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 export function mapApiToFlashcard(apiData: any): FlashcardTypes {
   return {
@@ -114,19 +115,40 @@ export default function FolderDetailPage() {
 
   return (
     <div className="space-y-4">
+      <div className="flex flex-col gap-4">
+          <div className="items flex gap-2 text-2xl font-bold">
+            <SquarePen className="h-8 w-8" />
+            Description
+          </div>
+        <span className="text-muted-foreground text-xl">{folder?.description}</span>
+      </div>
       <div className="flex items-center justify-between">
-        <p className="">{folder?.description}</p>
+        <div className="flex items-center gap-2">
+          <WalletCards className="h-8 w-8" />
+          <p className="text-2xl font-bold">Flashcard List</p>
+          {folder?.isPublic ? (
+            <div className="flex w-fit items-center gap-2 rounded-xl bg-green-200/70 p-2 px-4 font-semibold text-green-800 dark:bg-green-700 dark:text-green-200">
+              <Globe className="h-4 w-4" />
+              Public
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 rounded-xl bg-gray-300/70 p-2 px-4 font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+              <Lock className="h-4 w-4" />
+              Private
+            </div>
+          )}
+        </div>
         <div className="flex gap-2">
-          <Button
-            className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
-            onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
-          >
-            <GraduationCap className="h-4 w-4" />
-            Study
-          </Button>
+          {multiSelectMode && (
+            <div className="flex items-center gap-2">
+              <Checkbox checked={selectedFlashcardIds.length === flashcards.length && flashcards.length > 0} onCheckedChange={handleSelectAll} />
+              <span>{selectedFlashcardIds.length} selected</span>
+            </div>
+          )}
           <Button
             variant="outline"
             className="hover:bg-card/50 justify-start rounded-2xl shadow-sm hover:scale-105"
+            size="lg"
             onClick={() => {
               setMultiSelectMode(!multiSelectMode);
               setSelectedFlashcardIds([]);
@@ -139,21 +161,23 @@ export default function FolderDetailPage() {
               variant="outline"
               disabled={selectedFlashcardIds.length === 0}
               onClick={() => setAddDialogOpen(true)}
+              size="lg"
               className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
             >
               <FolderPlus className="mr-1 h-4 w-4" />
               Add to Folders
             </Button>
           )}
+          <Button
+            className="hover:bg-accent/80 bg-accent text-accent-foreground justify-start rounded-2xl shadow-sm hover:scale-105"
+            size="lg"
+            onClick={() => (window.location.href = `/folders/${folder?.slug}/study`)}
+          >
+            <GraduationCap className="h-4 w-4" />
+            Study
+          </Button>
         </div>
       </div>
-      {multiSelectMode && (
-        <div className="flex items-center gap-4">
-          <Checkbox checked={selectedFlashcardIds.length === flashcards.length && flashcards.length > 0} onCheckedChange={handleSelectAll} />
-          <span>{selectedFlashcardIds.length} selected</span>
-        </div>
-      )}
-      <p className="text-xl font-bold">Flashcard List</p>
       {flashcards.length === 0 ? (
         <p>There are no flashcards in this folder. Try to add some using search!</p>
       ) : (
