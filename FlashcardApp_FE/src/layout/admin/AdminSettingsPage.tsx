@@ -7,12 +7,18 @@ import { toast } from "sonner";
 interface Profile {
   fullName: string;
   email: string;
+  address: string;
+  phone: string;
+  thumbnail: string;
 }
 
 export default function AdminProfileSettingsPage() {
   const [profile, setProfile] = useState<Profile>({
     fullName: "",
     email: "",
+    address: "",
+    phone: "",
+    thumbnail: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
@@ -23,10 +29,17 @@ export default function AdminProfileSettingsPage() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const res = await fetch("/api/user/profile");
+        const res = await fetch("/api/v1/user/settings");
         if (!res.ok) throw new Error("Không tải được profile");
-        const data = await res.json();
-        setProfile({ fullName: data.fullName, email: data.email });
+        const result = await res.json();
+        const data = result.data.data;
+        setProfile({
+          fullName: data.fullName,
+          email: data.email,
+          address: data.address || "",
+          phone: data.phone || "",
+          thumbnail: data.thumbnail || "",
+        });
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -43,7 +56,7 @@ export default function AdminProfileSettingsPage() {
     setSuccess(null);
 
     try {
-      const res = await fetch("/api/user/profile", {
+      const res = await fetch("/api/user/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
@@ -69,6 +82,27 @@ export default function AdminProfileSettingsPage() {
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Cài đặt Profile</h1>
+
+      {/* Thông tin chỉ hiển thị */}
+      <div className="bg-gray-50 rounded p-4 mb-6">
+        <div className="flex items-center gap-4 mb-4">
+          {profile.thumbnail && (
+            <img
+              src={profile.thumbnail}
+              alt="Avatar"
+              className="w-16 h-16 rounded-full object-cover border"
+            />
+          )}
+          <div>
+            <div className="font-semibold text-lg">{profile.fullName}</div>
+            <div className="text-gray-600">{profile.email}</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-2 text-sm">
+          <div><span className="font-medium">Địa chỉ:</span> {profile.address}</div>
+          <div><span className="font-medium">Số điện thoại:</span> {profile.phone}</div>
+        </div>
+      </div>
 
       {error && <p className="text-red-500 mb-2">{error}</p>}
       {success && <p className="text-green-600 mb-2">{success}</p>}
@@ -96,6 +130,28 @@ export default function AdminProfileSettingsPage() {
             }
             placeholder="Nhập email"
             required
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Địa chỉ</label>
+          <Input
+            value={profile.address}
+            onChange={(e) =>
+              setProfile({ ...profile, address: e.currentTarget.value })
+            }
+            placeholder="Nhập địa chỉ"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Số điện thoại</label>
+          <Input
+            value={profile.phone}
+            onChange={(e) =>
+              setProfile({ ...profile, phone: e.currentTarget.value })
+            }
+            placeholder="Nhập số điện thoại"
           />
         </div>
 

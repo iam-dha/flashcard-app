@@ -19,6 +19,14 @@ interface User {
   address: string;
   email: string;
   status: string;
+  phone: string;
+  role: string;
+  totalScore: number;
+  thumbnail: string;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  accountAge: number;
 }
 
 interface ViewUserModalProps {
@@ -51,6 +59,14 @@ export default function ViewUserModal({ isOpen, onClose, userId }: ViewUserModal
           address: payload.address,
           email: payload.email,
           status: payload.status,
+          phone: payload.phone,
+          role: payload.role,
+          totalScore: payload.totalScore,
+          thumbnail: payload.thumbnail,
+          deleted: payload.deleted,
+          createdAt: payload.createdAt,
+          updatedAt: payload.updatedAt,
+          accountAge: payload.accountAge,
         });
       })
       .catch(err => {
@@ -82,6 +98,15 @@ export default function ViewUserModal({ isOpen, onClose, userId }: ViewUserModal
         ) : user ? (
           <Card>
             <CardContent className="pt-6 space-y-3">
+              <div className="flex flex-col items-center space-y-2 pb-4">
+                {user.thumbnail && (
+                  <img
+                    src={user.thumbnail}
+                    alt="Avatar"
+                    className="w-24 h-24 rounded-full object-cover border"
+                  />
+                )}
+              </div>
               <div className="flex justify-between">
                 <span className="font-medium">User ID:</span>
                 <span>{user.userId}</span>
@@ -91,18 +116,45 @@ export default function ViewUserModal({ isOpen, onClose, userId }: ViewUserModal
                 <span>{user.fullName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium">Địa chỉ:</span>
-                <span>{user.address}</span>
-              </div>
-              <div className="flex justify-between">
                 <span className="font-medium">Email:</span>
                 <span>{user.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Số điện thoại:</span>
+                <span>{user.phone}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Địa chỉ:</span>
+                <span>{user.address}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Trạng thái:</span>
                 <span>{user.status}</span>
               </div>
-              <br/>
+              <div className="flex justify-between">
+                <span className="font-medium">Đã xóa:</span>
+                <span>{user.deleted ? 'Đã xóa' : 'Hoạt động'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Vai trò:</span>
+                <span>{user.role}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Tổng điểm:</span>
+                <span>{user.totalScore}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Ngày tạo:</span>
+                <span>{new Date(user.createdAt).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Ngày cập nhật:</span>
+                <span>{new Date(user.updatedAt).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Tuổi tài khoản:</span>
+                <span>{user.accountAge} ngày</span>
+              </div>
             </CardContent>
           </Card>
         ) : (

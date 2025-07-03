@@ -6,19 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface ProfileData {
-  avatarUrl: string;
+  thumbnail: string;
   fullName: string;
-  nickname: string;
   email: string;
+  address: string;
+  phone: string;
 }
 
 export default function AdminProfilePage() {
   // state profile
   const [profile, setProfile] = useState<ProfileData>({
-    avatarUrl: "",
+    thumbnail: "",
     fullName: "",
-    nickname: "",
     email: "",
+    address: "",
+    phone: "",
+  });
+  // Thông tin chỉ hiển thị
+  const [info, setInfo] = useState({
+    status: "",
+    totalScore: 0,
+    accountAge: 0,
+    folderCount: 0,
   });
   // ảnh mới (File) và preview URL
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -37,15 +46,23 @@ export default function AdminProfilePage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/user/profile");
-        const data = await res.json();
+        const res = await fetch("/api/v1/user/settings");
+        const result = await res.json();
+        const data = result.data.data;
         setProfile({
-          avatarUrl: data.avatarUrl,
-          fullName: data.fullName,
-          nickname: data.nickname,
-          email: data.email,
+          thumbnail: data.thumbnail || "",
+          fullName: data.fullName || "",
+          email: data.email || "",
+          address: data.address || "",
+          phone: data.phone || "",
         });
-        setAvatarPreview(data.avatarUrl);
+        setAvatarPreview(data.thumbnail || "");
+        setInfo({
+          status: data.status || "",
+          totalScore: data.totalScore || 0,
+          accountAge: data.accountAge || 0,
+          folderCount: data.folderCount || 0,
+        });
       } catch (err) {
         console.error(err);
       }
@@ -76,8 +93,9 @@ export default function AdminProfilePage() {
       const formData = new FormData();
       if (avatarFile) formData.append("avatar", avatarFile);
       formData.append("fullName", profile.fullName);
-      formData.append("nickname", profile.nickname);
       formData.append("email", profile.email);
+      formData.append("address", profile.address);
+      formData.append("phone", profile.phone);
       formData.append("currentPassword", currentPassword);
       formData.append("newPassword", newPassword);
 
@@ -89,7 +107,7 @@ export default function AdminProfilePage() {
       setSuccess("Cập nhật thành công!");
       // nếu API trả về URL avatar mới, update lại
       const result = await res.json();
-      if (result.avatarUrl) setAvatarPreview(result.avatarUrl);
+      if (result.thumbnail) setAvatarPreview(result.thumbnail);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -103,6 +121,22 @@ export default function AdminProfilePage() {
       className="max-w-lg mx-auto space-y-6 p-6 bg-white rounded-lg shadow"
     >
       <h2 className="text-2xl font-bold">Chỉnh sửa Profile</h2>
+
+      {/* Thông tin chỉ hiển thị */}
+      <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded mb-4">
+        <div>
+          <span className="font-semibold">Trạng thái:</span> {info.status}
+        </div>
+        <div>
+          <span className="font-semibold">Tổng điểm:</span> {info.totalScore}
+        </div>
+        <div>
+          <span className="font-semibold">Ngày tuổi tài khoản:</span> {info.accountAge}
+        </div>
+        <div>
+          <span className="font-semibold">Số lượng folder:</span> {info.folderCount}
+        </div>
+      </div>
 
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-600">{success}</p>}
@@ -142,19 +176,6 @@ export default function AdminProfilePage() {
         />
       </div>
 
-      {/* Nickname */}
-      <div className="space-y-1">
-        <Label htmlFor="nickname">Nickname</Label>
-        <Input
-          id="nickname"
-          value={profile.nickname}
-          onChange={(e) =>
-            setProfile({ ...profile, nickname: e.currentTarget.value })
-          }
-          required
-        />
-      </div>
-
       {/* Email */}
       <div className="space-y-1">
         <Label htmlFor="email">Email</Label>
@@ -166,6 +187,30 @@ export default function AdminProfilePage() {
             setProfile({ ...profile, email: e.currentTarget.value })
           }
           required
+        />
+      </div>
+
+      {/* Address */}
+      <div className="space-y-1">
+        <Label htmlFor="address">Địa chỉ</Label>
+        <Input
+          id="address"
+          value={profile.address}
+          onChange={(e) =>
+            setProfile({ ...profile, address: e.currentTarget.value })
+          }
+        />
+      </div>
+
+      {/* Phone */}
+      <div className="space-y-1">
+        <Label htmlFor="phone">Số điện thoại</Label>
+        <Input
+          id="phone"
+          value={profile.phone}
+          onChange={(e) =>
+            setProfile({ ...profile, phone: e.currentTarget.value })
+          }
         />
       </div>
 
