@@ -4,6 +4,7 @@ const User = require("../../models/user.model");
 const UserInformation = require("../../models/userInformation.model");
 const Session = require("../../models/session.model");
 const PasswordResetToken = require("../../models/passwordResetToken.model");
+const Role = require("../../models/role.model");
 
 const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 //[GET] /api/v1/admin/users?limit=x&page=y&filter=createAt&order=asc
@@ -58,6 +59,7 @@ module.exports.getUserInfo = async (req, res) => {
         const userInformationDoc = await UserInformation.findOne({
             userId: userId
         }).select("-_id -__v");
+        const userRole = await User.findOne({ _id: userId }).populate("role", "title");
         if (!userInformationDoc) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -67,6 +69,7 @@ module.exports.getUserInfo = async (req, res) => {
         userInformation.accountAge = Math.floor(
             Math.abs(currentDate - userCreateDate) / YEAR_MILISECONDS
         );
+        userInformation.role = userRole.role.title;
         res.status(200).json({
             message: "Get user information successfully",
             data: userInformation,
@@ -80,8 +83,19 @@ module.exports.getUserInfo = async (req, res) => {
 //[PATCH] /api/v1/admin/users/:userId
 module.exports.changeUserInfo = async (req, res) => {
     const { userId } = req.params;
-    const { email, fullName, address, status, phone } = req.body;
+    const { email, fullName, address, status, phone, deleted = false, role = "User" } = req.body;
     try {
+        const roleList = await Role.find({}).select("title").lean();
+        let flag = -1;
+        for(let i = 0; i < roleList.length; i++) {
+            if(roleList[i].title === role) {
+                flag = i;
+                break;
+            }
+        }
+        if(flag === -1) {
+            return res.status(400).json({ message: "Role is not valid" });
+        }
         const user = await User.findOne({ email: email });
         if (user && user._id.toString() !== userId) {
             return res.status(400).json({ message: "Email already exists" });
@@ -89,7 +103,9 @@ module.exports.changeUserInfo = async (req, res) => {
         const userInformationDoc = await UserInformation.findOne({
             userId: userId,
         });
-        user.email = email;
+        user.role = roleList[flag]._id.toString();
+        user.deleted = (deleted === "true");
+        userInformationDoc.deleted = (deleted === "true");
         if (phone !== undefined) {
             userInformationDoc.phone = phone;
         }
@@ -106,12 +122,7 @@ module.exports.changeUserInfo = async (req, res) => {
         await user.save();
         return res.status(200).json({
             message: "Update user information successfully",
-            data: {
-                email: email,
-                fullName: fullName,
-                address: address,
-                status: status,
-            },
+            data: userInformationDoc,
         });
     } catch (error) {
         console.error(`[PATCH /api/v1/admin/users/${userId}] Error:`, error);
