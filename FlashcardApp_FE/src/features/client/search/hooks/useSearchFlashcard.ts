@@ -1,13 +1,12 @@
 import { useCallback, useState } from "react";
-import { useAudio } from "@/hooks/useAudio";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import api from "@/services/api";
 
-function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
+function mapApiToFlashcardList(apiData: any[]): FlashcardTypes[] {
   return apiData.flatMap((flashcard: any) => {
-    const flashcardId = flashcard._id ?? "";
+    const flashcardId = flashcard._id;
     const word = flashcard.word;
-    const word_vi = flashcard.vi_meanings ?? "";
+    const vi_meanings = flashcard.vi_meanings ?? "";
     const phonetic = flashcard.phonetics?.[0]?.pronunciation ?? "";
     const audio_url = flashcard.phonetics?.find((p: any) => p.sound)?.sound ?? "";
     const image_url = flashcard.image_url ?? "";
@@ -24,7 +23,7 @@ function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
         phonetic,
         image_url,
         audio_url,
-        word_vi,
+        vi_meanings,
         wordType_vi: "",
         definition_vi: def.vi_definition,
         example_vi: "",
@@ -34,23 +33,21 @@ function mapApiToFlashcards(apiData: any[]): FlashcardTypes[] {
   });
 }
 
-export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
+export function useSearchFlashcard() {
+  const [searchWord, setSearchWord] = useState<string>("");
   const [results, setResults] = useState<FlashcardTypes[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const SEARCH_SOUND_URL = "/sounds/search-click.mp3";
-  const { playAudio } = useAudio(SEARCH_SOUND_URL);
-
-  const search = useCallback(async () => {
-    if (!searchWord.trim()) return;
+  const search = useCallback(async (word?: string) => {
+    const searchTerm = word ?? searchWord;
+    if (!searchTerm.trim()) return;
     setError(null);
     setSearchLoading(true);
-    playAudio();
 
     try {
-      const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchWord)}`);
-      const flashcards: FlashcardTypes[] = mapApiToFlashcards(response.data.flashcards || []);
+      const response = await api.get(`flashcards/search?word=${encodeURIComponent(searchTerm)}`);
+      const flashcards: FlashcardTypes[] = mapApiToFlashcardList(response.data.flashcards || []);
       setResults(flashcards);
     } catch (error: any) {
       if (error.response?.status === 404) {
@@ -64,7 +61,7 @@ export function useSearchFlashcard({ searchWord }: { searchWord: string }) {
     } finally {
       setSearchLoading(false);
     }
-  }, [searchWord, playAudio]);
+  }, []);
 
-  return { search, searchLoading, results, error };
+  return { searchWord, setSearchWord, search, searchLoading, results, error };
 }

@@ -1,7 +1,7 @@
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Button } from "@/components/ui/button";
 import { useFolderService } from "@/services/useFolderService";
-import { FolderTypes } from "@/types/folder.types";
+import { FolderCheckResponse, FolderTypes } from "@/types/folder.types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FolderPlus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,42 +9,105 @@ import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { FlashcardTypes } from "@/types/flashcard.types";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 export function useAddToFolder(result: FlashcardTypes) {
-  const { addFlashcardToFolder, getFolderBySlug } = useFolderService();
+  const { addFlashcardToFolder, getFolderBySlug, checkFlashcardInFolders } = useFolderService();
   const [addToFolderLoading, setAddToFolderLoading] = useState(false);
-  const [selectedFolderSlug, setSelectedFolderSlug] = useState<string | undefined>(undefined);
+  const [selectedFolderSlugs, setSelectedFolderSlugs] = useState<string[]>([]);
+  const [noSelectedFolderSlugs, setNoSelectedFolderSlugs] = useState<string[]>([]);
+  const [isInFolders, setIsInFolders] = useState<FolderCheckResponse[]>([]);
+
+  useEffect(() => {
+    const checkIfInFolders = async (result: FlashcardTypes) => {
+      try {
+        const response = await checkFlashcardInFolders(result.word);
+        setIsInFolders(response);
+
+        // Pre-tick checkboxes for folders that already contain the flashcard
+        const existingFolderSlugs = response.filter((item) => item.existing).map((item) => item.folder.slug);
+        setSelectedFolderSlugs(existingFolderSlugs);
+      } catch (error) {
+        console.error("Error checking if in folders:", error);
+      }
+    };
+
+    checkIfInFolders(result);
+  }, [result, checkFlashcardInFolders]);
 
   const handleAddToFolder = async () => {
+    if (selectedFolderSlugs.length === 0 && noSelectedFolderSlugs.length === 0) {
+      toast.error("Please select at least one folder");
+      return;
+    }
+
     try {
       setAddToFolderLoading(true);
-      setSelectedFolderSlug(selectedFolderSlug);
-      const folder = await getFolderBySlug(selectedFolderSlug || "");
-      await addFlashcardToFolder(selectedFolderSlug, result.flashcardId);
-      toast.info(`"${result.word}" added to "${folder.name}"`, {
-        action: {
-          label: `Go to "${folder.name}"`,
-          onClick: () => {
-            window.location.href = `/folders/${selectedFolderSlug}`;
+
+      const folderPromises = selectedFolderSlugs.map((slug) => getFolderBySlug(slug));
+      const folders = await Promise.all(folderPromises);
+      const folderNames = folders.map((folder) => folder.name);
+
+      await addFlashcardToFolder(result.flashcardId, selectedFolderSlugs, noSelectedFolderSlugs);
+
+      // Re-check which folders contain the flashcard after update
+      const updatedResponse = await checkFlashcardInFolders(result.word);
+      setIsInFolders(updatedResponse);
+
+      // Reset to new state - pre-select folders that now contain the flashcard
+      const newExistingFolderSlugs = updatedResponse.filter((item) => item.existing).map((item) => item.folder.slug);
+      setSelectedFolderSlugs(newExistingFolderSlugs);
+      setNoSelectedFolderSlugs([]);
+
+      if (selectedFolderSlugs.length > 0 && selectedFolderSlugs.length !== newExistingFolderSlugs.length) {
+        toast.success(
+          `"${result.word}" added to ${selectedFolderSlugs.length} folder${selectedFolderSlugs.length > 1 ? "s" : ""}: ${folderNames.join(", ")}`,
+          {
+            action: {
+              label: "View folders",
+              onClick: () => {
+                window.location.href = `/folders`;
+              },
+            },
           },
-        },
-      });
+        );
+      }
+
+      if (noSelectedFolderSlugs.length > 0) {
+        toast.success(`"${result.word}" removed from ${noSelectedFolderSlugs.length} folder${noSelectedFolderSlugs.length > 1 ? "s" : ""}`);
+      }
     } catch (error) {
-      console.error("Error adding to folder:", error);
+      console.error("Error adding to folders:", error);
+      toast.error("Failed to add flashcard to folders");
     } finally {
       setAddToFolderLoading(false);
     }
   };
 
-  return { handleAddToFolder, addToFolderLoading, selectedFolderSlug, setSelectedFolderSlug };
+  return {
+    handleAddToFolder,
+    addToFolderLoading,
+    selectedFolderSlugs,
+    setSelectedFolderSlugs,
+    noSelectedFolderSlugs,
+    setNoSelectedFolderSlugs,
+    isInFolders,
+  };
 }
 
 export function FolderList({
-  selectedFolderSlug,
-  setSelectedFolderSlug,
+  selectedFolderSlugs,
+  setSelectedFolderSlugs,
+  noSelectedFolderSlugs,
+  setNoSelectedFolderSlugs,
+  isInFolders,
 }: {
-  selectedFolderSlug?: string;
-  setSelectedFolderSlug: (slug: string | undefined) => void;
+  selectedFolderSlugs: string[];
+  setSelectedFolderSlugs: (slugs: string[]) => void;
+  noSelectedFolderSlugs: string[];
+  setNoSelectedFolderSlugs: (slugs: string[]) => void;
+  isInFolders: FolderCheckResponse[];
 }) {
   const { getAllFolders } = useFolderService();
   const [folders, setFolders] = useState<FolderTypes[]>([]);
@@ -63,6 +126,47 @@ export function FolderList({
     fetchFolders();
   }, []);
 
+  const handleFolderToggle = (folderSlug: string) => {
+    const wasOriginallyInFolder = isInFolders.some((item) => item.folder.slug === folderSlug && item.existing);
+    const isCurrentlySelected = selectedFolderSlugs.includes(folderSlug);
+
+    if (wasOriginallyInFolder) {
+      if (isCurrentlySelected) {
+        // remove from selected, add to deselected
+        setSelectedFolderSlugs(selectedFolderSlugs.filter((slug) => slug !== folderSlug));
+        setNoSelectedFolderSlugs([...noSelectedFolderSlugs, folderSlug]);
+      } else {
+        // remove from deselected, add to selected
+        setNoSelectedFolderSlugs(noSelectedFolderSlugs.filter((slug) => slug !== folderSlug));
+        setSelectedFolderSlugs([...selectedFolderSlugs, folderSlug]);
+      }
+    } else {
+      if (isCurrentlySelected) {
+        // remove from selected
+        setSelectedFolderSlugs(selectedFolderSlugs.filter((slug) => slug !== folderSlug));
+      } else {
+        // add to selected
+        setSelectedFolderSlugs([...selectedFolderSlugs, folderSlug]);
+      }
+    }
+  };
+
+  const isAlreadyInFolder = (folderSlug: string) => {
+    return isInFolders.some((item) => item.folder.slug === folderSlug && item.existing);
+  };
+
+  const isFolderSelected = (folderSlug: string) => {
+    const wasOriginallyInFolder = isAlreadyInFolder(folderSlug);
+    const isCurrentlySelected = selectedFolderSlugs.includes(folderSlug);
+    const isCurrentlyDeselected = noSelectedFolderSlugs.includes(folderSlug);
+
+    if (wasOriginallyInFolder) {
+      return isCurrentlySelected && !isCurrentlyDeselected;
+    } else {
+      return isCurrentlySelected;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -72,34 +176,53 @@ export function FolderList({
   }
 
   return (
-    <div className="custom-scrollbar max-h-[400px] overflow-y-auto">
+    <div className="custom-scrollbar max-h-[480px] overflow-y-auto">
       <div className="grid w-full min-w-xs grid-cols-3 gap-4 transition-all">
-        {folders.map((folder: FolderTypes) => (
-          <div
-            key={folder.slug}
-            className={`bg-accent text-card-foreground hover:bg-accent/50 flex w-full cursor-pointer flex-col space-y-4 rounded-xl p-4 shadow-sm ${selectedFolderSlug === folder.slug ? "bg-blue-500 text-white hover:bg-blue-500/80" : ""}`}
-            onClick={() => {
-              setSelectedFolderSlug(folder.slug);
-              console.log("folder slug:", folder.slug);
-            }}
-          >
-            <div className="flex w-full items-center justify-between gap-2">
-              <div className="flex w-full items-center justify-start">
-                <Button variant="link" className="-ml-4 max-w-full overflow-hidden text-lg" tabIndex={-1}>
-                  <div className="truncate overflow-hidden">{folder.name}</div>
-                </Button>
+        {folders.map((folder: FolderTypes) => {
+          const alreadyInFolder = isAlreadyInFolder(folder.slug);
+          const isSelected = isFolderSelected(folder.slug);
+
+          return (
+            <div
+              key={folder.slug}
+              className={`bg-card/50 text-card-foreground hover:bg-card/80 flex w-full cursor-pointer flex-col space-y-4 rounded-xl border-2 p-4 shadow-sm transition-all ${alreadyInFolder ? (isSelected ? "border-green-500" : "border-red-500") : isSelected ? "border-blue-500" : "border-transparent"}`}
+              onClick={() => handleFolderToggle(folder.slug)}
+            >
+              <div className="flex w-full items-center justify-between gap-2">
+                <div className="flex w-full items-center justify-start">
+                  <Checkbox checked={isSelected} onChange={() => handleFolderToggle(folder.slug)} className="mr-2" />
+                  <Button variant="link" className="-ml-4 max-w-full overflow-hidden text-lg" tabIndex={-1}>
+                    <div className="truncate overflow-hidden">{folder.name}</div>
+                  </Button>
+                </div>
+              </div>
+              <div className="flex w-full items-center justify-between">
+                <p className="text-muted-foreground line-clamp-2 truncate">{folder.description}</p>
+                {alreadyInFolder &&
+                  (isSelected ? (
+                    <Badge className="ml-2 bg-green-500 text-white">Added</Badge>
+                  ) : (
+                    <Badge className="ml-2 bg-red-500 text-white">Will be removed</Badge>
+                  ))}
               </div>
             </div>
-            <p className="text-muted-foreground line-clamp-2 truncate">{folder.description}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 }
 
 export default function FolderPickerDialog({ result }: { result: FlashcardTypes }) {
-  const { selectedFolderSlug, setSelectedFolderSlug, handleAddToFolder } = useAddToFolder(result);
+  const {
+    selectedFolderSlugs,
+    setSelectedFolderSlugs,
+    noSelectedFolderSlugs,
+    setNoSelectedFolderSlugs,
+    handleAddToFolder,
+    addToFolderLoading,
+    isInFolders,
+  } = useAddToFolder(result);
 
   return (
     <Dialog>
@@ -111,15 +234,35 @@ export default function FolderPickerDialog({ result }: { result: FlashcardTypes 
           className="border-transparent hover:bg-blue-200 hover:text-blue-500 dark:hover:bg-blue-900/80 dark:hover:text-blue-500"
         />
       </DialogTrigger>
-      <DialogContent className="!max-w-3xl">
+      <DialogContent className="!max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Add to folder</DialogTitle>
+          <DialogTitle>Add to folders</DialogTitle>
           <DialogDescription>
-            Select a folder to add the word <strong>{result.word}</strong> to
+            Select one or more folders to add the word <strong>{result.word}</strong> to
           </DialogDescription>
         </DialogHeader>
-        <FolderList selectedFolderSlug={selectedFolderSlug} setSelectedFolderSlug={setSelectedFolderSlug} />
-        <Button onClick={() => handleAddToFolder()}>Add flashcard to folder</Button>
+
+        <FolderList
+          selectedFolderSlugs={selectedFolderSlugs}
+          setSelectedFolderSlugs={setSelectedFolderSlugs}
+          noSelectedFolderSlugs={noSelectedFolderSlugs}
+          setNoSelectedFolderSlugs={setNoSelectedFolderSlugs}
+          isInFolders={isInFolders}
+        />
+
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground text-sm">
+            {selectedFolderSlugs.length} folder
+            {selectedFolderSlugs.length !== 1 ? "s" : ""} selected
+            {noSelectedFolderSlugs.length > 0 && <span>, {noSelectedFolderSlugs.length} to remove</span>}
+          </p>
+          <Button
+            onClick={handleAddToFolder}
+            disabled={addToFolderLoading || (selectedFolderSlugs.length === 0 && noSelectedFolderSlugs.length === 0)}
+          >
+            {addToFolderLoading ? "Updating..." : "Update Folders"}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

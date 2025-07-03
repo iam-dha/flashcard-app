@@ -8,7 +8,7 @@ export interface FlashcardTypes {
   phonetic?: string;
   image_url?: string;
   audio_url?: string;
-  word_vi: string;
+  vi_meanings: string[];
   wordType_vi?: string;
   definition_vi: string[];
   example_vi?: string;

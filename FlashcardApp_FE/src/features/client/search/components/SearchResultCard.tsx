@@ -31,7 +31,7 @@ export function useToggleFavourites(result: FlashcardTypes) {
     try {
       setFavouritesLoading(true);
       const favouritesSlug = await getFavouritesSlug();
-      await addFlashcardToFolder(favouritesSlug, result.flashcardId);
+      await addFlashcardToFolder(result.flashcardId, [favouritesSlug!]);
       setIsFavourites(true);
       toast.info(`"${result.word}" added to favourites`, {
         action: {
@@ -80,7 +80,7 @@ export function useToggleFavourites(result: FlashcardTypes) {
   return { isFavourites, favouritesLoading, handleToggleFavourites };
 }
 
-export function SearchResultButton(result: FlashcardTypes) {
+export function SearchResultButtonList(result: FlashcardTypes) {
   const { isFavourites, favouritesLoading, handleToggleFavourites } = useToggleFavourites(result);
 
   return (
@@ -105,10 +105,10 @@ export function SearchResultButton(result: FlashcardTypes) {
 export function SearchResultWordCard(result: FlashcardTypes) {
   const { playAudio } = useAudio(result.audio_url);
   return (
-    <Card className="rounded-lg border-transparent p-4 shadow-md">
+    <Card className="rounded-lg border-transparent bg-card/70 p-4 shadow-md">
       <div className="flex justify-between gap-4">
         <div className="space-y-10">
-          <SearchResultButton {...result} />
+          <SearchResultButtonList {...result} />
 
           <div className="flex flex-col justify-center gap-2">
             <div className="flex items-center gap-4">
@@ -118,11 +118,11 @@ export function SearchResultWordCard(result: FlashcardTypes) {
                 {result.phonetic && <span className="text-secondary-foreground ml-1 text-sm">{result.phonetic}</span>}
               </Button>
             </div>
-            <p className="text-foreground text-2xl font-bold">{result.word_vi}</p>
+            <p className="text-foreground text-2xl font-bold">{result.vi_meanings}</p>
           </div>
         </div>
 
-        {result.image_url && <img src={result.image_url} alt={result.word} className="aspect-square w-48 rounded-lg object-cover hover:scale-102" />}
+        {result.image_url && <img src={result.image_url} alt={result.word} className="aspect-[16/9] h-48 rounded-lg object-cover overflow-hidden shadow-md" />}
       </div>
     </Card>
   );
@@ -130,7 +130,7 @@ export function SearchResultWordCard(result: FlashcardTypes) {
 
 export function SearchResultCardSide(result: FlashcardTypes) {
   return (
-    <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">
+    <Card className="flex-1 rounded-lg border-transparent bg-card/70 p-4 shadow-md">
       {result.wordType && <p className="text-sm text-neutral-600 dark:text-neutral-400">({result.wordType})</p>}
       {result.definition && <p>{result.definition}</p>}
       {result.example && (
@@ -152,7 +152,7 @@ export default function SearchResultCard({ results }: { results: FlashcardTypes[
           {results.map((result, index) => (
             <div key={index} className="flex gap-4">
               <SearchResultCardSide {...result} />
-              <Card className="flex-1 rounded-lg border-transparent p-4 shadow-md">
+              <Card className="flex-1 rounded-lg border-transparent bg-card/70 p-4 shadow-md">
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">
                   {result.wordType === "noun"
                     ? "(danh từ)"

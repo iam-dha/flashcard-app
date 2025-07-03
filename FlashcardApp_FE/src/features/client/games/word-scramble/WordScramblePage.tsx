@@ -19,6 +19,7 @@ export default function WordScramblePage() {
     userAnswer,
     setUserAnswer,
     showSuccess,
+    numberOfLives,
     lives,
     points,
     timePerQuestion,
@@ -49,9 +50,17 @@ export default function WordScramblePage() {
   }
 
   return (
-    <Dialog open={gameStarted} onOpenChange={setGameStarted}>
-      <DialogContent className="flex !max-w-none lg:!h-[800px] !h-full lg:!w-[1000px] !w-full flex-col border-none shadow-lg">
-        <WSGameHeader lives={lives} points={points} isPaused={isPaused} setIsPaused={setIsPaused} />
+    <Dialog
+      open={gameStarted}
+      onOpenChange={(open) => {
+        if (!open) {
+          resetGame();
+        }
+        setGameStarted(open);
+      }}
+    >
+      <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
+        <WSGameHeader lives={lives} numberOfLives={numberOfLives} points={points} isPaused={isPaused} setIsPaused={setIsPaused} />
 
         <WSGameContent
           timeLeft={timeLeft}

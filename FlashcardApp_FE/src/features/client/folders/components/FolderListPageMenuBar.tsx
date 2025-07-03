@@ -1,4 +1,4 @@
-import { EllipsisVertical, Share, Trash, ArrowUp, ArrowDown } from "lucide-react"; // Import the form
+import { ArrowUp, ArrowDown } from "lucide-react"; // Import the form
 import { ExpandableButton } from "@/components/custom-ui/ExpandableButton";
 import FolderCreateDialog from "./FolderCreateDialog";
 import FolderSortDropdownMenu from "./FolderSortDropdownMenu";
@@ -16,7 +16,7 @@ function OrderButton({ order, toggleSortOrder }: { order: SortOrder; toggleSortO
     <ExpandableButton
       Icon={order === "asc" ? ArrowUp : ArrowDown}
       label={order === "asc" ? "Ascending order" : "Descending order"}
-      className="group hover:bg-accent flex items-center overflow-auto rounded-xl transition-all duration-300 hover:ml-2"
+      className="group hover:bg-card/50 flex items-center overflow-auto rounded-xl transition-all duration-300 hover:ml-2"
       variant="ghost"
       onClick={toggleSortOrder}
     />
@@ -33,14 +33,6 @@ export function FolderListPageMenuBar({ sort, updateSort, order, toggleSortOrder
         </div>
         <div className="flex">
           <FolderCreateDialog />
-          <ExpandableButton Icon={Share} label="Share" variant="ghost" />
-          <ExpandableButton
-            Icon={Trash}
-            variant="ghost"
-            className="hover:bg-red-200 hover:text-red-500 dark:hover:bg-red-900/40"
-            label="Delete folder"
-          />
-          <ExpandableButton Icon={EllipsisVertical} label="More" variant="ghost" />
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ module.exports.validateInput = (schema) => {
             if(schema.body){
                 const {error, value} = schema.body.validate(req.body, {abortEarly: false});
                 if(error){
-                    // console.log(error);
+                    console.log(error);
                     return res.status(400).json({
                         message: "Validation error",
                     });
@@ -14,7 +14,7 @@ module.exports.validateInput = (schema) => {
             if(schema.query){
                 const {error, value} = schema.query.validate(req.query, {abortEarly: false});
                 if(error){
-                    // console.log(error);
+                    console.log(error);
                     return res.status(400).json({
                         message: "Validation error",
                     });
@@ -24,7 +24,7 @@ module.exports.validateInput = (schema) => {
             if(schema.params){
                 const {error, value} = schema.params.validate(req.params, {abortEarly: false});
                 if(error){
-                    // console.log(error);
+                    console.log(error);
                     return res.status(400).json({
                         message: "Validation error",
                     });

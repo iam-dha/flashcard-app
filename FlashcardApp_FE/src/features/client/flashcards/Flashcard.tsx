@@ -30,7 +30,7 @@ export default function Flashcard(flashcard: FlashcardTypes) {
                 </Badge>
               </div>
               <div className="flex h-full items-center justify-center overflow-hidden p-4 text-center align-middle">
-                <p className="text-4xl leading-tight text-wrap select-none">{flashcard.word_vi ? flashcard.word_vi : "No Vietnamese word available."}</p>
+                <p className="text-4xl leading-tight text-wrap select-none">{flashcard.vi_meanings ? flashcard.vi_meanings : "No Vietnamese word available."}</p>
               </div>
             </div>
           </div>

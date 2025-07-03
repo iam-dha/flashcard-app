@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuth } from "./useAuth";
 
 const api = axios.create({
   // baseURL: "http://54.208.12.109:9090/api/v1",

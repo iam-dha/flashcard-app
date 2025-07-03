@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAudio } from "@/hooks/useAudio";
 import { SearchIcon } from "lucide-react";
 
 type SearchInputProps = {
@@ -10,6 +11,8 @@ type SearchInputProps = {
 };
 
 export default function SearchInput({ searchWord, setSearchWord, handleSearch, searchLoading }: SearchInputProps) {
+  const SEARCH_SOUND_URL = "/sounds/search-click.mp3";
+  const { playAudio } = useAudio(SEARCH_SOUND_URL);
   return (
     <div className="my-8 flex gap-2">
       <Input
@@ -18,10 +21,11 @@ export default function SearchInput({ searchWord, setSearchWord, handleSearch, s
         value={searchWord}
         onChange={(e) => setSearchWord(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        className="rounded-2xl py-6 bg-input"
+        className="!rounded-2xl py-6 bg-input liquid-glass"
       />
       <Button
         onClick={() => {
+          playAudio();
           handleSearch();
         }}
         disabled={searchLoading}

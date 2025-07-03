@@ -2,29 +2,27 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "../layout/client/AppLayout";
 import AuthLayout from "@/layout/client/AuthLayout";
 import LoginPage from "@/features/client/auth/LoginPage";
-import { Home, Search, PanelTop, Folder, Gamepad2 } from "lucide-react";
+import { Home, Search, Folder, Gamepad2 } from "lucide-react";
 import { ReactNode } from "react";
 import HomePage from "@/features/client/home/HomePage";
+import PostDetailPage from "@/features/client/post/PostDetailPage";
 import SearchPage from "@/features/client/search/SearchPage";
 import { FlashcardDeck } from "@/features/client/flashcards/FlashcardDeck";
 import FoldersListPage from "@/features/client/folders/FolderListPage";
-import GamesPage from "@/features/client/games/GamesPage";
+import FolderSharePage from "@/features/client/share-folder/FolderSharePage";
 import FolderDetailPage from "@/features/client/folders/FolderDetailPage";
 import RegisterPage from "@/features/client/auth/RegisterPage";
 import ResetPasswordPage from "@/features/client/auth/ResetPasswordPage";
+import GamesPage from "@/features/client/games/GamesPage";
 import UserLayout from "@/layout/client/UserLayout";
 import UserProfilePage from "@/features/client/user/UserProfilePage";
+
 import AdminLayout from "@/layout/admin/AdminLayout";
 import AdminLoginPage from "@/layout/admin/AdminLoginPage";
 import AdminDashboardLayout from "@/layout/admin/AdminDashboardLayout";
 import AdminProfilePage from "@/layout/admin/AdminProfilePage";
-import ViewUserPage from "@/features/admin/user/ViewUserPage";
 import UserManagementTable from "@/features/admin/user/UserManagement";
 import PostManagementTable from "@/features/admin/post/PostManagement";
-import PostForm from "@/features/admin/post/AddNewPost";
-import PostDetail from "@/features/admin/post/PostDetail";
-import EditPost from "@/features/admin/post/EditPost";
-import EditUser from "@/features/admin/user/EditUser";
 import RoleManagement from "@/features/admin/role/RoleManagement";
 import { RequireAuth } from "@/layout/admin/RequireAuth";
 
@@ -40,11 +38,23 @@ export const routes: BaseRouteConfig[] = [
     showInSidebar: true,
   },
   {
-    path: "/search",
+    path: "/posts/:slug",
+    title: "Posts",
+    element: <PostDetailPage />,
+  },
+  {
+    path: "/search/",
     title: "Search",
     icon: <Search />,
     element: <SearchPage />,
     showInSidebar: true,
+  },
+  {
+    path: "/search/:word",
+    title: "Search",
+    icon: <Search />,
+    element: <SearchPage />,
+    showInSidebar: false,
   },
   {
     path: "/folders",
@@ -69,6 +79,12 @@ export const routes: BaseRouteConfig[] = [
     icon: <Gamepad2 />,
     element: <GamesPage />,
     showInSidebar: true,
+  },
+  {
+    path: "/share-folder/:slug",
+    element: <FolderSharePage />,
+    title: "Share Folder",
+    showInSidebar: false,
   },
 ];
 
@@ -219,34 +235,10 @@ export const router = createBrowserRouter([
           {
             path: "user",
             element: <UserManagementTable />,
-            children: [
-              {
-                path: ":userId",
-                element: <ViewUserPage />,
-              },
-              {
-                path: ":userId/edit",
-                element: <EditUser />,
-              },
-            ],
           },
           {
             path: "post",
             element: <PostManagementTable />,
-            children: [
-              {
-                path: "add",
-                element: <PostForm />,
-              },
-              {
-                path: ":slug",
-                element: <PostDetail />,
-              },
-              {
-                path: ":_id/edit",
-                element: <EditPost />,
-              },
-            ],
           },
           {
             path: "access",

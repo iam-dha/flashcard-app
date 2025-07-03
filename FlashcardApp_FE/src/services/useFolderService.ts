@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import api from "@/services/api";
-import { FolderCreateTypes, FolderTypes, GetAllFoldersResponse, GetFolderFlashcardListResponse } from "@/types/folder.types";
+import { FolderCheckResponse, FolderCreateTypes, FolderTypes, GetAllFoldersResponse, GetFolderFlashcardListResponse } from "@/types/folder.types";
 
 export function useFolderService() {
   const createFolder = useCallback(async (folderData: FolderCreateTypes): Promise<FolderTypes> => {
@@ -54,11 +54,22 @@ export function useFolderService() {
     }
   }, []);
 
+  const changeFolderInfo = useCallback(async (slug: string, folderData: FolderCreateTypes): Promise<FolderTypes> => {
+    try {
+      const response = await api.patch(`/folders/${slug}`, folderData);
+      return response.data;
+    } catch (error) {
+      console.error("Error changing folder info:", error);
+      throw new Error("Failed to change folder info");
+    }
+  }, []);
+
   const getFolderFlashcardList = useCallback(async (slug: string, page?: number, limit?: number): Promise<GetFolderFlashcardListResponse> => {
     page = 1;
     limit = 30;
     try {
       const response = await api.get(`/folders/${slug}/flashcards?page=${page}&limit=${limit}`);
+      console.log("response.data", response.data);
       return response.data;
     } catch (error) {
       console.error("Error getting folder flashcard list:", error);
@@ -66,12 +77,21 @@ export function useFolderService() {
     }
   }, []);
 
-  const addFlashcardToFolder = useCallback(async (folderSlug: string | undefined, flashcardId: string | undefined): Promise<void> => {
+  const addFlashcardToFolder = useCallback(async (flashcardId: string | undefined, folders: string[], noSelectedFolders: string[] = []): Promise<void> => {
     try {
-      await api.post(`/folders/${folderSlug}/flashcards`, { flashcardId });
+      await api.post(`/folders/flashcards`, { flashcardId, folders, noSelectedFolders });
     } catch (error) {
       console.error("Error adding flashcard to folder:", error);
       throw new Error("Failed to add flashcard to folder");
+    }
+  }, []);
+
+  const addFlashcardsToFolders = useCallback(async (flashcards: string[], folders: string[]): Promise<void> => {
+    try {
+      await api.post(`/folders/share/flashcards`, { flashcards, folders });
+    } catch (error) {
+      console.error("Error adding flashcards to folders:", error);
+      throw new Error("Failed to add flashcards to folders");
     }
   }, []);
 
@@ -107,6 +127,16 @@ export function useFolderService() {
     }
   }, []);
 
+  const checkFlashcardInFolders = useCallback(async (flashcardSlug: string | undefined): Promise<FolderCheckResponse[]> => {
+    try {
+      const response = await api.get(`/folders/check/flashcards/${flashcardSlug}`);
+      return response.data.folders;
+    } catch (error) {
+      console.error("Error checking flashcard in folders:", error);
+      throw new Error("Failed to check flashcard in folders");
+    }
+  }, []);
+
   const getFavouritesSlug = useCallback(async (): Promise<string | undefined> => {
     try {
       const response = await getAllFolders({ getAll: true });
@@ -123,11 +153,14 @@ export function useFolderService() {
     deleteFolder,
     getAllFolders,
     getFolderBySlug,
+    changeFolderInfo,
     getFolderFlashcardList,
     addFlashcardToFolder,
+    addFlashcardsToFolders,
     getFlashcardInFolder,
     deleteFlashcardInFolder,
     checkFlashcardInFavourites,
+    checkFlashcardInFolders,
     getFavouritesSlug,
   };
 }

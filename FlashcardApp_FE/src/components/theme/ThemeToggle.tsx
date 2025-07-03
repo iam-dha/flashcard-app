@@ -6,20 +6,20 @@ import { useEffect, useState } from "react";
 export function ThemeToggle({ variant }: { variant: "icon" | "compact" | "expanded" }) {
   const { theme, setTheme } = useTheme();
   const [currentIcon, setCurrentIcon] = useState<React.ReactNode>(null);
-  const themeIconStyles = "transition-all ease-in-out duration-500";
+  const themeStyles = "transition-all ease-in-out duration-500";
 
   // update the icon based on current theme
   useEffect(() => {
     switch (theme) {
       case "light":
-        setCurrentIcon(<Sun className={themeIconStyles} />);
+        setCurrentIcon(<Sun className={themeStyles} />);
         break;
       case "dark":
-        setCurrentIcon(<Moon className={themeIconStyles} />);
+        setCurrentIcon(<Moon className={themeStyles} />);
         break;
       case "system":
       default:
-        setCurrentIcon(<Monitor className={themeIconStyles} />);
+        setCurrentIcon(<Monitor className={themeStyles} />);
         break;
     }
   }, [theme]);
@@ -43,23 +43,23 @@ export function ThemeToggle({ variant }: { variant: "icon" | "compact" | "expand
   // render the button based on the variant
   if (variant === "icon") {
     return (
-      <Button variant="outline" size="icon" onClick={cycleTheme}>
+      <Button variant="outline" size="icon" onClick={cycleTheme} className="hover:bg-card/50">
         {currentIcon}
       </Button>
     );
   } else if (variant === "compact") {
     return (
-      <Button variant="outline" onClick={cycleTheme}>
-        <div className={`${themeIconStyles}`}>{theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System"}</div>
+      <Button variant="outline" onClick={cycleTheme} className="hover:bg-card/50">
         {currentIcon}
+        <div className={`${themeStyles}`}>{theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System"}</div>
       </Button>
     );
   } else if (variant === "expanded") {
     return (
-      <Button variant="outline" onClick={cycleTheme}>
-        <p className={themeIconStyles}>Appearance:</p>
-        <div className={`-ml-1 ${themeIconStyles}`}>{theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System"}</div>
+      <Button variant="outline" onClick={cycleTheme} className="hover:bg-card/50">
+        <p className={themeStyles}>Appearance:</p>
         {currentIcon}
+        <div className={`-ml-1 ${themeStyles}`}>{theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System"}</div>
       </Button>
     );
   }

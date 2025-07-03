@@ -1,5 +1,5 @@
 import { FolderTypes } from "@/types/folder.types";
-import FolderCard from "./FolderCard";
+import FolderCard, { FolderCardDropdownMenu } from "./FolderCard";
 import { useGetFolderList } from "../hooks/useGetFolderList";
 import CustomLoader from "@/components/custom-ui/CustomLoader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -52,7 +52,7 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
                 >
                   {folder.name}
                 </Button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center">
                   <Button
                     size="sm"
                     className={`bg-accent hover:bg-accent/60 transform rounded-lg border-0 transition-all duration-200 ${!isMobile && "opacity-0 group-hover:opacity-100"}`}
@@ -61,19 +61,9 @@ export function FolderListTableView({ folderList }: { folderList: FolderTypes[] 
                     <GraduationCap className="h-4 w-4" />
                     Study
                   </Button>
-                  <FolderDeleteDialog
-                    slug={folder.slug}
-                    name={folder.name}
-                    trigger={
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className={`text-destructive hover:bg-destructive/20! hover:text-destructive transform rounded-lg transition-all duration-200 ${!isMobile && "opacity-0 group-hover:opacity-100"}`}
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    }
-                  />
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <FolderCardDropdownMenu slug={folder.slug} name={folder.name} description={folder.description || ""} tags={folder.tags || []} isPublic={folder.isPublic || false} />
+                  </div>
                 </div>
               </TableCell>
               <TableCell className="px-4">{new Date(folder.createdAt).toLocaleDateString("en-GB")}</TableCell>

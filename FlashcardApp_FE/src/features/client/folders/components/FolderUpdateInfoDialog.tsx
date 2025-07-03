@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { folderCreateSchema, FolderCreateTypes, folderNameMaxLength } from "@/types/folder.types";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { FolderPlus } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogTrigger, DialogTitle, DialogDescription, DialogContent } from "@/components/ui/dialog";
@@ -12,35 +12,46 @@ import { toast } from "sonner";
 import { triggerFolderListRefresh } from "../hooks/useFolderListRefresh";
 import { Input } from "@/components/ui/input";
 
-export default function FolderCreateDialog() {
-  const { createFolder } = useFolderService();
+export default function FolderUpdateInfoDialog({
+  slug,
+  name,
+  description,
+  tags,
+  isPublic,
+}: {
+  slug: string;
+  name: string;
+  description: string;
+  tags: string[];
+  isPublic: boolean;
+}) {
+  const { changeFolderInfo } = useFolderService();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const folderCreateForm = useForm({
+  const folderUpdateForm = useForm<FolderCreateTypes>({
     resolver: zodResolver(folderCreateSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      tags: [],
-      isPublic: false
+      name: name,
+      description: description || "",
+      tags: tags || [],
+      isPublic: isPublic || false,
     },
   });
 
   const onSubmit = async (folderData: FolderCreateTypes) => {
     setLoading(true);
     try {
-      await createFolder(folderData);
-      toast.success("Folder created successfully!");
+      await changeFolderInfo(slug, folderData);
+      toast.success("Folder updated successfully!");
       setOpen(false);
-      folderCreateForm.reset();
       // setTimeout here is very important
       // it allows the dialog to close before refreshing the folder list
       setTimeout(() => {
         triggerFolderListRefresh();
       }, 1000);
     } catch (error) {
-      toast.error("Failed to create folder.");
+      toast.error("Failed to update folder.");
     } finally {
       setLoading(false);
     }
@@ -49,26 +60,26 @@ export default function FolderCreateDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="hover:bg-card/50 rounded-xl">
-          <FolderPlus className="h-4 w-4" />
-          New Folder
+        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
+          <PencilLine />
+          Update Info
         </Button>
       </DialogTrigger>
       <DialogContent className="text-card-foreground border-transparent shadow-lg">
-        <DialogTitle>Create new folder</DialogTitle>
-        <DialogDescription>Enter folder name and description</DialogDescription>
-        <Form {...folderCreateForm}>
-          <form onSubmit={folderCreateForm.handleSubmit(onSubmit)}>
+        <DialogTitle>Update folder information</DialogTitle>
+        <DialogDescription>Modify folder name, description, and settings</DialogDescription>
+        <Form {...folderUpdateForm}>
+          <form onSubmit={folderUpdateForm.handleSubmit(onSubmit)}>
             <div className="space-y-6">
               <FormField
-                control={folderCreateForm.control}
+                control={folderUpdateForm.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Folder Name</FormLabel>
                       <div className="text-right text-xs text-neutral-500">
-                        {folderCreateForm.watch("name")?.length || 0}/{folderNameMaxLength}
+                        {folderUpdateForm.watch("name")?.length || 0}/{folderNameMaxLength}
                       </div>
                     </div>
                     <FormControl>
@@ -79,7 +90,7 @@ export default function FolderCreateDialog() {
                 )}
               />
               <FormField
-                control={folderCreateForm.control}
+                control={folderUpdateForm.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
@@ -92,7 +103,7 @@ export default function FolderCreateDialog() {
                 )}
               />
               <FormField
-                control={folderCreateForm.control}
+                control={folderUpdateForm.control}
                 name="isPublic"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between">
@@ -105,7 +116,7 @@ export default function FolderCreateDialog() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating..." : "Create Folder"}
+                {loading ? "Updating..." : "Update Folder"}
               </Button>
             </div>
           </form>

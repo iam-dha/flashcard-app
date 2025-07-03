@@ -2,36 +2,41 @@ import { FolderTypes as FolderTypes } from "@/types/folder.types";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Users, GraduationCap } from "lucide-react";
+import { GraduationCap, Globe, Lock } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, PencilLine, Share, Trash } from "lucide-react";
+import { EllipsisVertical, Trash } from "lucide-react";
 import FolderDeleteDialog from "./FolderDeleteDialog";
+import FolderUpdateInfoDialog from "./FolderUpdateInfoDialog";
+import FolderShareDialog from "./FolderShareDialog";
 
 interface FolderCardDropdownMenuProps {
   slug: string;
   name: string;
+  description: string;
+  tags: string[];
+  isPublic: boolean;
 }
 
-export function FolderCardDropdownMenu({ slug, name }: FolderCardDropdownMenuProps) {
+export function FolderCardDropdownMenu({ slug, name, description, tags, isPublic }: FolderCardDropdownMenuProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-accent/50 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:ml-2">
+      <DropdownMenuTrigger className="hover:bg-primary/20 -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:ml-2">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-popover mt-2 flex flex-col rounded-xl border border-transparent shadow-lg">
-        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
-          <PencilLine />
-          Rename
-        </Button>
-        <Button variant="ghost" className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">
-          <Share />
-          Share
-        </Button>
+        <FolderUpdateInfoDialog
+          slug={slug}
+          name={name}
+          description={description}
+          tags={tags}
+          isPublic={isPublic}
+        />
+        <FolderShareDialog slug={slug} name={name} description={description || ""} tags={tags || []} isPublic={isPublic} />
         <FolderDeleteDialog
           trigger={
-            <Button variant="ghost" className="hover:bg-destructive/20 justify-start rounded-lg bg-transparent">
-              <Trash className="text-red-500" />
-              <p className="text-red-500">Delete</p>
+            <Button variant="ghost" className="hover:bg-destructive/15 justify-start rounded-lg bg-transparent">
+              <Trash className="text-destructive" />
+              <p className="text-destructive">Delete</p>
             </Button>
           }
           slug={slug}
@@ -55,9 +60,9 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
             <Button variant="link" className="text-foreground -ml-4 w-full cursor-pointer justify-start text-lg font-medium">
               <div className="block truncate overflow-hidden">{folder.name}</div>
             </Button>
-            <p className="line-clamp-2 truncate overflow-hidden">
+            <div className="line-clamp-2 truncate overflow-hidden">
               {folder.description ? folder.description : <p className="text-muted-foreground">No description</p>}
-            </p>
+            </div>
           </div>
         </Link>
         <div className="flex flex-wrap items-end justify-between gap-4 p-4">
@@ -66,12 +71,12 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
               {folder.flashcardCount > 2 ? folder.flashcardCount + " flashcards" : folder.flashcardCount + " flashcard"}
             </Badge>
             {folder.isPublic ? (
-              <Badge variant="secondary" className="bg-green-200 text-green-800" title="Public folder">
-                <Users />
+              <Badge variant="secondary" className="bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-200" title="Public folder">
+                <Globe />
               </Badge>
             ) : (
-              <Badge variant="secondary" className="bg-blue-300 text-blue-800" title="Private folder">
-                <User />
+              <Badge variant="secondary" className="bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200" title="Private folder">
+                <Lock />
               </Badge>
             )}
           </Link>
@@ -83,7 +88,7 @@ export default function FolderCard({ folder }: { folder: FolderTypes }) {
               <GraduationCap className="h-4 w-4" />
               Study
             </Button>
-            <FolderCardDropdownMenu slug={folder.slug} name={folder.name} />
+            <FolderCardDropdownMenu slug={folder.slug} name={folder.name} description={folder.description || ""} tags={folder.tags || []} isPublic={folder.isPublic || false} />
           </div>
         </div>
       </div>

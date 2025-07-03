@@ -2,13 +2,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RotateCcw } from "lucide-react";
-import { WordScrambleData } from "../useWordScrambleGame";
-
+import { WSGameDataTypes } from "@/types/game.types";
 interface WSGameContentProps {
   timeLeft: number;
   currentQuestion: number;
-  wordsData: WordScrambleData[];
-  currentWord: WordScrambleData;
+  wordsData: WSGameDataTypes[];
+  currentWord: WSGameDataTypes;
   userAnswer: string[];
   shuffledLetters: string[];
   handleAnswerBoxClick: (index: number) => void;
@@ -57,7 +56,7 @@ export default function WSGameContent({
             <button
               key={index}
               onClick={() => handleAnswerBoxClick(index)}
-              className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 text-lg font-bold transition-colors hover:bg-gray-100"
+              className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:bg-gray-800 text-lg font-bold transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               {letter}
             </button>
@@ -73,7 +72,7 @@ export default function WSGameContent({
             <button
               key={index}
               onClick={() => handleLetterClick(letter, index)}
-              className="flex h-12 w-12 items-center justify-center rounded-lg border border-blue-300 bg-blue-100 text-lg font-bold text-blue-700 transition-colors hover:bg-blue-200"
+              className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-primary/50 bg-primary/10 text-lg font-bold text-primary transition-colors hover:bg-primary/20"
             >
               {letter}
             </button>

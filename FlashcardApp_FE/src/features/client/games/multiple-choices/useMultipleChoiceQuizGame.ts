@@ -1,166 +1,43 @@
+import { useGameService } from "@/services/useGameService";
 import { useState, useEffect } from "react";
-
-interface MultipleChoiceData {
-  question: string;
-  correctAnswer: string;
-  options: string[];
-}
-
-// Mock data for the multiple choice game
-const mockMultipleChoiceData: MultipleChoiceData[] = [
-  {
-    question: "What is the capital of France?",
-    correctAnswer: "Paris",
-    options: ["London", "Paris", "Berlin", "Madrid"]
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    correctAnswer: "Mars",
-    options: ["Venus", "Mars", "Jupiter", "Saturn"]
-  },
-  {
-    question: "What is the largest ocean on Earth?",
-    correctAnswer: "Pacific Ocean",
-    options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"]
-  },
-  {
-    question: "Who painted the Mona Lisa?",
-    correctAnswer: "Leonardo da Vinci",
-    options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"]
-  },
-  {
-    question: "What is the chemical symbol for gold?",
-    correctAnswer: "Au",
-    options: ["Ag", "Au", "Fe", "Cu"]
-  },
-  {
-    question: "Which year did World War II end?",
-    correctAnswer: "1945",
-    options: ["1943", "1944", "1945", "1946"]
-  },
-  {
-    question: "What is the largest mammal in the world?",
-    correctAnswer: "Blue Whale",
-    options: ["African Elephant", "Blue Whale", "Giraffe", "Hippopotamus"]
-  },
-  {
-    question: "Which programming language was created by Brendan Eich?",
-    correctAnswer: "JavaScript",
-    options: ["Python", "Java", "JavaScript", "C++"]
-  },
-  {
-    question: "What is the main component of the sun?",
-    correctAnswer: "Hydrogen",
-    options: ["Helium", "Hydrogen", "Oxygen", "Carbon"]
-  },
-  {
-    question: "How many sides does a hexagon have?",
-    correctAnswer: "6",
-    options: ["5", "6", "7", "8"]
-  }
-];
+import { MCQGameDataTypes } from "@/types/game.types";
 
 export default function useMultipleChoiceQuizGame() {
+  const { getMCQGameData } = useGameService();
+  const numberOfQuestions = 10;
   const [gameStarted, setGameStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  const [questionsData, setQuestionsData] = useState<MultipleChoiceData[]>([]);
+  const [questionsData, setQuestionsData] = useState<MCQGameDataTypes[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const currentQuestionData = questionsData[currentQuestion];
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+  
   const [showSuccess, setShowSuccess] = useState(false);
   const [showIncorrect, setShowIncorrect] = useState(false);
 
-  const [lives, setLives] = useState(3);
+  const numberOfLives = 3;
+  const [lives, setLives] = useState(numberOfLives);
   const [points, setPoints] = useState(0);
+
+  const [streak, setStreak] = useState(0);
+  const [maxStreak, setMaxStreak] = useState(0);
+
   const timePerQuestion = 30;
   const [timeLeft, setTimeLeft] = useState(timePerQuestion);
-  const [isPaused, setIsPaused] = useState(false);
+  const [timeTaken, setTimeTaken] = useState<number[]>([]);
+  const [totalTimeTaken, setTotalTimeTaken] = useState(0);
 
-  // Load mock data when game opens
-  useEffect(() => {
-    if (gameStarted && questionsData.length === 0) {
-      setQuestionsData(mockMultipleChoiceData);
-    }
-  }, [gameStarted, questionsData.length]);
-
-  // Reset timer and selected answer when question changes
-  useEffect(() => {
-    if (gameStarted && questionsData.length > 0) {
-      setSelectedAnswer("");
-      setTimeLeft(timePerQuestion);
-      setShowSuccess(false);
-      setShowIncorrect(false);
-    }
-  }, [currentQuestion, gameStarted, questionsData.length]);
-
-  // Timer countdown
-  useEffect(() => {
-    if (gameStarted && !isPaused && timeLeft > 0) {
-      const timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [gameStarted, isPaused, timeLeft]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const handleAnswerSelect = (answer: string) => {
-    if (!showSuccess && !showIncorrect) {
-      setSelectedAnswer(answer);
-    }
-  };
-
-  const checkAnswer = () => {
-    if (!selectedAnswer) return;
-
-    if (selectedAnswer === currentQuestionData.correctAnswer) {
-      setPoints(points + 10);
-      setShowSuccess(true);
-      setIsPaused(true);
-    } else {
-      setLives(lives - 1);
-      setShowIncorrect(true);
-      setIsPaused(true);
-    }
-  };
-
-  const nextQuestion = () => {
-    setShowSuccess(false);
-    setShowIncorrect(false);
-    setIsPaused(false);
-    if (currentQuestion < questionsData.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Game completed
-      setGameStarted(false);
-      setCurrentQuestion(0);
-    }
-  };
-
-  const resetGame = () => {
-    setGameStarted(false);
-    setCurrentQuestion(0);
-    setLives(3);
-    setPoints(0);
-    setTimeLeft(timePerQuestion);
-    setIsPaused(false);
-    setSelectedAnswer("");
-    setShowSuccess(false);
-    setShowIncorrect(false);
-  };
+  const nextQuestionTime = 10;
+  const [timeToNextQuestion, setTimeToNextQuestion] = useState(nextQuestionTime);
 
   const handleGameOpen = async () => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setQuestionsData(mockMultipleChoiceData);
+      const gameData = await getMCQGameData();
+      setQuestionsData(gameData.slice(0, numberOfQuestions));
     } catch (error) {
       console.error("Failed to fetch game data:", error);
     } finally {
@@ -172,6 +49,141 @@ export default function useMultipleChoiceQuizGame() {
     setGameStarted(true);
   };
 
+  // load data when game starts
+  useEffect(() => {
+    const fetchGameData = async () => {
+      if (gameStarted && questionsData.length === 0) {
+        const gameData = await getMCQGameData();
+        setQuestionsData(gameData);
+      }
+    };
+
+    fetchGameData();
+  }, [gameStarted, questionsData.length, getMCQGameData]);
+
+  // timer countdown
+  useEffect(() => {
+    if (gameStarted && !isPaused && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [gameStarted, isPaused, timeLeft]);
+
+  // timer countdown for next question
+  useEffect(() => {
+    if (showSuccess || showIncorrect) {
+      const timer = setInterval(() => {
+        setTimeToNextQuestion((prev) => {
+          const newValue = prev - 1;
+          console.log("timeToNextQuestion countdown:", newValue);
+          return newValue;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [showSuccess, showIncorrect]);
+
+  // reset timer when question changes, but keep selected answers
+  useEffect(() => {
+    if (gameStarted && questionsData.length > 0) {
+      setTimeLeft(timePerQuestion);
+      setShowSuccess(false);
+      setShowIncorrect(false);
+      setTimeToNextQuestion(nextQuestionTime);
+    }
+  }, [currentQuestion, gameStarted, questionsData.length]);
+
+  const timeFormatter = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleTimeTaken = () => {
+    const timeSpent = timePerQuestion - timeLeft;
+    const newTimeTaken = [...timeTaken];
+    newTimeTaken[currentQuestion] = timeSpent;
+    setTimeTaken(newTimeTaken);
+    setTotalTimeTaken(totalTimeTaken + timeSpent);
+  }
+
+  const handleAnswerSelect = (answer: string) => {
+    if (!showSuccess && !showIncorrect) {
+      // update the selected answers array for the current question
+      const newSelectedAnswers = [...selectedAnswers];
+      newSelectedAnswers[currentQuestion] = answer;
+      setSelectedAnswers(newSelectedAnswers);
+    }
+  };
+
+  const checkAnswer = () => {
+    const currentSelectedAnswer = selectedAnswers[currentQuestion];
+    handleTimeTaken();
+    if (!currentSelectedAnswer) return;
+
+    if (currentSelectedAnswer === currentQuestionData.answer) {
+      setPoints(points + 10);
+      setShowSuccess(true);
+      setIsPaused(true);
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setMaxStreak(Math.max(maxStreak, newStreak));
+    } else {
+      setLives(lives - 1);
+      setShowIncorrect(true);
+      setIsPaused(true);
+      setStreak(0);
+      setMaxStreak(maxStreak);
+    }
+  };
+
+  const nextQuestion = () => {
+    setShowSuccess(false);
+    setShowIncorrect(false);
+    setIsPaused(false);
+    if (currentQuestion < questionsData.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      // game completed
+      setIsGameOver(true);
+      setIsPaused(true);
+      setCurrentQuestion(0);
+    }
+  };
+
+  // handle automatic next question when countdown reaches 0
+  useEffect(() => {
+    if ((showSuccess || showIncorrect) && timeToNextQuestion === 0) {
+      nextQuestion();
+    }
+  }, [timeToNextQuestion, showSuccess, showIncorrect]);
+
+  // handle game over
+  useEffect(() => {
+    if (!showSuccess && !showIncorrect) {
+      if (lives === 0 || (currentQuestion === questionsData.length && questionsData.length > 0) || timeLeft === 0) {
+        setIsGameOver(true);
+        setIsPaused(true);
+      }
+    }
+  }, [lives, currentQuestion, questionsData.length, timeLeft, showSuccess, showIncorrect]);
+
+  const resetGame = () => {
+    setGameStarted(false);
+    setCurrentQuestion(0);
+    setLives(numberOfLives);
+    setPoints(0);
+    setStreak(0);
+    setTimeLeft(timePerQuestion);
+    setIsPaused(false);
+    setSelectedAnswers([]);
+    setShowSuccess(false);
+    setShowIncorrect(false);
+    setIsGameOver(false);
+  };
+
   return {
     gameStarted,
     setGameStarted,
@@ -179,13 +191,19 @@ export default function useMultipleChoiceQuizGame() {
     questionsData,
     currentQuestion,
     currentQuestionData,
-    selectedAnswer,
+    selectedAnswers,
     showSuccess,
     showIncorrect,
+    numberOfLives,
     lives,
     points,
+    streak,
+    maxStreak,
     timePerQuestion,
     timeLeft,
+    timeTaken,
+    totalTimeTaken,
+    timeToNextQuestion,
     isPaused,
     setIsPaused,
     handleGameOpen,
@@ -194,6 +212,7 @@ export default function useMultipleChoiceQuizGame() {
     checkAnswer,
     nextQuestion,
     resetGame,
-    formatTime,
+    timeFormatter,
+    isGameOver,
   };
 } 

@@ -27,8 +27,8 @@ export function useAuth() {
 
     try {
       const response = await api.get("/user/settings");
-      setAuthState((prevState) => ({ ...prevState, user: response.data }));
-      return response.data;
+      setAuthState((prevState) => ({ ...prevState, user: response.data.data }));
+      return response.data.data;
     } catch (error) {
       logout();
       return null;

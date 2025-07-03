@@ -53,8 +53,10 @@ export default function LogoutConfirmDialog() {
           {error && <AlertMessage type="error" message={error} />}
         </AlertDialogHeader>
         <AlertDialogFooter className="space-x-2">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleLogout}>{loading ? "Logging out..." : "Log out"}</AlertDialogAction>
+          <AlertDialogCancel className="hover:bg-accent/40 text-card-foreground justify-start rounded-lg bg-transparent">Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleLogout} className="bg-destructive/15 text-destructive/70 hover:bg-destructive/30">
+            {loading ? "Logging out..." : "Log out"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
