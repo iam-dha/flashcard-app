@@ -13,6 +13,17 @@ const YEAR_MILISECONDS = 365 * 24 * 60 * 60 * 60 * 1000;
 module.exports.setting = async (req, res) => {
     const userId = req.userId;
     try {
+        const user = await User.findOne({
+            _id: userId,
+            deleted: false,
+        }).populate(
+            "role",
+            "title"
+        );
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const userRole = user.role.title;
         const userInformationDoc = await UserInformation.findOne({
             userId: userId,
             deleted: false,
@@ -44,7 +55,8 @@ module.exports.setting = async (req, res) => {
                 status: userInformation.status,
                 totalScore: userInformation.totalScore,
                 accountAge: userInformation.accountAge,
-                folderCount: folderCount
+                folderCount: folderCount,
+                role: userRole,
             },
         }
         );
