@@ -19,6 +19,7 @@ export default function WordScramblePage() {
     userAnswer,
     setUserAnswer,
     showSuccess,
+    numberOfLives,
     lives,
     points,
     timePerQuestion,
@@ -59,7 +60,7 @@ export default function WordScramblePage() {
       }}
     >
       <DialogContent className="flex !h-full !w-full !max-w-none flex-col border-none shadow-lg lg:!h-[80vh] lg:!w-[60vw]">
-        <WSGameHeader lives={lives} points={points} isPaused={isPaused} setIsPaused={setIsPaused} />
+        <WSGameHeader lives={lives} numberOfLives={numberOfLives} points={points} isPaused={isPaused} setIsPaused={setIsPaused} />
 
         <WSGameContent
           timeLeft={timeLeft}

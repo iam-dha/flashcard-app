@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import { WSGameDataTypes, WSGameSessionTypes } from "@/types/game.types";
 import { useGameService } from "@/services/useGameService";
 
-
 export default function useWordScrambleGame() {
   const { getWSGameData, createWSGameSession } = useGameService();
   const [gameSession, setGameSession] = useState<WSGameSessionTypes | null>(null);
-  const [startTime, setStartTime] = useState<string | null>(null);
-  const [endTime, setEndTime] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
   const [duration, setDuration] = useState<number>(0);
   const [scrambledWords, setScrambledWords] = useState<string[]>([]);
   const [correctWords, setCorrectWords] = useState<string[]>([]);
 
-  const numberOfQuestions = 3;
+  const [hasGameBeenSaved, setHasGameBeenSaved] = useState(false);
+
+  const numberOfQuestions = 10;
   const [gameStarted, setGameStarted] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
@@ -25,14 +26,13 @@ export default function useWordScrambleGame() {
 
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [lives, setLives] = useState(3);
+  const numberOfLives = 3;
+  const [lives, setLives] = useState(numberOfLives);
   const [points, setPoints] = useState(0);
 
   const timePerQuestion = 30;
   const [timeLeft, setTimeLeft] = useState(timePerQuestion);
   const [isPaused, setIsPaused] = useState(false);
-
-
 
   const handleGameOpen = async () => {
     setDataLoading(true);
@@ -135,66 +135,112 @@ export default function useWordScrambleGame() {
       setCurrentQuestion(currentQuestion + 1);
       setTimeLeft(30);
     } else {
-      // Game completed
       setIsGameOver(true);
-      setCurrentQuestion(0);
-      setIsPaused(true);
     }
   };
 
   useEffect(() => {
-    console.log("Effect check:", { lives, currentQuestion, wordsDataLength: wordsData.length, timeLeft, showSuccess });
     if (!showSuccess) {
-      if (lives === 0 || (currentQuestion === wordsData.length && wordsData.length > 0) || timeLeft === 0) {
+      if (isGameOver || lives === 0 || (currentQuestion === wordsData.length && wordsData.length > 0) || timeLeft === 0) {
         console.log("game over");
         setIsGameOver(true);
         setIsPaused(true);
       }
     }
-  }, [lives, currentQuestion, wordsData.length, timeLeft, showSuccess]);
+  }, [isGameOver, lives, currentQuestion, wordsData.length, timeLeft]);
+
+  useEffect(() => {
+    const handleDuration = () => {
+      const endTime = new Date().toISOString();
+      setEndTime(endTime);
+      const duration = Math.floor((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+      setDuration(duration);
+    };
+
+    if (isGameOver) {
+      handleDuration();
+    }
+  }, [isGameOver, startTime]);
+
+  useEffect(() => {
+    if (isGameOver && !hasGameBeenSaved && duration > 0 && startTime) {
+      console.log("checking...");
+      console.log("duration", duration);
+      console.log("startTime", startTime);
+      console.log("endTime", endTime);
+      console.log("scrambledWords", scrambledWords);
+      console.log("correctWords", correctWords);
+      console.log("points", points);
+      console.log("check over");
+
+      const saveGameSession = async () => {
+        try {
+          setHasGameBeenSaved(true);
+
+          const gameSessionData: WSGameSessionTypes = {
+            score: points,
+            duration: duration,
+            scrambledWords: scrambledWords,
+            correctWords: correctWords,
+            playAt: startTime,
+          };
+
+          const savedSession = await createWSGameSession(gameSessionData);
+          setGameSession(savedSession);
+          console.log("Game session saved:", savedSession);
+        } catch (error) {
+          console.error("Failed to save game session:", error);
+          setHasGameBeenSaved(false);
+        }
+      };
+
+      saveGameSession();
+    }
+  }, [isGameOver, hasGameBeenSaved, duration, startTime, endTime, points, scrambledWords, correctWords, createWSGameSession]);
 
   const resetGame = () => {
-    console.log("resetGame");
-    console.log("scrambledWords", scrambledWords);
-    console.log("correctWords", correctWords);
     setGameStarted(false);
+    setGameSession(null);
     setCurrentQuestion(0);
+    setDuration(0);
     setScrambledWords([]);
     setCorrectWords([]);
-    setLives(3);
+    setLives(numberOfLives);
     setPoints(0);
-    setTimeLeft(60);
+    setTimeLeft(timePerQuestion);
     setIsPaused(false);
     setUserAnswer([]);
     setShuffledLetters([]);
     setShowSuccess(false);
     setIsGameOver(false);
+    setHasGameBeenSaved(false);
   };
 
   return {
-    gameStarted, 
+    gameStarted,
     setGameStarted,
-    isDataLoading, 
+    isDataLoading,
     setDataLoading,
-    wordsData, 
+    wordsData,
     setWordsData,
-    shuffledLetters, 
+    shuffledLetters,
     setShuffledLetters,
-    currentQuestion, 
+    currentQuestion,
     setCurrentQuestion,
     currentWord,
-    userAnswer, 
+    userAnswer,
     setUserAnswer,
-    showSuccess, 
+    showSuccess,
     setShowSuccess,
-    lives, 
+    numberOfLives,
+    lives,
     setLives,
-    points, 
+    points,
     setPoints,
-    timePerQuestion, 
-    timeLeft, 
+    timePerQuestion,
+    timeLeft,
     setTimeLeft,
-    isPaused, 
+    isPaused,
     setIsPaused,
     handleGameOpen,
     handleStartGame,

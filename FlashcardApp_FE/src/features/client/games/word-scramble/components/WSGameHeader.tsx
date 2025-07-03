@@ -4,18 +4,19 @@ import { Heart, Play, Pause, Trophy } from "lucide-react";
 
 interface WSGameHeaderProps {
   lives: number;
+  numberOfLives: number;
   points: number;
   isPaused: boolean;
   setIsPaused: (isPaused: boolean) => void;
 }
 
-export default function WSGameHeader({ lives, points, isPaused, setIsPaused }: WSGameHeaderProps) {
+export default function WSGameHeader({ lives, numberOfLives, points, isPaused, setIsPaused }: WSGameHeaderProps) {
   return (
     <div className="flex items-center justify-between p-6">
       <div className="flex items-center gap-4">
         {/* Lives */}
         <div className="flex items-center gap-1">
-          {[...Array(3)].map((_, i) => (
+          {[...Array(numberOfLives)].map((_, i) => (
             <Heart key={i} className={`h-8 w-8 ${i < lives ? "fill-red-500 text-red-500" : "text-gray-300"}`} />
           ))}
         </div>

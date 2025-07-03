@@ -34,9 +34,9 @@ export default function WSGameHistoryDialog({ isHistoryOpen, setIsHistoryOpen }:
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <ExpandableButton Icon={Trophy} label={`Your total score: ${user?.totalScore} points`} className="bg-accent hover:bg-accent text-accent-foreground border mx-auto" onClick={() => setIsHistoryOpen(!isHistoryOpen)} />
+        <ExpandableButton Icon={Trophy} label="View your game history" className="bg-accent hover:bg-accent text-accent-foreground border mx-auto" onClick={() => setIsHistoryOpen(!isHistoryOpen)} />
       </DialogTrigger>
-      <DialogContent className="!h-full !w-full !max-w-none overflow-y-auto lg:!h-[80vh] lg:!w-[60vw]">
+      <DialogContent className="!h-full !w-full !max-w-none overflow-y-auto lg:!h-[80vh] lg:!w-[40vw]">
         <div className="flex flex-col gap-4">
           <div className="text-center text-2xl font-bold">Game History</div>
           <div className="text-center text-lg font-semibold">Your total score: {user?.totalScore} points</div>
@@ -80,7 +80,7 @@ export default function WSGameHistoryDialog({ isHistoryOpen, setIsHistoryOpen }:
                       <div className="flex flex-col items-center justify-start gap-2">
                         <Clock className="h-8 w-8 text-blue-500" />
                         <p className="text-lg font-bold">Duration</p>
-                        <p className="text-xl font-semibold">
+                        <p className="text-xl font-semibold text-center">
                           {game.duration ?? "N/A"} {game.duration > 1 ? "seconds" : "second"}
                         </p>
                       </div>

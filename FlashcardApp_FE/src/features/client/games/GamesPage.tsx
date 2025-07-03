@@ -15,9 +15,9 @@ export function WSGameBackground() {
     // Calculate target positions for "WORD SCRAMBLE" in a straight line
     const calculateTargetPositions = () => {
       const positions: Array<{ x: number; y: number }> = [];
-      const startX = 15; // Start at 15% from left
+      const startX = 4; // Start at 15% from left
       const y = 50; // Center vertically at 50%
-      const spacing = 5.5; // Space between letters (in percentage)
+      const spacing = 7; // Space between letters (in percentage)
 
       letters.forEach((_, index) => {
         positions.push({
