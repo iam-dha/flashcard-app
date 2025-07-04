@@ -259,18 +259,5 @@ module.exports.changeEmail = async (req, res) => {
     }
 };
 
-// module.exports.test = async (req, res) => {
-//     try {
-//         const users = await User.find({});
-//         for(const user of users) {
-//             user.totalScore = 0;
-//             user.save();
-//         }
-//         return res.status(200).json({
-//             message: "Test endpoint hit successfully"
-//         });
-//     } catch (error) {
-//         console.error(`[POST /api/v1/user/test] Error:`, error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
+
+//COMPLETE
