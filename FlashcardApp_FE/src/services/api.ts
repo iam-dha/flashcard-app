@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   // baseURL: "http://54.208.12.109:9090/api/v1",
-  baseURL: "http://localhost:9090/api/v1",
+  baseURL: "https://api.dhadev.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

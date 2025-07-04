@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useMemo, type ReactNode } from "react";
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
-const BASE_URL = "http://localhost:9090";
+const BASE_URL = "https://api.dhadev.com";
 
 interface AuthContextType {
   token: string | null;

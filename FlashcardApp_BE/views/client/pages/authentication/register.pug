@@ -57,7 +57,7 @@ block scripts
         }
 
         try {
-          const response = await apiRequest('http://localhost:9090/api/v1/auth/register/request-otp', {
+          const response = await apiRequest('https://api.dhadev.com/api/v1/auth/register/request-otp', {
             method: 'POST',
             body: JSON.stringify({ email: emailInput.value })
           });
@@ -94,7 +94,7 @@ block scripts
         };
 
         try {
-          const response = await apiRequest('http://localhost:9090/api/v1/auth/register/verify', {
+          const response = await apiRequest('https://api.dhadev.com/api/v1/auth/register/verify', {
             method: 'POST',
             body: JSON.stringify(formData)
           });
