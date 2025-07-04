@@ -114,8 +114,8 @@ module.exports.changeUserInfo = async (req, res) => {
             userId: userId,
         });
         user.role = roleList[flag]._id;
-        user.deleted = deleted === "true";
-        userInformationDoc.deleted = deleted === "true";
+        user.deleted = (deleted === true);
+        userInformationDoc.deleted = (deleted === true);
         userInformationDoc.role = role;
         if (phone !== undefined) {
             userInformationDoc.phone = phone;
