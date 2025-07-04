@@ -17,7 +17,7 @@ export default function FolderCardDropdownMenu() {
       setUser(user);
     };
     fetchUser();
-  }, [getUser, user]);
+  }, [getUser]);
 
   return (
     <DropdownMenu>

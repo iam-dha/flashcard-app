@@ -19,11 +19,6 @@ export function useAuth() {
   });
 
   const getUser = useCallback(async (): Promise<UserTypes | null> => {
-    const accessToken = getAccessToken();
-    if (!accessToken) {
-      setIsAuthenticated(false);
-      return null;
-    }
 
     try {
       const response = await api.get("/user/settings");

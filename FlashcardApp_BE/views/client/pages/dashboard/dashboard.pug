@@ -48,7 +48,7 @@ block scripts
       // Add token to all API requests
       const originalFetch = window.fetch;
       window.fetch = function(url, options = {}) {
-        if (url.startsWith('http://localhost:9090')) {
+        if (url.startsWith('https://api.dhadev.com')) {
           options.headers = {
             ...options.headers,
             'Authorization': `Bearer ${accessToken}`
