@@ -28,7 +28,6 @@ module.exports.getAllFolders = async (req, res) => {
                 .sort({ [sortFilter]: sortOrder })
                 .skip(skip)
                 .limit(limit);
-            console.log(folders[0].id);
             return res.status(200).json({
                 total_count: folders.length,
                 page: page,
