@@ -10,7 +10,6 @@ export default function useWordScrambleGame() {
   const [duration, setDuration] = useState<number>(0);
   const [scrambledWords, setScrambledWords] = useState<string[]>([]);
   const [correctWords, setCorrectWords] = useState<string[]>([]);
-
   const [hasGameBeenSaved, setHasGameBeenSaved] = useState(false);
 
   const numberOfQuestions = 10;
@@ -75,6 +74,16 @@ export default function useWordScrambleGame() {
       return () => clearInterval(timer);
     }
   }, [gameStarted, isPaused, timeLeft]);
+
+  useEffect(() => {
+    if (gameStarted && timeLeft === 0 && !showSuccess) {
+      setLives(lives - 1);
+      // reset the answer and timer for next attempt
+      setShuffledLetters(currentWord.word.split("").sort(() => Math.random() - 0.5));
+      setUserAnswer(new Array(currentWord.word.length).fill(""));
+      setTimeLeft(timePerQuestion);
+    }
+  }, [gameStarted, timeLeft, showSuccess, lives, currentWord, timePerQuestion]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -141,13 +150,13 @@ export default function useWordScrambleGame() {
 
   useEffect(() => {
     if (!showSuccess) {
-      if (isGameOver || lives === 0 || (currentQuestion === wordsData.length && wordsData.length > 0) || timeLeft === 0) {
+      if (isGameOver || lives === 0 || (currentQuestion === wordsData.length && wordsData.length > 0)) {
         console.log("game over");
         setIsGameOver(true);
         setIsPaused(true);
       }
     }
-  }, [isGameOver, lives, currentQuestion, wordsData.length, timeLeft]);
+  }, [isGameOver, lives, currentQuestion, wordsData.length]);
 
   useEffect(() => {
     const handleDuration = () => {
